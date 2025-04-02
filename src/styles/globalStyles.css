@@ -3,8 +3,12 @@
 :root {
   --color-lavender: #bab2e7; /* Custom blue */
   --color-secondary: #ff5722; /* Custom orange */
+  --color-charcol-black : #161616;
+  --color-dark-lavender : #924AD9;
   --text-white: #ffffff; /* White text color */
   --text-black: #000000; /* Black text color */
+  --text-light-green : #E4F1E8;
+
 }
 
 .lavender-background {
@@ -13,6 +17,10 @@
 
 .primary-text {
   color: var(--text-white);
+}
+
+.bigger-text {
+  color: var(--text-light-green);
 }
 
 .center-circle {

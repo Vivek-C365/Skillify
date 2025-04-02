@@ -1,44 +1,114 @@
 import Navbar from "../components/navbar";
-import {responsiveFlex} from "../styles/responsiveFlex"
-import {responsiveText} from "../styles/responsiveText";
+import ContentSection from "../components/ContentSection";
+import Cards from "../components/common/card";
+import { responsiveFlex } from "../styles/responsiveFlex";
+import {
+  responsiveTextH3,
+  responsiveTextH6,
+  responsiveTextBodyLarge,
+} from "../styles/responsiveText";
 
 const Home = () => {
+  const sections = [
+    {
+      leftContent:
+        "Personalized recommendations for each student, based on their learning style and preferences.",
+      biggerText: "Simple",
+      tags: [
+        { icon: true, text: "advantage", item: "#" },
+        { icon: true, bgColor: "transparent", item: "#" },
+        {
+          icon: true,
+          item: "#",
+          bgColor: "transparent",
+          iconColor: "border border-white primary-text",
+        },
+      ],
+    },
+    {
+      reverse: true,
+      biggerText: "Powerful",
+      rightContent: <Cards />,
+    },
+    {
+      leftContent:
+        "we offer the highest quality educational resources to make learning accessible",
+      biggerText: "EdTech",
+      tags: [
+        { text: "Get started" },
+        { icon: true, bgColor: "transparent", item: <>&#8599;</> },
+      ],
+    },
+    {
+      reverse: true,
+      leftContent: <Cards />,
+      biggerText: "Solutions",
+    },
+  ];
+
+  const smallAboutus = [
+    {
+      text: "+80",
+      description: "Online Courses",
+    },
+    {
+      text: "10",
+      description: "Years Experience",
+    },
+    {
+      text: "77",
+      description: "Top Mentors",
+    },
+  ];
+
   return (
-    <div className="lavender-background min-h-screen">
-      <Navbar />
-      {/* Main Content */}
-      <div className="p-4 md:p-8">
-        {/* First Top content bar */}
-        <div className={`flex ${responsiveFlex}`}>
-          {/* First part */}
-          <div className="text-center md:text-left">
-            <div className="flex flex-wrap justify-center md:justify-start items-center gap-2">
-              <div className="flex bg-white rounded-full p-1 gap-2 items-center">
-                <p className="bg-black primary-text center-circle p-2">#</p>
-                <p>advantage</p>
-              </div>
-              <p className="bg-white center-circle p-2">#</p>
-              <p className="border border-white primary-text center-circle p-2">
-                #
-              </p>
-            </div>
-            <div className="mt-2 primary-text text-center md:text-left max-w-md">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Quisquam, totam?
+    <div>
+      <div className="lavender-background">
+        <Navbar />
+
+        <div className="p-4 md:p-8">
+          {sections.map((section, index) => (
+            <ContentSection
+              key={index}
+              reverse={section.reverse}
+              leftContent={section.leftContent}
+              rightContent={section.rightContent}
+              biggerText={section.biggerText}
+              tags={section.tags}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div
+        className={` ${responsiveFlex} bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
+      >
+        <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-8">
+          <div>
+            <h1 className={responsiveTextH3}>About us</h1>
+          </div>
+          <div className={` ${responsiveFlex}`}>
+            <div className={`${responsiveFlex} !flex-row gap-10`}>
+              {smallAboutus.map((item, index) => (
+                <div key={index}>
+                  <span
+                    className={` ${responsiveTextH6} text-[var(--color-dark-lavender)]  `}
+                  >
+                    {item.text}
+                  </span>
+                  <p className="">{item.description}</p>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Right Side */}
-          <div className="flex flex-col items-center md:flex-row md:items-center gap-2">
-            {/* Bigger Text */}
-            <div className="flex flex-col items-center justify-center primary-text">
-              <span className={responsiveText}>Simple</span>
-            </div>
-
-            <div>
-              <span className="text-lg center-circle md:text-xl lg:text-2xl">explore</span>
-            </div>
-          </div>
+        </div>
+        <div className="w-full md:w-1/2">
+          <p className={responsiveTextBodyLarge}>
+            At skillify, we offer comprehensive English language courses
+            tailored to your personal and professional growth. Whether you're a
+            beginner or seeking advanced fluency. our dynamic lessons will help
+            you speak, write, and understand English with confidence.
+          </p>
         </div>
       </div>
     </div>
