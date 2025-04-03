@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { handleError } from "../../utils/tostify";
 import { useFirebase } from "../firebase";
+import { emailValidate, phoneValidate } from "../../utils/regexValidation";
 
 const SignUp = () => {
   const firebase = useFirebase();
@@ -18,8 +19,37 @@ const SignUp = () => {
     [setUser]
   );
 
+  const withEmail = async (email, password) => {
+    if (!emailValidate.test(email)) {
+      handleError("Invalid Email");
+      return;
+    }
+    try {
+      await firebase.signupWithEmailAndPassword(email, password);
+      setUser({ email: "", password: "" });
+    } catch (error) {
+      handleError(error.message);
+    }
+  };
+
+  const withPhone = async (phone, password) => {
+    const phonenumer = Number(phone);
+    if (!phoneValidate.test(phonenumer)) {
+      handleError("Invalid Phone Number");
+      return;
+    }
+    try {
+      console.log("working");
+      // await firebase.signupWithPhoneNumber(phonenumer, password);
+      // setUser({ email: "", password: "" });
+    } catch (error) {
+      handleError(error.message);
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
     if (debounceTimeout) return; // Block submissions within the debounce period
 
     debounceTimeout = setTimeout(() => {
@@ -27,13 +57,18 @@ const SignUp = () => {
     }, 2600);
 
     const { email, password } = user;
+
     if (!email || !password) {
       handleError("Please fill in all fields.");
       return;
     }
     try {
-      await firebase.signupWithEmailAndPassword(email, password);
-      setUser({ email: "", password: "" });
+      if (email.includes("@")) {
+        withEmail(email, password);
+      }
+      if (user.email.length == 10) {
+        withPhone(email, password);
+      }
     } catch (error) {
       handleError(error.message);
     }
@@ -88,10 +123,10 @@ const SignUp = () => {
                   name="email"
                   value={user.email}
                   onChange={handleInputChange}
-                  type="email"
+                  type="text"
                   id="SignUp-email"
                   className="w-full flex-1 appearance-none border-gray-300 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
-                  placeholder="Email"
+                  placeholder="Email or Phone Number"
                 />
               </div>
             </div>
