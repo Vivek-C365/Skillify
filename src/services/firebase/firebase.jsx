@@ -1,20 +1,38 @@
 import firebaseConfig from "./firebaseConfig";
-import firebaseContext from "../services/context/firebaseContext";
+// eslint-disable-next-line no-unused-vars
+import firebaseContext from "../context/firebaseContext";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  signOut,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
 } from "firebase/auth";
-import { handleError, handleSuccess } from "../utils/tostify";
+import { handleError, handleSuccess } from "../../utils/tostify";
 
-const firebaseContextprovider = new firebaseContext();
+import { useState, useEffect } from "react";
+
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
 
 export const FirebaseProvider = ({ children }) => {
+  const [loggedIn, setLoggedInUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedInUser(user);
+      } else {
+        setLoggedInUser(null);
+      }
+    });
+  }, []);
+
+  const userLoggedIn = loggedIn ? loggedIn : null;
+
   const signupWithEmailAndPassword = async (email, password) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -35,12 +53,19 @@ export const FirebaseProvider = ({ children }) => {
       return error;
     }
   };
-
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+    } catch (error) {
+      console.error("Logout error:", error.message);
+    }
+  };
   return (
-    <firebaseContextprovider.Provider
-      value={{ signupWithEmailAndPassword, signupWithGoogle }}
+    <firebaseContext.Provider
+      value={{ signupWithEmailAndPassword, signupWithGoogle, userLoggedIn  , handleLogout}}
     >
       {children}
-    </firebaseContextprovider.Provider>
+    </firebaseContext.Provider>
   );
 };

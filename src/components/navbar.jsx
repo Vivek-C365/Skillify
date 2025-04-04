@@ -1,9 +1,33 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useFirebase } from "../hooks/useFirebase";
+import Dropdown from "./common/DropDown";
 
 const NAV_ITEMS = ["Home", "About", "Price", "How it Works"];
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const Firebase = useFirebase();
+  console.log(Firebase);
+
+  const LoginsignupButton = () => {
+    return Firebase.userLoggedIn ? (
+      <Dropdown
+        items={[
+          { key: "edit", label: "Edit" },
+          {
+            key: "logout",
+            label: "logout",
+            danger: true,
+            onClick: () => Firebase.handleLogout(),
+          },
+        ]}
+        triggerContent={Firebase.userLoggedIn?.displayName || "User"}
+      />
+    ) : (
+      <DesktopLogin />
+    );
+  };
 
   return (
     <header>
@@ -14,7 +38,7 @@ const Navbar = () => {
           toggleMenu={() => setIsOpen(!isOpen)}
         />
         <DesktopMenu />
-        <DesktopLogin />
+        <LoginsignupButton />
       </nav>
       <MobileDrawer isOpen={isOpen} closeMenu={() => setIsOpen(false)} />
       {isOpen && <Overlay closeMenu={() => setIsOpen(false)} />}
@@ -23,15 +47,8 @@ const Navbar = () => {
 };
 
 const Logo = () => (
-  <div className="flex lg:flex-1">
-    <a href="#" className="-m-1.5 p-1.5">
-      <span className="sr-only">Your Company</span>
-      <img
-        className="h-8 w-auto"
-        src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-        alt="Logo"
-      />
-    </a>
+  <div className="flex">
+    <img src="/logo.png" />
   </div>
 );
 
@@ -78,7 +95,7 @@ const DesktopMenu = () => (
 );
 
 const DesktopLogin = () => (
-  <div className="hidden items-center gap-2 lg:flex lg:flex-1 lg:justify-end">
+  <div className="hidden items-center gap-2 lg:flex  lg:justify-end">
     <Link
       to="/login"
       className="text-sm font-semibold text-gray-900 border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
