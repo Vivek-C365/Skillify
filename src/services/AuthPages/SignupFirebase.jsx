@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { handleError } from "../../utils/tostify";
-import { useFirebase } from "../firebase";
+import { useFirebase } from "../../hooks/useFirebase";
 import { emailValidate, phoneValidate } from "../../utils/regexValidation";
 
 import Analytics from "../../assets/13246824_5191077.svg";

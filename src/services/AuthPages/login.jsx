@@ -1,6 +1,6 @@
 import { Form, Input, Button, Checkbox, Typography } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import { useFirebase } from "../firebase";
+import { useFirebase } from "../../hooks/useFirebase";
 
 const { Text, Title } = Typography;
 
