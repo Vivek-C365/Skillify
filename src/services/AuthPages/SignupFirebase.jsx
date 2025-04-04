@@ -5,11 +5,12 @@ import { handleError } from "../../utils/tostify";
 import { useFirebase } from "../firebase";
 import { emailValidate, phoneValidate } from "../../utils/regexValidation";
 
+import Analytics from "../../assets/13246824_5191077.svg";
+
 const SignUp = () => {
   const firebase = useFirebase();
   const [user, setUser] = useState({ email: "", password: "" });
 
-  // Debounce logic for submit button
   let debounceTimeout = useMemo(() => null, []);
   const handleInputChange = useCallback(
     (e) => {
@@ -48,7 +49,7 @@ const SignUp = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    if (debounceTimeout) return; // Block submissions within the debounce period
+    if (debounceTimeout) return;
 
     debounceTimeout = setTimeout(() => {
       debounceTimeout = null;
@@ -91,7 +92,7 @@ const SignUp = () => {
           </p>
 
           <button
-            // onClick={googleSignedRequest}
+            onClick={() => firebase.signupWithGoogle()}
             className="-2 mt-8 flex items-center justify-center rounded-md border px-4 py-1 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-black hover:text-white"
           >
             <img
@@ -174,8 +175,8 @@ const SignUp = () => {
       <div className="pointer-events-none relative hidden h-screen select-none md:block md:w-1/2">
         <img
           loading="lazy"
-          className="-z-1 absolute top-0 h-full w-full object-cover opacity-90"
-          //   src={Analytics}
+          className=" absolute top-0 h-full w-full object-cover opacity-90"
+          src={Analytics}
           alt="Analytics"
         />
       </div>
