@@ -100,7 +100,7 @@ const DesktopLogin = () => (
   <div className="hidden items-center gap-2 lg:flex  lg:justify-end">
     <Link
       to="/login"
-      className="text-sm font-semibold text-gray-900 border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+      className="text-sm font-semibold  border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
     >
       Log in <span aria-hidden="true">&rarr;</span>
     </Link>
