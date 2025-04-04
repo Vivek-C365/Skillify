@@ -1,6 +1,6 @@
 import firebaseContext from "../services/context/firebaseContext";
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword , signInWithPhoneNumber   } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useContext } from "react";
 import { handleError, handleSuccess } from "../utils/tostify";
 const firebaseConfig = {
@@ -18,7 +18,6 @@ const auth = getAuth(firebaseApp);
 export const useFirebase = () => useContext(firebaseContext);
 
 export const FirebaseProvider = ({ children }) => {
-
   const signupWithEmailAndPassword = async (email, password) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);

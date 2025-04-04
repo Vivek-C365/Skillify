@@ -39,9 +39,7 @@ const SignUp = () => {
       return;
     }
     try {
-      console.log("working");
-      // await firebase.signupWithPhoneNumber(phonenumer, password);
-      // setUser({ email: "", password: "" });
+      console.log("working" + phonenumer + password);
     } catch (error) {
       handleError(error.message);
     }
