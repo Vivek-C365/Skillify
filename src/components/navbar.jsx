@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFirebase } from "../hooks/useFirebase";
 import Dropdown from "./common/DropDown";
+import Eduaide_cube from "../assets/eduaide_cube.png";
 
 const NAV_ITEMS = ["Home", "About", "Price", "How it Works"];
 
@@ -23,6 +24,7 @@ const Navbar = () => {
           },
         ]}
         triggerContent={Firebase.userLoggedIn?.displayName || "User"}
+        className="cursor-pointer text-sm font-semibold text-gray-900 border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
       />
     ) : (
       <DesktopLogin />
@@ -47,8 +49,8 @@ const Navbar = () => {
 };
 
 const Logo = () => (
-  <div className="flex">
-    <img src="/logo.png" />
+  <div className="flex ">
+    <img className="h-8 w-auto sm:h-10 transition-all duration-300 group-hover:scale-105" src={Eduaide_cube} />
   </div>
 );
 
