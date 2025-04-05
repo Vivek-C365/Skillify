@@ -1,0 +1,214 @@
+{
+  "categories": [
+    {
+      "title": "All",
+      "courses": []
+    },
+    {
+      "title": "Programming basics",
+      "courses": [
+        {
+          "name": "John Doe",
+          "lessons": 250,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 2,
+          "description": "Learn the fundamentals of programming with hands-on exercises.",
+          "hourly_rate": "$15.00"
+        },
+        {
+          "name": "Emily Smith",
+          "lessons": 300,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 1,
+          "description": "Master basic programming concepts with practical examples.",
+          "hourly_rate": "$18.00"
+        },
+        {
+          "name": "Robert White",
+          "lessons": 270,
+          "language": "English",
+          "proficiency": "Intermediate",
+          "additional_languages": 1,
+          "description": "Get started with Python, Java, and C++ programming basics.",
+          "hourly_rate": "$16.00"
+        }
+      ]
+    },
+    {
+      "title": "Web design & UX/UI",
+      "courses": [
+        {
+          "name": "Stephanie",
+          "lessons": 431,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 3,
+          "description": "I hold a BA in art history and philosophy and I am also a TESOL certified English teacher...",
+          "hourly_rate": "$20.00"
+        },
+        {
+          "name": "David Brown",
+          "lessons": 350,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 2,
+          "description": "Explore modern web design principles and UX strategies.",
+          "hourly_rate": "$22.00"
+        },
+        {
+          "name": "Sophia Lee",
+          "lessons": 280,
+          "language": "English",
+          "proficiency": "Intermediate",
+          "additional_languages": 1,
+          "description": "Create stunning UI/UX designs using Figma and Adobe XD.",
+          "hourly_rate": "$19.00"
+        }
+      ]
+    },
+    {
+      "title": "Graphic design",
+      "courses": [
+        {
+          "name": "Sophia Miller",
+          "lessons": 280,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 1,
+          "description": "Learn graphic design essentials using industry-standard tools.",
+          "hourly_rate": "$19.00"
+        },
+        {
+          "name": "Lucas Green",
+          "lessons": 320,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 2,
+          "description": "Master Adobe Photoshop, Illustrator, and InDesign.",
+          "hourly_rate": "$21.00"
+        }
+      ]
+    },
+    {
+      "title": "Cybersecurity & data protection",
+      "courses": [
+        {
+          "name": "Michael Johnson",
+          "lessons": 320,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 2,
+          "description": "Understand cybersecurity principles to protect online data.",
+          "hourly_rate": "$25.00"
+        },
+        {
+          "name": "Anna Roberts",
+          "lessons": 350,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 2,
+          "description": "Learn ethical hacking and penetration testing techniques.",
+          "hourly_rate": "$28.00"
+        }
+      ]
+    },
+    {
+      "title": "Data analysis & business",
+      "courses": [
+        {
+          "name": "Olivia Wilson",
+          "lessons": 400,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 2,
+          "description": "Master data analysis techniques for business insights.",
+          "hourly_rate": "$23.00"
+        },
+        {
+          "name": "James Adams",
+          "lessons": 380,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 1,
+          "description": "Use SQL, Excel, and Power BI for effective business analytics.",
+          "hourly_rate": "$24.00"
+        }
+      ]
+    },
+    {
+      "title": "Artificial intelligence & robotics",
+      "courses": [
+        {
+          "name": "William Anderson",
+          "lessons": 500,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 1,
+          "description": "Dive into AI and robotics with real-world applications.",
+          "hourly_rate": "$30.00"
+        },
+        {
+          "name": "Sarah Jones",
+          "lessons": 450,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 1,
+          "description": "Learn deep learning and neural networks with Python.",
+          "hourly_rate": "$29.00"
+        }
+      ]
+    },
+    {
+      "title": "Systems administration",
+      "courses": [
+        {
+          "name": "Daniel Thomas",
+          "lessons": 275,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 1,
+          "description": "Learn the fundamentals of managing IT systems and networks.",
+          "hourly_rate": "$20.00"
+        },
+        {
+          "name": "Ethan Clarke",
+          "lessons": 300,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 2,
+          "description": "Master Linux and Windows server administration.",
+          "hourly_rate": "$22.00"
+        }
+      ]
+    },
+    {
+      "title": "Digital marketing",
+      "courses": [
+        {
+          "name": "Emma Martinez",
+          "lessons": 360,
+          "language": "English",
+          "proficiency": "Native",
+          "additional_languages": 2,
+          "description": "Become an expert in digital marketing and social media strategies.",
+          "hourly_rate": "$21.00"
+        },
+        {
+          "name": "Nathan Wright",
+          "lessons": 330,
+          "language": "English",
+          "proficiency": "Fluent",
+          "additional_languages": 2,
+          "description": "Learn SEO, PPC, and email marketing strategies.",
+          "hourly_rate": "$22.00"
+        }
+      ]
+    }
+  ],
+  "banner": {
+    "message": "Have you seen the new vocabulary course that has come out yet?",
+    "button_text": "Start course"
+  }
+}

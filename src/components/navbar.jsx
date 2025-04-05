@@ -85,12 +85,12 @@ const DesktopLogin = () => (
     >
       Log in <span aria-hidden="true">&rarr;</span>
     </Link>
-    <a
-      href="#"
+    <Link
+      to="/signUp"
       className="text-sm font-semibold text-gray-900  bg-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
     >
       Sign up
-    </a>
+    </Link>
   </div>
 );
 
