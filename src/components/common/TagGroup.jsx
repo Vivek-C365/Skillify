@@ -1,12 +1,12 @@
-const TagGroup = ({ tags }) => {
+const TagGroup = ({ tags, position }) => {
   return (
-    <div className="flex flex-wrap justify-center md:justify-start items-center">
+    <div className={`flex flex-wrap ${position=="center" ? "justify-center" : ""} md:${position == "center" ? "justify-center" : "justify-start"} items-center mb-5`}>
       {tags.map((tag, index) => (
         <div
           key={index}
           className={`flex ${
             tag.bgColor || "bg-white"
-          } rounded-full p-1 items-center`}
+          } ${tag.textColor || "text-black"} rounded-full p-1 items-center`}
         >
           {tag.icon && (
             <>
@@ -19,7 +19,7 @@ const TagGroup = ({ tags }) => {
               </p>
             </>
           )}
-          {tag.text && <p className="p-1 px-2">{tag.text}</p>}
+          {tag.text && <p className='p-1 px-2'>{tag.text}</p>}
         </div>
       ))}
     </div>
