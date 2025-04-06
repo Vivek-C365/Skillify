@@ -9,7 +9,6 @@ const NAV_ITEMS = ["Home", "About", "Price", "How it Works"];
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
-  console.log(Firebase);
 
   const LoginsignupButton = () => {
     return Firebase.userLoggedIn ? (
@@ -35,12 +34,16 @@ const Navbar = () => {
     <header>
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8">
         <Logo />
-        <MobileMenuButton
-          isOpen={isOpen}
-          toggleMenu={() => setIsOpen(!isOpen)}
-        />
+
         <DesktopMenu />
-        <LoginsignupButton />
+        <div className="flex gap-3">
+          <LoginsignupButton />
+
+          <MobileMenuButton
+            isOpen={isOpen}
+            toggleMenu={() => setIsOpen(!isOpen)}
+          />
+        </div>
       </nav>
       <MobileDrawer isOpen={isOpen} closeMenu={() => setIsOpen(false)} />
       {isOpen && <Overlay closeMenu={() => setIsOpen(false)} />}
@@ -50,7 +53,10 @@ const Navbar = () => {
 
 const Logo = () => (
   <div className="flex ">
-    <img className="h-8 w-auto sm:h-10 transition-all duration-300 group-hover:scale-105" src={Eduaide_cube} />
+    <img
+      className="h-8 w-auto sm:h-10 transition-all duration-300 group-hover:scale-105"
+      src={Eduaide_cube}
+    />
   </div>
 );
 

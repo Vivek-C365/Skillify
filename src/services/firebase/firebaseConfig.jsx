@@ -1,10 +1,10 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyDOESxLS-I5QzqnMyc_I2bhSS6PHl383sI",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "skillify-a2035.firebaseapp.com",
-  projectId: "skillify-a2035",
-  storageBucket: "skillify-a2035.firebasestorage.app",
-  messagingSenderId: "514292899346",
-  appId: "1:514292899346:web:bf0f12baed0d3cde9a82cb",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 export default firebaseConfig;
