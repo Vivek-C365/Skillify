@@ -1,9 +1,12 @@
 import { Form, Input, Button, Checkbox, Typography } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
+import { useFirebase } from "../../hooks/useFirebase";
 
 const { Text, Title } = Typography;
 
 function UserLoginForm() {
+  const firebase = useFirebase();
+  console.log("firebase", firebase);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden">

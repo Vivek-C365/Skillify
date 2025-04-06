@@ -7,8 +7,26 @@ import {
   responsiveTextH6,
   responsiveTextBodyLarge,
 } from "../styles/responsiveText";
+import CoursesDisplay from "../components/coursesDisplay";
+import SearchIcon from "../components/common/searchIcon"
 
 const Home = () => {
+  const CardContent = ({ tags }) => {
+    return (
+      <Cards className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">
+        <div className={responsiveFlex}>
+          <div className="max-w-sm">
+            <h3 className={responsiveTextH3}>{tags}</h3>
+            <p className={responsiveTextBodyLarge}>
+              Unlock your full potential with our personalized learning
+              experience.
+            </p>
+          </div>
+        </div>
+      </Cards>
+    );
+  };
+
   const sections = [
     {
       leftContent:
@@ -28,7 +46,7 @@ const Home = () => {
     {
       reverse: true,
       biggerText: "Powerful",
-      rightContent: <Cards />,
+      rightContent: <CardContent />,
     },
     {
       leftContent:
@@ -41,7 +59,7 @@ const Home = () => {
     },
     {
       reverse: true,
-      leftContent: <Cards />,
+      leftContent: <CardContent />,
       biggerText: "Solutions",
     },
   ];
@@ -66,6 +84,7 @@ const Home = () => {
       <div className="lavender-background">
         <Navbar />
 
+        {/* Main Top Content */}
         <div className="p-4 md:p-8">
           {sections.map((section, index) => (
             <ContentSection
@@ -79,6 +98,8 @@ const Home = () => {
           ))}
         </div>
       </div>
+
+      {/* About Us */}
 
       <div
         className={` ${responsiveFlex} bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
@@ -109,6 +130,22 @@ const Home = () => {
             beginner or seeking advanced fluency. our dynamic lessons will help
             you speak, write, and understand English with confidence.
           </p>
+        </div>
+      </div>
+
+      {/* Courses */}
+      <div
+        className={` ${responsiveFlex} !flex-row bg-[var(--color-lightest-yellow);] gap-4 md:gap-8`}
+      >
+        <div className="w-full flex flex-col  gap-4 md:gap-8">
+          <div className={`${responsiveFlex} p-6  md:p-8 w-full`}>
+            <h3 className={responsiveTextH3}>Find your own way</h3>
+            <SearchIcon  />
+          </div>
+          
+          <div className="w-full flex ">
+            <CoursesDisplay />
+          </div>
         </div>
       </div>
     </div>
