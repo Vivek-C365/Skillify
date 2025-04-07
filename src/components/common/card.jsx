@@ -1,11 +1,9 @@
 import React from "react";
-const Cards = ({ children, className = "" }) => {
-  return (
-    <div
-      className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden ${className}`}
-    >
-      {children}
-    </div>
-  );
-};
+
+import { Card } from "antd";
+const Cards = ({children}) => (
+  <Card title="Card title" variant="borderless" style={{ width: 300 }}>
+    <p>{children}</p>
+  </Card>
+);
 export default Cards;
