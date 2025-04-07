@@ -10,10 +10,31 @@ import {
   responsiveTextH3,
   responsiveTextH6,
   responsiveTextBodyLarge,
+
 } from '../styles/responsiveText'
 import HeadingDescriptionText from '../components/common/HeadingDescriptionText'
 
+import CoursesDisplay from "../components/coursesDisplay";
+import SearchIcon from "../components/common/searchIcon"
+
+
 const Home = () => {
+  const CardContent = ({ tags }) => {
+    return (
+      <Cards className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl">
+        <div className={responsiveFlex}>
+          <div className="max-w-sm">
+            <h3 className={responsiveTextH3}>{tags}</h3>
+            <p className={responsiveTextBodyLarge}>
+              Unlock your full potential with our personalized learning
+              experience.
+            </p>
+          </div>
+        </div>
+      </Cards>
+    );
+  };
+
   const sections = [
     {
       leftContent:
@@ -34,6 +55,7 @@ const Home = () => {
       reverse: true,
       biggerText: 'Powerful',
       rightContent: <Cards>Card Content</Cards>,
+
     },
     {
       leftContent:
@@ -48,6 +70,7 @@ const Home = () => {
       reverse: true,
       leftContent: <Cards />,
       biggerText: 'Solutions',
+
     },
   ]
 
@@ -73,6 +96,7 @@ const Home = () => {
       <div className="lavender-background">
         <Navbar />
 
+        {/* Main Top Content */}
         <div className="p-4 md:p-8">
           {sections.map((section, index) => (
             <ContentSection
@@ -86,6 +110,8 @@ const Home = () => {
           ))}
         </div>
       </div>
+
+      {/* About Us */}
 
       <div
         className={` ${responsiveFlex} bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
@@ -146,6 +172,7 @@ const Home = () => {
         </div>
       </div>
         <CourseSection2/>
+
     </div>
   )
 }
