@@ -1,20 +1,49 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useFirebase } from "../hooks/useFirebase";
+import Dropdown from "./common/DropDown";
+import Eduaide_cube from "../assets/eduaide_cube.png";
 
 const NAV_ITEMS = ["Home", "About", "Price", "How it Works"];
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const Firebase = useFirebase();
+
+  const LoginsignupButton = () => {
+    return Firebase.userLoggedIn ? (
+      <Dropdown
+        items={[
+          { key: "edit", label: "Edit" },
+          {
+            key: "logout",
+            label: "logout",
+            danger: true,
+            onClick: () => Firebase.handleLogout(),
+          },
+        ]}
+        triggerContent={Firebase.userLoggedIn?.displayName || "User"}
+        className="cursor-pointer text-sm font-semibold text-gray-900 border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+      />
+    ) : (
+      <DesktopLogin />
+    );
+  };
 
   return (
     <header>
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8">
         <Logo />
-        <MobileMenuButton
-          isOpen={isOpen}
-          toggleMenu={() => setIsOpen(!isOpen)}
-        />
+
         <DesktopMenu />
-        <DesktopLogin />
+        <div className="flex gap-3">
+          <LoginsignupButton />
+
+          <MobileMenuButton
+            isOpen={isOpen}
+            toggleMenu={() => setIsOpen(!isOpen)}
+          />
+        </div>
       </nav>
       <MobileDrawer isOpen={isOpen} closeMenu={() => setIsOpen(false)} />
       {isOpen && <Overlay closeMenu={() => setIsOpen(false)} />}
@@ -23,15 +52,11 @@ const Navbar = () => {
 };
 
 const Logo = () => (
-  <div className="flex lg:flex-1">
-    <a href="#" className="-m-1.5 p-1.5">
-      <span className="sr-only">Your Company</span>
-      <img
-        className="h-8 w-auto"
-        src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-        alt="Logo"
-      />
-    </a>
+  <div className="flex ">
+    <img
+      className="h-8 w-auto sm:h-10 transition-all duration-300 group-hover:scale-105"
+      src={Eduaide_cube}
+    />
   </div>
 );
 
@@ -78,19 +103,19 @@ const DesktopMenu = () => (
 );
 
 const DesktopLogin = () => (
-  <div className="hidden items-center gap-2 lg:flex lg:flex-1 lg:justify-end">
+  <div className="hidden items-center gap-2 lg:flex  lg:justify-end">
     <Link
       to="/login"
-      className="text-sm font-semibold text-gray-900 border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+      className="text-sm font-semibold  border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
     >
       Log in <span aria-hidden="true">&rarr;</span>
     </Link>
-    <a
-      href="#"
+    <Link
+      to="/signUp"
       className="text-sm font-semibold text-gray-900  bg-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
     >
       Sign up
-    </a>
+    </Link>
   </div>
 );
 
