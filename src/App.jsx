@@ -11,6 +11,7 @@ import CourseForm from "./pages/addCourseDetailForm";
 function App() {
   return (
     <>
+    
       <Routes>
         <Route path="*" element={<Page404 />} />
         <Route path="/" element={<Home />} />

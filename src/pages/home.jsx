@@ -7,9 +7,9 @@ import { responsiveImage } from "../components/common/responsiveImage";
 import CourseSection2 from "./CourseSection2";
 
 import {
-  responsiveTextH3,
   responsiveTextH6,
   responsiveTextBodyLarge,
+  responsiveTextH1,
 } from "../styles/responsiveText";
 import {
   HeadingDescriptionText,
@@ -17,7 +17,8 @@ import {
 } from "../components/common/HeadingDescriptionText";
 
 import ProgressBar from "../components/common/ProgressBar";
-import {AvatarGroup} from "../components/common/AvatarGroup";
+import { AvatarGroup } from "../components/common/AvatarGroup";
+import CountingNumber from "../components/common/CountingNumber";
 
 const Home = () => {
   const sections = [
@@ -73,20 +74,22 @@ const Home = () => {
 
   const smallAboutus = [
     {
-      text: "+80",
+      text: (
+        <div className="flex items-center">
+          +<CountingNumber maxnumber={80} timer={20} />
+        </div>
+      ),
       description: "Online Courses",
     },
     {
-      text: "10",
+      text: <CountingNumber maxnumber={10} timer={100} />,
       description: "Years Experience",
     },
     {
-      text: "77",
+      text: <CountingNumber maxnumber={77} timer={20} />,
       description: "Top Mentors",
     },
   ];
-
-  // console.log(sections[3]);
 
   return (
     <div>
@@ -116,25 +119,27 @@ const Home = () => {
       >
         <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-8">
           <div>
-            <h1 className={responsiveTextH3}>About us</h1>
+            <h1 className={` text-3xl ${responsiveTextH1} sm:!text-5xl `}>
+              About us
+            </h1>
           </div>
           <div className={` ${responsiveFlex}`}>
             <div className={`${responsiveFlex} !flex-row gap-10`}>
               {smallAboutus.map((item, index) => (
-                <div key={index}>
+                <div className="flex flex-col items-center" key={index}>
                   <span
-                    className={` ${responsiveTextH6} text-[var(--color-dark-lavender)]  `}
+                    className={` !text-2xl  ${responsiveTextH6} text-[var(--color-dark-lavender)]  `}
                   >
                     {item.text}
                   </span>
-                  <p className="">{item.description}</p>
+                  <p className="flex text-center">{item.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
         <div className="w-full md:w-1/2">
-          <p className={responsiveTextBodyLarge}>
+          <p className={` text-center ${responsiveTextBodyLarge}`}>
             At skillify, we offer comprehensive English language courses
             tailored to your personal and professional growth. Whether you're a
             beginner or seeking advanced fluency. our dynamic lessons will help
