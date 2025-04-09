@@ -12,18 +12,18 @@ const ContentSection = ({
 }) => {
   return (
     <div
-      className={`flex ${reverse ? "!flex-row-reverse" : ""} items-center  justify-evenly`}
+      className={`flex flex-wrap ${reverse ? "!flex-row-reverse" : ""} items-center mb-3.5  justify-evenly`}
     >
       <div className="text-center md:text-left">
         {tags && <TagGroup tags={tags} />}
         {leftContent && (
-          <div className="mt-2 primary-text text-center md:text-left max-w-md">
+          <div className="hidden   sm:block mt-2 primary-text text-center md:text-left max-w-md">
             {leftContent}
           </div>
         )}
       </div>
 
-      <div className="flex flex-col items-center md:flex-row md:items-center gap-9">
+      <div className="flex flex-row-reverse  items-center md:flex-row md:items-center ">
         {biggerText && (
           <div className="flex flex-col items-center justify-center primary-text">
             <BiggerText text={biggerText} />
@@ -32,7 +32,7 @@ const ContentSection = ({
 
         {rightContent || (
           <div>
-            <span className="text-lg bg-white p-8 !h-auto center-circle md:text-xl lg:text-2xl">
+            <span className=" !hidden text-lg bg-white p-8 !h-auto center-circle sm:!inline-block  md:text-xl lg:text-2xl">
               {actionText}
             </span>
           </div>

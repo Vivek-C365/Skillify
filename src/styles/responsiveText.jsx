@@ -1,4 +1,4 @@
-export const responsiveText = "text-3xl sm:text-5xl md:text-7xl lg:text-9xl";
+export const responsiveText = "text-6xl sm:text-5xl md:text-7xl lg:text-9xl";
 // Headings
 export const responsiveTextH1 = "text-2xl sm:text-4xl md:text-6xl lg:text-8xl";
 export const responsiveTextH2 = "text-xl sm:text-3xl md:text-5xl lg:text-7xl";
