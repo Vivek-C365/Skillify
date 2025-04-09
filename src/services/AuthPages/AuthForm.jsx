@@ -1,115 +1,105 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import { handleSuccess, handleError } from '../../utils/tostify'
-import { useFirebase } from '../../hooks/useFirebase'
-import { emailValidate, phoneValidate } from '../../utils/regexValidation'
+import { useState, useCallback, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useFirebase } from "../../hooks/useFirebase";
+import { emailValidate, phoneValidate } from "../../utils/regexValidation";
 
-import Analytics from '../../assets/13246824_5191077.svg'
-
-const SignUp = ({
-  title,
-  subtitle,
-  onSuccessPath,
+const AuthForm = ({
   type,
-  footerText,
-  footerLinkPath,
+  title = "Create Account",
+  subtitle = "Welcome, please enter your details.",
   showSocialLogin = true,
+  footerText = "Already have an account?",
+  footerLinkText = "Log in",
+  footerLinkPath = "/login",
+  onSuccessRedirect = "/",
   analyticsImage,
 }) => {
-  const firebase = useFirebase()
-  const navigate = useNavigate()
-  const [user, setUser] = useState({ email: '', password: '' })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const firebase = useFirebase();
+  const navigate = useNavigate();
+  const [user, setUser] = useState({ email: "", password: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (firebase.userLoggedIn) {
-      navigate(onSuccessPath);
-      handleSuccess("User successfully login");
+      
+      navigate(onSuccessRedirect);
     }
-  }, [firebase.userLoggedIn,navigate,onSuccessPath])
+  }, [firebase.userLoggedIn, navigate, onSuccessRedirect]);
 
+  const handleInputChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
+  const validateInputs = useCallback(() => {
+    if (!user.email || !user.password) {
+      toast.error("Please fill in all fields");
+      return false;
+    }
 
+    if (user.email.includes("@") && !emailValidate.test(user.email)) {
+      toast.error("Invalid Email");
+      return false;
+    }
 
-  const phoneNumber = "+91" + user.email;
-  const appVerifier = window.recaptchaVerifier;
+    if (user.email.length === 10 && !phoneValidate.test(Number(user.email))) {
+      toast.error("Invalid Phone Number");
+      return false;
+    }
 
-  let ThrotllingTimeout = useMemo(() => null, []);
-  const handleInputChange = useCallback(
-    (e) => {
-      const { name, value } = e.target
-      setUser((prevState) => ({ ...prevState, [name]: value }))
-    },
-    [setUser]
-  )
+    return true;
+  }, [user]);
 
-  const withEmail = async (email, password) => {
+  const handleAuthWithEmail = useCallback(async () => {
+    if (!validateInputs()) return;
+
     setIsSubmitting(true);
-    if (!emailValidate.test(email)) {
-      handleError('Invalid Email')
-      return
-    }
     try {
-      if (type == 'signup') {
-        await firebase.signupWithEmailAndPassword(email, password)
+      if (type === "signup") {
+        await firebase.signupWithEmailAndPassword(user.email, user.password);
       } else {
-        await firebase.UserSignInwithEmailAndPassword(email, password)
+        await firebase.UserSignInwithEmailAndPassword(user.email, user.password);
       }
-      setUser({ email: '', password: '' })
-      // navigate(onSuccessPath);
+      setUser({ email: "", password: "" });
+      navigate(onSuccessRedirect);
     } catch (error) {
-      handleError(error.message);
-      setIsSubmitting(false);
+      toast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }
-  }
+  }, [user, validateInputs, firebase, type, navigate, onSuccessRedirect]);
 
-  const withPhone = async (phone, password) => {
-    const phonenumer = Number(phone)
-    if (!phoneValidate.test(phonenumer)) {
-      handleError('Invalid Phone Number')
-      return
-    }
+  const handleAuthWithPhone = useCallback(async () => {
+    if (!validateInputs()) return;
+
+    setIsSubmitting(true);
     try {
-      firebase.signupWithPhone(phoneNumber, appVerifier);
-      console.log("working" + phonenumer + password);
+      // Implement phone auth logic here
+      console.log("Phone auth with:", user.email, user.password);
     } catch (error) {
-      handleError(error.message);
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  }, [user, validateInputs]);
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault()
-
-    if (ThrotllingTimeout) return;
-    ThrotllingTimeout = setTimeout(() => {
-      ThrotllingTimeout = null;
-    }, 2600);
-
-    const { email, password } = user
-
-    if (!email || !password) {
-      handleError('Please fill in all fields.')
-      return
-    }
-    try {
-      if (email.includes('@')) {
-        withEmail(email, password)
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (user.email.includes("@")) {
+        await handleAuthWithEmail();
+      } else if (user.email.length === 10) {
+        await handleAuthWithPhone();
       }
-      if (user.email.length == 10) {
-        withPhone(email, password)
-      }
-    } catch (error) {
-      handleError(error.message)
-    }
-  }
+    },
+    [handleAuthWithEmail, handleAuthWithPhone, user.email]
+  );
 
   return (
     <div className="flex flex-wrap bg-white signup_texture_backdrop">
       <div className="flex w-full flex-col md:w-1/2">
-        <div className="flex justify-center pt-12  md:justify-start md:pl-12">
+        <div className="flex justify-center pt-12 md:justify-start md:pl-12">
           <Link
             to="/"
             className="border-b-gray-700 border-b-4 pb-2 text-2xl font-bold text-gray-900"
@@ -121,6 +111,7 @@ const SignUp = ({
         <div className="lg:w-[28rem] mx-auto my-auto flex flex-col justify-center pt-8 md:justify-start md:px-6 md:pt-0">
           <p className="text-center text-3xl font-bold">{title}</p>
           <p className="mt-2 text-center text-gray-500">{subtitle}</p>
+
           {showSocialLogin && (
             <>
               <button
@@ -143,12 +134,9 @@ const SignUp = ({
             </>
           )}
 
-          <form
-            className="flex flex-col pt-3 md:pt-8"
-            onSubmit={handleFormSubmit}
-          >
+          <form className="flex flex-col pt-3 md:pt-8" onSubmit={handleSubmit}>
             <div className="flex flex-col pt-4">
-              <label htmlFor="SignUp-email" className="sr-only">
+              <label htmlFor="auth-email" className="sr-only">
                 Email
               </label>
               <div className="focus-within:border-b-gray-500 relative flex overflow-hidden border-b-2 transition">
@@ -157,18 +145,15 @@ const SignUp = ({
                   value={user.email}
                   onChange={handleInputChange}
                   type="text"
-                  id="SignUp-email"
+                  id="auth-email"
                   className="w-full flex-1 appearance-none border-gray-300 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
                   placeholder="Email or Phone Number"
                 />
               </div>
             </div>
 
-            {/* // reCAPTCHA container */}
-            <div id="recaptcha-container" className="pt-4"></div>
-
             <div className="mb-12 flex flex-col pt-4">
-              <label htmlFor="SignUp-password" className="sr-only">
+              <label htmlFor="auth-password" className="sr-only">
                 Password
               </label>
               <div className="focus-within:border-b-gray-500 relative flex overflow-hidden border-b-2 transition">
@@ -177,7 +162,7 @@ const SignUp = ({
                   value={user.password}
                   onChange={handleInputChange}
                   type="password"
-                  id="SignUp-password"
+                  id="auth-password"
                   className="w-full flex-1 appearance-none border-gray-300 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
                   placeholder="Password"
                 />
@@ -185,46 +170,44 @@ const SignUp = ({
             </div>
 
             <button
-              id="SignUp-button"
               type="submit"
               disabled={isSubmitting}
               className="w-full rounded-lg bg-gray-900 px-4 py-2 text-center text-base font-semibold text-white shadow-md ring-gray-500 ring-offset-2 transition focus:ring-2 disabled:opacity-50"
             >
               {isSubmitting
-                ? 'Processing...'
-                : type == 'signup'
-                ? 'Create Account'
-                : 'Login'}
+                ? "Processing..."
+                : type === "signup"
+                ? "Create Account"
+                : "Log In"}
             </button>
           </form>
 
           <div className="py-12 text-center">
             <p className="whitespace-nowrap text-gray-600">
-              {footerText}{' '}
+              {footerText}{" "}
               <Link
                 to={footerLinkPath}
                 className="underline-offset-4 font-semibold text-gray-900 underline"
               >
-                {type === "signup" ? "Log in" : "Sign Up"}
+                {footerLinkText}
               </Link>
             </p>
           </div>
         </div>
       </div>
+
       {analyticsImage && (
         <div className="pointer-events-none relative hidden h-screen select-none md:block md:w-1/2">
           <img
             loading="lazy"
-            className=" absolute top-0 h-full w-full object-cover opacity-90"
-            src={Analytics}
+            className="absolute top-0 h-full w-full object-cover opacity-90"
+            src={analyticsImage}
             alt="Analytics"
           />
         </div>
       )}
-
-      <ToastContainer />
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default AuthForm;

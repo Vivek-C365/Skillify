@@ -6,8 +6,8 @@ import {
   HeadingDescription,
 } from "../components/common/HeadingDescriptionText";
 import TagSingle from "../components/common/TagSingle";
-import page_img1 from "../assets/page_img1.jpg";
-import page_img2 from "../assets/page_img2.jpg";
+// import page_img1 from "../assets/page_img1.jpg";
+// import page_img2 from "../assets/page_img2.jpg";
 
 export default function CourseSection2() {
   const PLatformCard = ({ images, content, styleclass}) => {

@@ -7,6 +7,7 @@ import {
   getAuth,
   signOut,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
@@ -31,6 +32,7 @@ export const FirebaseProvider = ({ children }) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setLoggedInUser(user);
+        console.log(user);
       } else {
         setLoggedInUser(null);
       }
@@ -48,6 +50,16 @@ export const FirebaseProvider = ({ children }) => {
       handleError(error.message);
     }
   };
+
+  const UserSignInwithEmailAndPassword= async (email, password)=>{
+    try{
+      await signInWithEmailAndPassword(auth,email,password);
+      handleSuccess("User Sign In Successfully!");
+    }
+    catch(error){
+      handleError(error.message);
+    }
+  }
 
   const signupWithGoogle = async () => {
     try {
@@ -91,12 +103,14 @@ export const FirebaseProvider = ({ children }) => {
   };
   return (
     <firebaseContext.Provider
+      // value={{ signupWithEmailAndPassword, , signupWithGoogle, userLoggedIn  , handleLogout}}
       value={{
         signupWithEmailAndPassword,
         signupWithGoogle,
         signupWithPhone,
         userLoggedIn,
         handleLogout,
+        UserSignInwithEmailAndPassword,
         addDocumentToFirestore,
       }}
     >
