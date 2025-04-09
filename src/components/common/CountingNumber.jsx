@@ -21,4 +21,5 @@ const CountingNumber = ({ maxnumber , timer }) => {
   return <div>{number}</div>;
 };
 
+// 
 export default CountingNumber;
