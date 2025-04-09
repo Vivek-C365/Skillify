@@ -39,7 +39,7 @@ export default function CourseSection2() {
             <div className="w-[12rem] h-[12rem] m-auto rounded-3xl">
               <img
                 className="w-full h-[12rem] object-cover items-center rounded-3xl"
-                src={desc_img2}
+                src={desc_img2} loading="lazy"
               />
             </div>
             <div className="flex absolute flex-col gap-1.5 h-full justify-end bottom-5 left-2">
@@ -55,10 +55,10 @@ export default function CourseSection2() {
       </HeadingDescriptionText>
       <div className=" relative max-w-[50rem] mx-auto ">
         <div className='absolute w-[5rem] h-[3rem] right-2 top-[-2.2rem] z-[1] rounded-2xl'>
-         <img className='w-full h-full object-cover rounded-xl' src={page_img1} />
+         <img className='w-full h-full object-cover rounded-xl' src={page_img1} loading="lazy"/>
         </div>
         <div className='absolute w-[5rem] h-[3rem] bottom-2 left-2  rounded-2xl'>
-          <img  className="w-full h-full object-cover rounded-xl" src={page_img2} alt='this is page2' />
+          <img  className="w-full h-full object-cover rounded-xl" src={page_img2} alt='this is page2' loading="lazy" />
         </div>
         <HeadingDescription contentPosition="center">
           You will find many more interesting and relevant courses that will

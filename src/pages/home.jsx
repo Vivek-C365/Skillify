@@ -166,6 +166,7 @@ const Home = () => {
                 className={`${responsiveImage}`}
                 src={img1}
                 alt="this is image 1"
+                loading="lazy"
               />
             </div>
           </div>
