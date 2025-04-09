@@ -14,7 +14,7 @@ const CountingNumber = ({ maxnumber , timer }) => {
       });
     }, timer);
 
-    return () => clearInterval(interval); // Clean up
+    return () => clearInterval(interval);
   }, [maxnumber , timer]);
 
 
