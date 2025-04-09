@@ -4,11 +4,13 @@ import { ToastContainer } from "react-toastify";
 import { handleError } from "../../utils/tostify";
 import { useFirebase } from "../../hooks/useFirebase";
 import { emailValidate, phoneValidate } from "../../utils/regexValidation";
-
+import { auth } from "../firebase/firebase";
+import { RecaptchaVerifier } from "firebase/auth";
 import Analytics from "../../assets/13246824_5191077.svg";
 
 const SignUp = () => {
   const firebase = useFirebase();
+  console.log(firebase);
   const [user, setUser] = useState({ email: "", password: "" });
 
   useEffect(() => {
@@ -17,7 +19,18 @@ const SignUp = () => {
     }
   }, [firebase.userLoggedIn]);
 
-  let debounceTimeout = useMemo(() => null, []);
+  const captchaVerify = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      auth,
+      "recaptcha-container",
+      {}
+    );
+  };
+
+  const phoneNumber = "+91" + user.email;
+  const appVerifier = window.recaptchaVerifier;
+
+  let ThrotllingTimeout = useMemo(() => null, []);
   const handleInputChange = useCallback(
     (e) => {
       const { name, value } = e.target;
@@ -46,6 +59,7 @@ const SignUp = () => {
       return;
     }
     try {
+      firebase.signupWithPhone(phoneNumber, appVerifier);
       console.log("working" + phonenumer + password);
     } catch (error) {
       handleError(error.message);
@@ -55,10 +69,9 @@ const SignUp = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    if (debounceTimeout) return;
-
-    debounceTimeout = setTimeout(() => {
-      debounceTimeout = null;
+    if (ThrotllingTimeout) return;
+    ThrotllingTimeout = setTimeout(() => {
+      ThrotllingTimeout = null;
     }, 2600);
 
     const { email, password } = user;
@@ -135,6 +148,9 @@ const SignUp = () => {
                 />
               </div>
             </div>
+
+            {/* // reCAPTCHA container */}
+            <div id="recaptcha-container" className="pt-4"></div>
 
             <div className="mb-12 flex flex-col pt-4">
               <label htmlFor="SignUp-password" className="sr-only">
