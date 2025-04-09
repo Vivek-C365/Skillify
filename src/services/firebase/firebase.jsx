@@ -32,7 +32,6 @@ export const FirebaseProvider = ({ children }) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setLoggedInUser(user);
-        console.log(user);
       } else {
         setLoggedInUser(null);
       }

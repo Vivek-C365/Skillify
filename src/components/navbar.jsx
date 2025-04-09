@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useFirebase } from "../hooks/useFirebase";
 import Dropdown from "./common/DropDown";
 import Eduaide_cube from "../assets/eduaide_cube.png";
+import { AvatarWithText } from "../components/common/AvatarGroup";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
@@ -14,9 +15,10 @@ const NAV_ITEMS = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
+  const user = Firebase.userLoggedIn;
 
   const LoginsignupButton = () => {
-    return Firebase.userLoggedIn ? (
+    return user ? (
       <Dropdown
         items={[
           { key: "edit", label: "Edit" },
@@ -27,8 +29,8 @@ const Navbar = () => {
             onClick: () => Firebase.handleLogout(),
           },
         ]}
-        triggerContent={Firebase.userLoggedIn?.displayName || "User"}
-        className="cursor-pointer text-sm font-semibold text-white border border-white  rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+        triggerContent={<AvatarWithText useremail={user?.email} />}
+        className="cursor-pointer text-sm font-semibold text-white border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
       />
     ) : (
       <DesktopLogin />
@@ -50,7 +52,11 @@ const Navbar = () => {
           />
         </div>
       </nav>
-      <MobileDrawer isOpen={isOpen} closeMenu={() => setIsOpen(false)} />
+      <MobileDrawer
+        show={user}
+        isOpen={isOpen}
+        closeMenu={() => setIsOpen(false)}
+      />
       {isOpen && <Overlay closeMenu={() => setIsOpen(false)} />}
     </header>
   );
@@ -89,7 +95,7 @@ const MobileMenuButton = ({ isOpen, toggleMenu }) => (
     <button
       onClick={toggleMenu}
       type="button"
-      className="relative z-20 cursor-pointer -m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 transition-transform duration-300"
+      className="relative z-20 cursor-pointer -m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white transition-transform duration-300"
     >
       <span className="sr-only">Open main menu</span>
       <svg
@@ -132,7 +138,7 @@ const DesktopLogin = () => (
   </div>
 );
 
-const MobileDrawer = ({ isOpen, closeMenu }) => (
+const MobileDrawer = ({ isOpen, closeMenu, show }) => (
   <div
     className={`fixed inset-y-0 right-0 z-10 w-full max-w-sm bg-white shadow-xl transition-transform duration-300 ease-in-out transform ${
       isOpen ? "translate-x-0" : "translate-x-full"
@@ -173,7 +179,7 @@ const MobileDrawer = ({ isOpen, closeMenu }) => (
           </a>
         ))}
       </div>
-      <AuthButton />
+      {show ? "" : <AuthButton />}
     </div>
   </div>
 );

@@ -17,7 +17,7 @@ import {
 } from "../components/common/HeadingDescriptionText";
 
 import ProgressBar from "../components/common/ProgressBar";
-import AvatarGroup from "../components/common/AvatarGroup";
+import {AvatarGroup} from "../components/common/AvatarGroup";
 
 const Home = () => {
   const sections = [

@@ -1,7 +1,7 @@
 import React from "react";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Divider, Tooltip } from "antd";
-const AvatarGroup = () => (
+export const AvatarGroup = () => (
   <>
     <Avatar.Group>
       <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
@@ -19,7 +19,17 @@ const AvatarGroup = () => (
         icon={<AntDesignOutlined />}
       />
     </Avatar.Group>
-   
   </>
 );
-export default AvatarGroup;
+
+export const AvatarWithText = ({ useremail }) => {
+  const name = useremail;
+  const firstLetter = name.charAt(0).toUpperCase();
+  return (
+    <>
+      <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
+        {firstLetter}
+      </Avatar>
+    </>
+  );
+};
