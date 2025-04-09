@@ -1,6 +1,6 @@
 const TagGroup = ({ tags, position }) => {
   return (
-    <div className={`flex flex-wrap ${position=="center" ? "justify-center" : ""} md:${position == "center" ? "justify-center" : "justify-start"} items-center mb-5`}>
+    <div className={`flex flex-wrap ${position=="center" ? "justify-center" : ""} md:${position == "center" ? "justify-center" : "justify-start"} items-center`}>
       {tags.map((tag, index) => (
         <div
           key={index}

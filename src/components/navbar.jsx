@@ -4,7 +4,12 @@ import { useFirebase } from "../hooks/useFirebase";
 import Dropdown from "./common/DropDown";
 import Eduaide_cube from "../assets/eduaide_cube.png";
 
-const NAV_ITEMS = ["Home", "About", "Price", "How it Works"];
+const NAV_ITEMS = [
+  { text: "Home", link: "/" },
+  { text: "About", link: "/about" },
+  { text: "Prices", link: "/Prices" },
+  { text: "How it works", link: "/Work" },
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +28,7 @@ const Navbar = () => {
           },
         ]}
         triggerContent={Firebase.userLoggedIn?.displayName || "User"}
-        className="cursor-pointer text-sm font-semibold text-gray-900 border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+        className="cursor-pointer text-sm font-semibold text-white border border-white  rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
       />
     ) : (
       <DesktopLogin />
@@ -60,6 +65,25 @@ const Logo = () => (
   </div>
 );
 
+const AuthButton = () => {
+  return (
+    <div className=" flex justify-center items-center gap-2">
+      <Link
+        to="/login"
+        className="text-sm font-semibold text-gray-900  bg-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+      >
+        Log in <span aria-hidden="true">&rarr;</span>
+      </Link>
+      <Link
+        to="/signUp"
+        className="text-sm font-semibold text-gray-900  bg-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+      >
+        Sign up
+      </Link>
+    </div>
+  );
+};
+
 const MobileMenuButton = ({ isOpen, toggleMenu }) => (
   <div className="flex lg:hidden">
     <button
@@ -92,11 +116,11 @@ const DesktopMenu = () => (
   <div className="hidden flex gap-2 items-center bg-white p-[5px] rounded-full lg:flex">
     {NAV_ITEMS.map((item) => (
       <a
-        key={item}
+        key={item.text}
         href="#"
         className="text-sm font-semibold nav-hover text-gray-900"
       >
-        {item}
+        {item.text}
       </a>
     ))}
   </div>
@@ -104,18 +128,7 @@ const DesktopMenu = () => (
 
 const DesktopLogin = () => (
   <div className="hidden items-center gap-2 lg:flex  lg:justify-end">
-    <Link
-      to="/login"
-      className="text-sm font-semibold  border border-white text-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
-    >
-      Log in <span aria-hidden="true">&rarr;</span>
-    </Link>
-    <Link
-      to="/signUp"
-      className="text-sm font-semibold text-gray-900  bg-white rounded-full px-3 py-1.5 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
-    >
-      Sign up
-    </Link>
+    <AuthButton />
   </div>
 );
 
@@ -149,17 +162,18 @@ const MobileDrawer = ({ isOpen, closeMenu }) => (
           </svg>
         </button>
       </div>
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 mb-6 space-y-4">
         {NAV_ITEMS.map((item) => (
           <a
-            key={item}
-            href="#"
-            className="block rounded-lg px-4 py-2 text-lg font-semibold text-gray-900 hover:bg-gray-100"
+            key={item.link}
+            href={item.link}
+            className="text-sm flex font-semibold nav-hover text-gray-900"
           >
-            {item}
+            {item.text}
           </a>
         ))}
       </div>
+      <AuthButton />
     </div>
   </div>
 );

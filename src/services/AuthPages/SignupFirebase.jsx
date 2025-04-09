@@ -29,7 +29,13 @@ const SignUp = ({
     }
   }, [firebase.userLoggedIn,navigate,onSuccessPath])
 
-  let debounceTimeout = useMemo(() => null, [])
+
+
+
+  const phoneNumber = "+91" + user.email;
+  const appVerifier = window.recaptchaVerifier;
+
+  let ThrotllingTimeout = useMemo(() => null, []);
   const handleInputChange = useCallback(
     (e) => {
       const { name, value } = e.target
@@ -67,7 +73,8 @@ const SignUp = ({
       return
     }
     try {
-      console.log('working' + phonenumer + password)
+      firebase.signupWithPhone(phoneNumber, appVerifier);
+      console.log("working" + phonenumer + password);
     } catch (error) {
       handleError(error.message);
     }
@@ -76,11 +83,10 @@ const SignUp = ({
   const handleFormSubmit = async (e) => {
     e.preventDefault()
 
-    if (debounceTimeout) return
-
-    debounceTimeout = setTimeout(() => {
-      debounceTimeout = null
-    }, 2600)
+    if (ThrotllingTimeout) return;
+    ThrotllingTimeout = setTimeout(() => {
+      ThrotllingTimeout = null;
+    }, 2600);
 
     const { email, password } = user
 
@@ -157,6 +163,9 @@ const SignUp = ({
                 />
               </div>
             </div>
+
+            {/* // reCAPTCHA container */}
+            <div id="recaptcha-container" className="pt-4"></div>
 
             <div className="mb-12 flex flex-col pt-4">
               <label htmlFor="SignUp-password" className="sr-only">
