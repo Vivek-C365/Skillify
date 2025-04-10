@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { text: "Home", link: "/" },
   { text: "About", link: "/about" },
   { text: "Prices", link: "/Prices" },
+  { text: "Quick Quiz", link: "/QuickQuiz" },
   { text: "How it works", link: "/Work" },
 ];
 
@@ -121,14 +122,14 @@ const MobileMenuButton = ({ isOpen, toggleMenu }) => (
 const DesktopMenu = () => (
   <div className="hidden flex gap-2 items-center bg-white p-[5px] rounded-full lg:flex">
     {NAV_ITEMS.map((item) => (
-      <a
-        key={item.text}
-        href="#"
-        className="text-sm font-semibold nav-hover text-gray-900"
-      >
-        {item.text}
-      </a>
-    ))}
+          <a
+            key={item.link}
+            href={item.link}
+            className="text-sm flex font-semibold nav-hover text-gray-900"
+          >
+            {item.text}
+          </a>
+        ))}
   </div>
 );
 

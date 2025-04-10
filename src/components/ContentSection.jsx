@@ -32,7 +32,7 @@ const ContentSection = ({
 
         {rightContent || (
           <div>
-            <span className=" !hidden text-lg bg-white p-8 !h-auto center-circle sm:!inline-block  md:text-xl lg:text-2xl">
+            <span className=" !hidden text-lg bg-white p-8 !h-auto center-circle sm:!inline-flex  md:text-xl lg:text-2xl">
               {actionText}
             </span>
           </div>
