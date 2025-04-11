@@ -3,15 +3,13 @@
 :root {
   --color-lavender: #bab2e7; /* Custom blue */
   --color-secondary: #ff5722; /* Custom orange */
-  --color-charcol-black : #161616;
-  --color-dark-lavender : #924AD9;
-  --color-medium-green : #A6D46E;
-  --color-lightest-yellow : #F8F8F6;
+  --color-charcol-black: #161616;
+  --color-dark-lavender: #924ad9;
+  --color-medium-green: #a6d46e;
+  --color-lightest-yellow: #f8f8f6;
   --text-white: #ffffff; /* White text color */
   --text-black: #000000; /* Black text color */
-  --text-light-green : #E4F1E8;
-
-
+  --text-light-green: #e4f1e8;
 }
 
 .lavender-background {
@@ -43,4 +41,13 @@
 
 .nav-hover:hover {
   background-color: #e9e3fc;
+}
+
+.ant-menu-light .ant-menu-item-selected {
+  background-color: var(
+    --color-medium-green
+  ) !important; /* light blue background */
+  color: #000000 !important; /* AntD primary color */
+
+  border-radius: 8px;
 }

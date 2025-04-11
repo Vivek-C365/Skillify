@@ -5,6 +5,7 @@ import { responsiveFlex } from "../styles/responsiveFlex";
 import img1 from "../assets/img1.jpg";
 import { responsiveImage } from "../components/common/responsiveImage";
 import CourseSection2 from "./CourseSection2";
+import CoursesDisplay from "../components/coursesDisplay";
 
 import {
   responsiveTextH6,
@@ -173,6 +174,8 @@ const Home = () => {
         </div>
       </div>
       <CourseSection2 />
+
+      <CoursesDisplay />
     </div>
   );
 };
