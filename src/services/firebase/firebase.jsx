@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import firebaseConfig from "./firebaseConfig";
 // eslint-disable-next-line no-unused-vars
-import firebaseContext from "../context/firebaseContext";
+import firebaseContext from "../../context/AuthContext";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,

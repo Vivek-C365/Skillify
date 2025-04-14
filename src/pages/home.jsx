@@ -1,11 +1,11 @@
-import Navbar from "../components/navbar";
-import ContentSection from "../components/ContentSection";
+import Navbar from "../components/navbar/index";
+import ContentSection from "../components/common/ContentSection";
 import Cards from "../components/common/card";
 import { responsiveFlex } from "../styles/responsiveFlex";
-import img1 from "../assets/img1.jpg";
+import img1 from "../assets/images/img1.jpg";
 import { responsiveImage } from "../components/common/responsiveImage";
-import CourseSection2 from "./CourseSection2";
-import CoursesDisplay from "../components/coursesDisplay";
+import CourseSection2 from "../features/courses/pages/CourseSection2";
+import CoursesDisplay from "../features/courses/pages/coursesDisplay";
 
 import {
   responsiveTextH6,

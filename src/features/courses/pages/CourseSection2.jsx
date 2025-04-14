@@ -1,11 +1,11 @@
-import Platform1 from "../assets/Platform1.jpg";
-import Platform2 from "../assets/Platform2.jpg";
-import CourseSection2Item from "../components/common/CourseSection2Item";
+import Platform1 from "../../../assets/images/Platform1.jpg";
+import Platform2 from "../../../assets/images/Platform2.jpg";
+import CourseSection2Item from "../../../components/common/CourseSection2Item";
 import {
   HeadingDescriptionText,
   HeadingDescription,
-} from "../components/common/HeadingDescriptionText";
-import TagSingle from "../components/common/TagSingle";
+} from "../../../components/common/HeadingDescriptionText";
+import TagSingle from "../../../components/common/TagSingle";
 // import page_img1 from "../assets/page_img1.jpg";
 // import page_img2 from "../assets/page_img2.jpg";
 

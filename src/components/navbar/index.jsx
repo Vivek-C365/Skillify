@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useFirebase } from "../hooks/useFirebase";
-import Dropdown from "./common/DropDown";
-import Eduaide_cube from "../assets/eduaide_cube.png";
-import { AvatarWithText } from "../components/common/AvatarGroup";
+import { useFirebase } from "../../hooks/useFirebase";
+import Dropdown from "../common/DropDown";
+import Eduaide_cube from "../../assets/images/eduaide_cube.png";
+import { AvatarWithText } from "../common/AvatarGroup";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },

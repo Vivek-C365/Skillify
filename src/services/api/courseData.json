@@ -14,7 +14,8 @@
           "proficiency": "Fluent",
           "additional_languages": 2,
           "description": "Learn the fundamentals of programming with hands-on exercises.",
-          "hourly_rate": "$15.00"
+          "hourly_rate": "$15.00",
+          "image_url": "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
         },
         {
           "name": "Emily Smith",
@@ -23,7 +24,8 @@
           "proficiency": "Native",
           "additional_languages": 1,
           "description": "Master basic programming concepts with practical examples.",
-          "hourly_rate": "$18.00"
+          "hourly_rate": "$18.00",
+          "image_url": "https://img.youtube.com/vi/YbJOTdZBX1g/hqdefault.jpg"
         },
         {
           "name": "Robert White",
@@ -32,7 +34,8 @@
           "proficiency": "Intermediate",
           "additional_languages": 1,
           "description": "Get started with Python, Java, and C++ programming basics.",
-          "hourly_rate": "$16.00"
+          "hourly_rate": "$16.00",
+          "image_url": "https://img.youtube.com/vi/_uQrJ0TkZlc/hqdefault.jpg"
         }
       ]
     },
@@ -46,7 +49,8 @@
           "proficiency": "Native",
           "additional_languages": 3,
           "description": "I hold a BA in art history and philosophy and I am also a TESOL certified English teacher...",
-          "hourly_rate": "$20.00"
+          "hourly_rate": "$20.00",
+          "image_url": "https://img.youtube.com/vi/3JluqTojuME/hqdefault.jpg"
         },
         {
           "name": "David Brown",
@@ -55,7 +59,8 @@
           "proficiency": "Fluent",
           "additional_languages": 2,
           "description": "Explore modern web design principles and UX strategies.",
-          "hourly_rate": "$22.00"
+          "hourly_rate": "$22.00",
+          "image_url": "https://img.youtube.com/vi/1Rs2ND1ryYc/hqdefault.jpg"
         },
         {
           "name": "Sophia Lee",
@@ -64,7 +69,8 @@
           "proficiency": "Intermediate",
           "additional_languages": 1,
           "description": "Create stunning UI/UX designs using Figma and Adobe XD.",
-          "hourly_rate": "$19.00"
+          "hourly_rate": "$19.00",
+          "image_url": "https://img.youtube.com/vi/jwCmIBJ8Jtc/hqdefault.jpg"
         }
       ]
     },
@@ -78,7 +84,8 @@
           "proficiency": "Native",
           "additional_languages": 1,
           "description": "Learn graphic design essentials using industry-standard tools.",
-          "hourly_rate": "$19.00"
+          "hourly_rate": "$19.00",
+          "image_url": "https://img.youtube.com/vi/c9Wg6Cb_YlU/hqdefault.jpg"
         },
         {
           "name": "Lucas Green",
@@ -87,7 +94,8 @@
           "proficiency": "Fluent",
           "additional_languages": 2,
           "description": "Master Adobe Photoshop, Illustrator, and InDesign.",
-          "hourly_rate": "$21.00"
+          "hourly_rate": "$21.00",
+          "image_url": "https://img.youtube.com/vi/z7K4p4mU3rg/hqdefault.jpg"
         }
       ]
     },
@@ -101,7 +109,8 @@
           "proficiency": "Fluent",
           "additional_languages": 2,
           "description": "Understand cybersecurity principles to protect online data.",
-          "hourly_rate": "$25.00"
+          "hourly_rate": "$25.00",
+          "image_url": "https://img.youtube.com/vi/3Kq1MIfTWCE/hqdefault.jpg"
         },
         {
           "name": "Anna Roberts",
@@ -110,7 +119,8 @@
           "proficiency": "Native",
           "additional_languages": 2,
           "description": "Learn ethical hacking and penetration testing techniques.",
-          "hourly_rate": "$28.00"
+          "hourly_rate": "$28.00",
+          "image_url": "https://img.youtube.com/vi/Uz7u1PsaWz0/hqdefault.jpg"
         }
       ]
     },
@@ -124,7 +134,8 @@
           "proficiency": "Native",
           "additional_languages": 2,
           "description": "Master data analysis techniques for business insights.",
-          "hourly_rate": "$23.00"
+          "hourly_rate": "$23.00",
+          "image_url": "https://img.youtube.com/vi/r-uOLxNrNk8/hqdefault.jpg"
         },
         {
           "name": "James Adams",
@@ -133,7 +144,8 @@
           "proficiency": "Fluent",
           "additional_languages": 1,
           "description": "Use SQL, Excel, and Power BI for effective business analytics.",
-          "hourly_rate": "$24.00"
+          "hourly_rate": "$24.00",
+          "image_url": "https://img.youtube.com/vi/7M8hP1l5k1I/hqdefault.jpg"
         }
       ]
     },
@@ -147,7 +159,8 @@
           "proficiency": "Fluent",
           "additional_languages": 1,
           "description": "Dive into AI and robotics with real-world applications.",
-          "hourly_rate": "$30.00"
+          "hourly_rate": "$30.00",
+          "image_url": "https://img.youtube.com/vi/aircAruvnKk/hqdefault.jpg"
         },
         {
           "name": "Sarah Jones",
@@ -156,7 +169,8 @@
           "proficiency": "Native",
           "additional_languages": 1,
           "description": "Learn deep learning and neural networks with Python.",
-          "hourly_rate": "$29.00"
+          "hourly_rate": "$29.00",
+          "image_url": "https://img.youtube.com/vi/8ue3yM2j9Kk/hqdefault.jpg"
         }
       ]
     },
@@ -170,7 +184,8 @@
           "proficiency": "Fluent",
           "additional_languages": 1,
           "description": "Learn the fundamentals of managing IT systems and networks.",
-          "hourly_rate": "$20.00"
+          "hourly_rate": "$20.00",
+          "image_url": "https://img.youtube.com/vi/Rz8CA8C5t0g/hqdefault.jpg"
         },
         {
           "name": "Ethan Clarke",
@@ -179,7 +194,8 @@
           "proficiency": "Native",
           "additional_languages": 2,
           "description": "Master Linux and Windows server administration.",
-          "hourly_rate": "$22.00"
+          "hourly_rate": "$22.00",
+          "image_url": "https://img.youtube.com/vi/IVquJh3DXUA/hqdefault.jpg"
         }
       ]
     },
@@ -193,7 +209,8 @@
           "proficiency": "Native",
           "additional_languages": 2,
           "description": "Become an expert in digital marketing and social media strategies.",
-          "hourly_rate": "$21.00"
+          "hourly_rate": "$21.00",
+          "image_url": "https://img.youtube.com/vi/nW8c7vT6Hl4/hqdefault.jpg"
         },
         {
           "name": "Nathan Wright",
@@ -202,7 +219,8 @@
           "proficiency": "Fluent",
           "additional_languages": 2,
           "description": "Learn SEO, PPC, and email marketing strategies.",
-          "hourly_rate": "$22.00"
+          "hourly_rate": "$22.00",
+          "image_url": "https://img.youtube.com/vi/m3nNmTWxp1o/hqdefault.jpg"
         }
       ]
     }

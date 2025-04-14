@@ -1,5 +1,5 @@
-import BiggerText from "./common/BiggerText";
-import TagGroup from "./common/TagGroup";
+import BiggerText from "./BiggerText";
+import TagGroup from "./TagGroup";
 
 const ContentSection = ({
   reverse = false,

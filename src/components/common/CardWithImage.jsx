@@ -1,27 +1,22 @@
-import React from 'react';
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { Avatar, Card } from 'antd';
+import React from "react";
+import { Avatar, Card } from "antd";
 const { Meta } = Card;
-const App = () => (
+const CardWithImage = ({ children, image, imageStyle }) => (
   <Card
-    style={{ width: 300 }}
-    cover={
-      <img
-        alt="example"
-        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-      />
-    }
-    actions={[
-      <SettingOutlined key="setting" />,
-      <EditOutlined key="edit" />,
-      <EllipsisOutlined key="ellipsis" />,
-    ]}
+    style={{
+      width: "22rem",
+      backgroundColor: "#ECF5E9",
+      border: "1.5px solid black",
+      borderRadius: "18px",
+    }}
+    bodyStyle={{
+      padding: "11px",
+      backgroundColor: "#yourColor",
+      // Add any other body styles here
+    }}
+    cover={<img className={imageStyle} alt="example" src={image} />}
   >
-    <Meta
-      avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />}
-      title="Card title"
-      description="This is the description"
-    />
+    {children}
   </Card>
 );
-export default App;
+export default CardWithImage;

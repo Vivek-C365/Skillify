@@ -6,11 +6,11 @@ import {
   FormInput,
   FormNumberInput,
   FormTextArea,
-} from "../components/common/FormInputs";
-import { FormSectionDivider } from "../components/common/FormSections";
-import { Button } from "../components/common/button";
-import { useFirebase } from "../hooks/useFirebase";
-const CourseForm = () => {
+} from "../../../components/common/FormInputs";
+import { FormSectionDivider } from "../../../components/common/FormSections";
+import { Button } from "../../../components/common/button";
+import { useFirebase } from "../../../hooks/useFirebase";
+const AddCourseDetailForm = () => {
   const [form] = Form.useForm();
   const Firebase = useFirebase();
   const onFinish = async (values) => {
@@ -148,4 +148,4 @@ const CourseForm = () => {
   );
 };
 
-export default CourseForm;
+export default AddCourseDetailForm;
