@@ -6,6 +6,8 @@ import img1 from "../assets/images/img1.jpg";
 import { responsiveImage } from "../components/common/responsiveImage";
 import CourseSection2 from "../features/courses/pages/CourseSection2";
 import CoursesDisplay from "../features/courses/pages/coursesDisplay";
+import SearchIcon from "../components/common/searchIcon";
+import DropDown from "../components/common/DropDown";
 
 import {
   responsiveTextH6,
@@ -93,6 +95,32 @@ const Home = () => {
       description: "Top Mentors",
     },
   ];
+  const achieveData = [
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/e13888bfb8ff08a67b95eba8721ce071e86065d8c550324be1f8e29697d2a586?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Learn latest skills",
+      description:
+        "Learn new skills like Project management, AWS, Security or anything that matters to you in your industry. New skills translate to new opportunities.",
+    },
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/dadc5fed5ab197a2a006bfe7ff4adff495f7aa0fa76bc36478d2b47884aa3ace?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Upgrade your skills",
+      description:
+        "Upskill your current skillsets to the latest trends, developments or new versions. Stay at fore-front, current and relevant in the ever changing world of skills.",
+    },
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/54ecde977ac2e1733aa3a7c80783b77c22b9fa098996ce3882be83159defd4a7?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Further your career",
+      description:
+        "Don't let your previous skills become the bottleneck of your career growth in today's fast-changing skill demands. Upgrade your skills today.",
+    },
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/d998ce4a1565c48cb9d7f2c33948f0574978643c665ed8c55d69172b6177fbec?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Upskill your team",
+      description:
+        "With our tailored training approaches, give your team the latest skillsets needed for the optimum productivity; stay ahead of the competition.",
+    },
+  ];
 
   return (
     <div>
@@ -151,33 +179,49 @@ const Home = () => {
         </div>
       </div>
 
-      <div className={`text-black p-6  md:p-8 gap-4 md:gap-8`}>
-        <div className="max-w-[1200px] flex flex-col md:gap-8 m-auto justify-center items-center ">
-          <div>
-            <HeadingDescription>
-              Digital <span>education</span> is a key to your future success
-            </HeadingDescription>
-            <div className="text-center w-4 rounded-full h-1 bg-indigo-500 mx-auto mt-2 "></div>
-            <HeadingDescriptionText>
-              On our platform you will find the largest selection pf IT courses
-              that will help you develop skills and gain new knowledge in this
-              area.
-            </HeadingDescriptionText>
 
-            <div>
-              <img
-                className={`${responsiveImage}`}
-                src={img1}
-                alt="this is image 1"
-                loading="lazy"
-              />
-            </div>
+      <section className="achieve_section">
+        <div className="content_wrapper">
+          <div className="title_wrapper">
+            <h2 className="title flex gap-2">
+              <span className="title-primary">Achieve with </span>
+              <span className="title-secondary"> Skillify</span>
+            </h2>
+          </div>
+          <div className="achieve_items_wrapper">
+            {achieveData.map((item, index) => (
+              <div className="achieve_item" key={index}>
+                <div className="icon_wrapper">
+                  <img src={item.icon} alt="" />
+                </div>
+                <h3 className="achieve_title">{item.title}</h3>
+                <p className="achieve_description">{item.description}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
       <CourseSection2 />
 
-      <CoursesDisplay />
+
+      
+      <div className="divider"></div>
+      <div>
+        <div className="flex p-5 sm:px-15 justify-between">
+          <h1 className=" text-2xl sm:text-5xl font-semibold">
+            Find your own Way
+          </h1>
+          <SearchIcon />
+        </div>
+        <div className="flex justify-center w-full">
+          <DropDown
+            items={[{ key: "edit", label: "Edit" }]}
+            triggerContent={"sdvsvsdv"}
+            className="cursor-pointer  text-sm font-semibold text-black border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+          />
+        </div>
+        <CoursesDisplay />
+      </div>
     </div>
   );
 };

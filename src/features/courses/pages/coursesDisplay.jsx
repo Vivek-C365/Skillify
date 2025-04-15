@@ -82,7 +82,8 @@ const CoursesDisplay = () => {
 
   return (
     <div className="flex flex-col md:flex-row gap-4">
-      <Sidebar menuItems={menuItems} />
+      {/* <Sidebar menuItems={menuItems} /> */}
+      
       <div className="flex  flex-wrap justify-center  w-full md:flex-row gap-4 p-4 md:p-8">
         {DetailCourse}
       </div>

@@ -11,7 +11,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
-  signInWithPhoneNumber 
+  signInWithPhoneNumber,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -27,15 +27,15 @@ const db = getFirestore(firebaseApp);
 
 export const FirebaseProvider = ({ children }) => {
   const [loggedIn, setLoggedInUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoggedInUser(user);
-      } else {
-        setLoggedInUser(null);
-      }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setLoggedInUser(user || null);
+      setLoading(false); // Set loading to false once auth check is done
     });
+
+    return () => unsubscribe(); // Cleanup
   }, []);
 
   const userLoggedIn = loggedIn ? loggedIn : null;
@@ -50,27 +50,25 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
-  const UserSignInwithEmailAndPassword= async (email, password)=>{
-    try{
-      await signInWithEmailAndPassword(auth,email,password);
+  const UserSignInwithEmailAndPassword = async (email, password) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       handleSuccess("User Sign In Successfully!");
-    }
-    catch(error){
+    } catch (error) {
       handleError(error.message);
     }
-  }
+  };
 
   const signupWithGoogle = async () => {
     try {
       console.log("Google signup initiated");
-      const testing = await signInWithPopup(auth, googleProvider);
-      console.log(testing);
+      await signInWithPopup(auth, googleProvider);
+
       handleSuccess("User created successfully!");
     } catch (error) {
       return error;
     }
   };
-
 
   const signupWithPhone = async (phone, appVerifier) => {
     try {
@@ -79,7 +77,7 @@ export const FirebaseProvider = ({ children }) => {
     } catch (error) {
       return error;
     }
-  }
+  };
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -111,9 +109,13 @@ export const FirebaseProvider = ({ children }) => {
         handleLogout,
         UserSignInwithEmailAndPassword,
         addDocumentToFirestore,
+        loading,
       }}
     >
       {children}
     </firebaseContext.Provider>
   );
 };
+
+
+
