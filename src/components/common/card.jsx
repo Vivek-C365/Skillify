@@ -1,8 +1,13 @@
 import React from "react";
 
 import { Card } from "antd";
-const Cards = ({ children, className }) => (
-  <Card className={className}>
+const Cards = ({ title, children, className }) => (
+  <Card
+    title={title}
+    variant="borderless"
+    style={{ width: 300 }}
+    className={className}
+  >
     <div>{children}</div>
   </Card>
 );

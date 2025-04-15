@@ -44,15 +44,17 @@ const Home = () => {
       rightContent: (
         <Cards className="hidden sm:block">
           {" "}
-          <>
+          <div>
             <div>
               <h3 className="text-black text-2xl mx-auto text-start max-w-[40rem] mb-5">
                 Active Now
               </h3>
               <ProgressBar />
             </div>
-            <AvatarGroup />
-          </>{" "}
+            <div className="absolute top-12  right-[-7rem]">
+              <AvatarGroup />
+            </div>
+          </div>{" "}
         </Cards>
       ),
     },

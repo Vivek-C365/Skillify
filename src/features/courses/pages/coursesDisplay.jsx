@@ -28,7 +28,9 @@ const CoursesDisplay = () => {
                 <span>
                   <CalendarOutlined />
                 </span>
-                <span className="text-[--primary]">{props.lessons} Lessons</span>
+                <span className="text-[--primary]">
+                  {props.lessons} Lessons
+                </span>
               </div>
             </div>
           </div>
@@ -59,7 +61,7 @@ const CoursesDisplay = () => {
             Hourly rate from
             <span className="font-bold text-[16px]">{props.hourly_rate}</span>
           </div>
-          <Button className="!bg-[#2C2928] text-[14px] w-fit px-5 py-2 !m-0  ">
+          <Button className="!bg-[#2C2928] text-[14px] w-fit px-5 py-2 !m-0 hover:!bg-[#181817]  ">
             Book lesson
           </Button>
         </div>

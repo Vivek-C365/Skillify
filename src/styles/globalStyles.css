@@ -52,3 +52,11 @@
 
   border-radius: 8px;
 }
+
+
+.active {
+  color: #fff;
+  background-color: #007bff;
+  font-weight: bold;
+  /* any other styles */
+}
