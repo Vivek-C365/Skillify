@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Data from "../../../services/api/courseData.json";
 import CardWithImage from "../../../components/common/CardWithImage";
 import Sidebar from "../../../components/common/Sidebar";
@@ -8,14 +9,31 @@ import CalendarOutlined from "@ant-design/icons/CalendarOutlined";
 import SearchIcon from "../../../components/common/searchIcon";
 import DropDown from "../../../components/common/DropDown";
 import ActiveLink from "../../../components/common/ActiveLink";
+import PaginationLaoyut from "../../../components/common/Pagination";
 
 const CoursesDisplay = () => {
+  const [courseSelect, setCourseSelect] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(2);
   const menuItems = Data.categories.map((item) => {
     return item;
   });
-  
 
-  console.log(menuItems);
+  const FilterCourse = (menuItems) => {
+    if (!courseSelect || courseSelect === "All") return menuItems;
+    return menuItems.filter((item) => {
+      return item.title === courseSelect;
+    });
+  };
+
+  const lastCourse = currentPage * postsPerPage;
+  const firstCourse = lastCourse - postsPerPage;
+
+  const currentCourse = FilterCourse(menuItems)[0].courses.slice(
+    firstCourse,
+    lastCourse
+  );
+  console.log(currentCourse);
 
   const CourseLayout = (props) => {
     return (
@@ -74,16 +92,14 @@ const CoursesDisplay = () => {
     );
   };
 
-  const DetailCourse = menuItems.map((course) =>
-    course.courses.map((course, index) => (
-      <CardWithImage
-        key={index}
-        image={course.image_url}
-        imageStyle={"object-cover p-3 max-h-[13rem] "}
-        children={<CourseLayout {...course} />}
-      />
-    ))
-  );
+  const DetailCourse = currentCourse.map((course , index) => (
+    <CardWithImage
+      key={index}
+      image={course.image_url}
+      imageStyle={"object-cover p-3 max-h-[13rem] "}
+      children={<CourseLayout {...course} />}
+    />
+  ));
 
   return (
     <div className="flex flex-col gap-4 bg-[#F8F8F6]">
@@ -105,16 +121,25 @@ const CoursesDisplay = () => {
         </div>
       </div>
       <div className="flex p-7">
-        <div className="sidenav rounded-2xl bg-white  p-3 gap-4  hidden sm:flex sm:flex-col max-w-max">
+        <div className="sidenav rounded-2xl bg-white  p-3 gap-4 w-full  hidden sm:flex sm:flex-col max-w-max">
           {menuItems.map((item, index) => (
-            <ActiveLink key={index} to={item.link} className=" text-[14px] sm:text-[18px] w-max">
+            <ActiveLink
+              key={index}
+              to={item.link}
+              activeClassName="bg-[#e9e3fc]"
+              className=" text-[14px] sm:text-[18px] w-full  py-2 px-4 rounded-2xl hover:bg-[var(--color-medium-green)]"
+              onClick={() => setCourseSelect(item.title)}
+            >
               {item.title}
             </ActiveLink>
           ))}
         </div>
 
-        <div className="flex  flex-wrap justify-center  w-full md:flex-row gap-4 p-4 pt-0 md:p-8 md:pt-0">
-          {DetailCourse}
+        <div className="flex flex-col w-full">
+          <div className="flex  flex-wrap justify-start  w-full md:flex-row gap-4 p-4 pt-0 md:p-8 md:pt-0">
+            {DetailCourse}
+          </div>
+          <PaginationLaoyut />
         </div>
       </div>
     </div>
