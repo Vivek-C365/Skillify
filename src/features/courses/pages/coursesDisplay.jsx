@@ -7,12 +7,15 @@ import SafetyCertificateFilled from "@ant-design/icons/SafetyCertificateFilled";
 import CalendarOutlined from "@ant-design/icons/CalendarOutlined";
 import SearchIcon from "../../../components/common/searchIcon";
 import DropDown from "../../../components/common/DropDown";
+import ActiveLink from "../../../components/common/ActiveLink";
 
 const CoursesDisplay = () => {
-  const menuItems = Data.categories.map((course, index) => ({
-    key: String(index + 1),
-    label: course.title,
-  }));
+  const menuItems = Data.categories.map((item) => {
+    return item;
+  });
+  
+
+  console.log(menuItems);
 
   const CourseLayout = (props) => {
     return (
@@ -71,7 +74,7 @@ const CoursesDisplay = () => {
     );
   };
 
-  const DetailCourse = Data.categories.map((course) =>
+  const DetailCourse = menuItems.map((course) =>
     course.courses.map((course, index) => (
       <CardWithImage
         key={index}
@@ -83,7 +86,7 @@ const CoursesDisplay = () => {
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 bg-[#F8F8F6]">
       {/* <Sidebar menuItems={menuItems} /> */}
 
       <div className="flex flex-col sm:flex-row items-center gap-5 p-5 sm:px-15 justify-between">
@@ -93,7 +96,7 @@ const CoursesDisplay = () => {
 
         <div className="flex justify-center items-center gap-3">
           <DropDown
-            items={menuItems}
+            items={menuItems.title}
             triggerContent={"Select Your Course"}
             className="cursor-pointer sm:hidden  text-sm font-semibold text-black border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
           />
@@ -101,13 +104,18 @@ const CoursesDisplay = () => {
           <SearchIcon />
         </div>
       </div>
+      <div className="flex p-7">
+        <div className="sidenav rounded-2xl bg-white  p-3 gap-4  hidden sm:flex sm:flex-col max-w-max">
+          {menuItems.map((item, index) => (
+            <ActiveLink key={index} to={item.link} className=" text-[14px] sm:text-[18px] w-max">
+              {item.title}
+            </ActiveLink>
+          ))}
+        </div>
 
-      <div>
-        
-      </div>
-
-      <div className="flex  flex-wrap justify-center  w-full md:flex-row gap-4 p-4 md:p-8">
-        {DetailCourse}
+        <div className="flex  flex-wrap justify-center  w-full md:flex-row gap-4 p-4 pt-0 md:p-8 md:pt-0">
+          {DetailCourse}
+        </div>
       </div>
     </div>
   );

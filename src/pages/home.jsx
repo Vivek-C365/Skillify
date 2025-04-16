@@ -57,7 +57,12 @@ const Home = () => {
       biggerText: "EdTech",
       tags: [
         { text: "Get started" },
-        { icon: true, bgColor: "transparent", item: <>&#8599;</> },
+        {
+          icon: true,
+          bgColor: "transparent",
+          rotate: "rotate-90",
+          item: <>&#8599;</>,
+        },
       ],
     },
     {
@@ -119,7 +124,7 @@ const Home = () => {
         <Navbar />
 
         {/* Main Top Content */}
-        <div className="p-4 md:p-8">
+        <div className="p-4 md:p-8 ">
           {sections.map((section, index) => (
             <ContentSection
               key={index}
@@ -137,7 +142,7 @@ const Home = () => {
       {/* About Us */}
 
       <div
-        className={` ${responsiveFlex} bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
+        className={` ${responsiveFlex}  bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
       >
         <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-8">
           <div>
@@ -161,7 +166,7 @@ const Home = () => {
           </div>
         </div>
         <div className="w-full md:w-1/2">
-          <p className={` text-center ${responsiveTextBodyLarge}`}>
+          <p className={`  ${responsiveTextBodyLarge}`}>
             At skillify, we offer comprehensive English language courses
             tailored to your personal and professional growth. Whether you're a
             beginner or seeking advanced fluency. our dynamic lessons will help
@@ -170,12 +175,12 @@ const Home = () => {
         </div>
       </div>
 
-      <section className="achieve_section">
+      <section className="achieve_section my-4">
         <div className="content_wrapper">
           <div className="title_wrapper">
             <h2 className="title flex gap-2">
-              <span className="title-primary">Achieve with </span>
-              <span className="title-secondary"> Skillify</span>
+              <span className="title-primary text-[var(--color-primary-blue);]">Achieve with </span>
+              <span className="title-secondary text-[var(--color-dark-lavender)]"> Skillify</span>
             </h2>
           </div>
           <div className="achieve_items_wrapper">
@@ -184,8 +189,8 @@ const Home = () => {
                 <div className="icon_wrapper">
                   <img src={item.icon} alt="" />
                 </div>
-                <h3 className="achieve_title">{item.title}</h3>
-                <p className="achieve_description">{item.description}</p>
+                <h3 className="achieve_title text-[var(--color-primary-blue);]">{item.title}</h3>
+                <p className="achieve_description text-[var(--secondry-text-Lightblue)]">{item.description}</p>
               </div>
             ))}
           </div>
