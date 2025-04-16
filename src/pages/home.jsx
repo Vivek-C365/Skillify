@@ -2,23 +2,14 @@ import Navbar from "../components/navbar/index";
 import ContentSection from "../components/common/ContentSection";
 import Cards from "../components/common/card";
 import { responsiveFlex } from "../styles/responsiveFlex";
-import img1 from "../assets/images/img1.jpg";
-import { responsiveImage } from "../components/common/responsiveImage";
 import CourseSection2 from "../features/courses/pages/CourseSection2";
 import CoursesDisplay from "../features/courses/pages/coursesDisplay";
-import SearchIcon from "../components/common/searchIcon";
-import DropDown from "../components/common/DropDown";
 
 import {
   responsiveTextH6,
   responsiveTextBodyLarge,
   responsiveTextH1,
 } from "../styles/responsiveText";
-import {
-  HeadingDescriptionText,
-  HeadingDescription,
-} from "../components/common/HeadingDescriptionText";
-
 import ProgressBar from "../components/common/ProgressBar";
 import { AvatarGroup } from "../components/common/AvatarGroup";
 import CountingNumber from "../components/common/CountingNumber";
@@ -179,7 +170,6 @@ const Home = () => {
         </div>
       </div>
 
-
       <section className="achieve_section">
         <div className="content_wrapper">
           <div className="title_wrapper">
@@ -203,23 +193,8 @@ const Home = () => {
       </section>
       <CourseSection2 />
 
-
-      
       <div className="divider"></div>
       <div>
-        <div className="flex p-5 sm:px-15 justify-between">
-          <h1 className=" text-2xl sm:text-5xl font-semibold">
-            Find your own Way
-          </h1>
-          <SearchIcon />
-        </div>
-        <div className="flex justify-center w-full">
-          <DropDown
-            items={[{ key: "edit", label: "Edit" }]}
-            triggerContent={"sdvsvsdv"}
-            className="cursor-pointer  text-sm font-semibold text-black border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
-          />
-        </div>
         <CoursesDisplay />
       </div>
     </div>

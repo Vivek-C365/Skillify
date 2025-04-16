@@ -5,6 +5,8 @@ import { Button } from "../../../components/common/button";
 import HeartOutlined from "@ant-design/icons/HeartOutlined";
 import SafetyCertificateFilled from "@ant-design/icons/SafetyCertificateFilled";
 import CalendarOutlined from "@ant-design/icons/CalendarOutlined";
+import SearchIcon from "../../../components/common/searchIcon";
+import DropDown from "../../../components/common/DropDown";
 
 const CoursesDisplay = () => {
   const menuItems = Data.categories.map((course, index) => ({
@@ -81,9 +83,29 @@ const CoursesDisplay = () => {
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-4">
+    <div className="flex flex-col gap-4">
       {/* <Sidebar menuItems={menuItems} /> */}
-      
+
+      <div className="flex flex-col sm:flex-row items-center gap-5 p-5 sm:px-15 justify-between">
+        <h1 className=" text-4xl sm:text-5xl font-semibold">
+          Find your own Way
+        </h1>
+
+        <div className="flex justify-center items-center gap-3">
+          <DropDown
+            items={menuItems}
+            triggerContent={"Select Your Course"}
+            className="cursor-pointer sm:hidden  text-sm font-semibold text-black border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+          />
+
+          <SearchIcon />
+        </div>
+      </div>
+
+      <div>
+        
+      </div>
+
       <div className="flex  flex-wrap justify-center  w-full md:flex-row gap-4 p-4 md:p-8">
         {DetailCourse}
       </div>
