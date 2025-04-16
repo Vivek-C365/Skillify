@@ -1,11 +1,11 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import { handleSuccess, handleError } from '../../utils/tostify'
-import { useFirebase } from '../../hooks/useFirebase'
-import { emailValidate, phoneValidate } from '../../utils/regexValidation'
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { handleSuccess, handleError } from "../../utils/tostify";
+import { useFirebase } from "../../hooks/useFirebase";
+import { emailValidate, phoneValidate } from "../../utils/regexValidation";
 
-import Analytics from '../../assets/13246824_5191077.svg'
+import Analytics from "../../assets/images/svg/13246824_5191077.svg";
 
 const SignUp = ({
   title,
@@ -17,20 +17,17 @@ const SignUp = ({
   showSocialLogin = true,
   analyticsImage,
 }) => {
-  const firebase = useFirebase()
-  const navigate = useNavigate()
-  const [user, setUser] = useState({ email: '', password: '' })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const firebase = useFirebase();
+  const navigate = useNavigate();
+  const [user, setUser] = useState({ email: "", password: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (firebase.userLoggedIn) {
       navigate(onSuccessPath);
       handleSuccess("User successfully login");
     }
-  }, [firebase.userLoggedIn,navigate,onSuccessPath])
-
-
-
+  }, [firebase.userLoggedIn, navigate, onSuccessPath]);
 
   const phoneNumber = "+91" + user.email;
   const appVerifier = window.recaptchaVerifier;
@@ -38,25 +35,25 @@ const SignUp = ({
   let ThrotllingTimeout = useMemo(() => null, []);
   const handleInputChange = useCallback(
     (e) => {
-      const { name, value } = e.target
-      setUser((prevState) => ({ ...prevState, [name]: value }))
+      const { name, value } = e.target;
+      setUser((prevState) => ({ ...prevState, [name]: value }));
     },
     [setUser]
-  )
+  );
 
   const withEmail = async (email, password) => {
     setIsSubmitting(true);
     if (!emailValidate.test(email)) {
-      handleError('Invalid Email')
-      return
+      handleError("Invalid Email");
+      return;
     }
     try {
-      if (type == 'signup') {
-        await firebase.signupWithEmailAndPassword(email, password)
+      if (type == "signup") {
+        await firebase.signupWithEmailAndPassword(email, password);
       } else {
-        await firebase.UserSignInwithEmailAndPassword(email, password)
+        await firebase.UserSignInwithEmailAndPassword(email, password);
       }
-      setUser({ email: '', password: '' })
+      setUser({ email: "", password: "" });
       // navigate(onSuccessPath);
     } catch (error) {
       handleError(error.message);
@@ -64,13 +61,13 @@ const SignUp = ({
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   const withPhone = async (phone, password) => {
-    const phonenumer = Number(phone)
+    const phonenumer = Number(phone);
     if (!phoneValidate.test(phonenumer)) {
-      handleError('Invalid Phone Number')
-      return
+      handleError("Invalid Phone Number");
+      return;
     }
     try {
       firebase.signupWithPhone(phoneNumber, appVerifier);
@@ -78,33 +75,33 @@ const SignUp = ({
     } catch (error) {
       handleError(error.message);
     }
-  }
+  };
 
   const handleFormSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (ThrotllingTimeout) return;
     ThrotllingTimeout = setTimeout(() => {
       ThrotllingTimeout = null;
     }, 2600);
 
-    const { email, password } = user
+    const { email, password } = user;
 
     if (!email || !password) {
-      handleError('Please fill in all fields.')
-      return
+      handleError("Please fill in all fields.");
+      return;
     }
     try {
-      if (email.includes('@')) {
-        withEmail(email, password)
+      if (email.includes("@")) {
+        withEmail(email, password);
       }
       if (user.email.length == 10) {
-        withPhone(email, password)
+        withPhone(email, password);
       }
     } catch (error) {
-      handleError(error.message)
+      handleError(error.message);
     }
-  }
+  };
 
   return (
     <div className="flex flex-wrap bg-white signup_texture_backdrop">
@@ -191,16 +188,16 @@ const SignUp = ({
               className="w-full rounded-lg bg-gray-900 px-4 py-2 text-center text-base font-semibold text-white shadow-md ring-gray-500 ring-offset-2 transition focus:ring-2 disabled:opacity-50"
             >
               {isSubmitting
-                ? 'Processing...'
-                : type == 'signup'
-                ? 'Create Account'
-                : 'Login'}
+                ? "Processing..."
+                : type == "signup"
+                ? "Create Account"
+                : "Login"}
             </button>
           </form>
 
           <div className="py-12 text-center">
             <p className="whitespace-nowrap text-gray-600">
-              {footerText}{' '}
+              {footerText}{" "}
               <Link
                 to={footerLinkPath}
                 className="underline-offset-4 font-semibold text-gray-900 underline"
@@ -224,7 +221,7 @@ const SignUp = ({
 
       <ToastContainer />
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

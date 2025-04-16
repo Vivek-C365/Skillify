@@ -8,15 +8,14 @@ import { inject } from "@vercel/analytics";
 import "./styles/globalStyles.css";
 import App from "./App.jsx";
 
-
 // Initialize analytics
 if (import.meta.env.PROD) {
   inject({
-    mode: 'production',
+    mode: "production",
     beforeSend: (event) => {
       // Optional: filter or modify events
       return event;
-    }
+    },
   });
 }
 
