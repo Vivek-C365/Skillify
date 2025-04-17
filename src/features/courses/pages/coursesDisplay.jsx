@@ -14,7 +14,8 @@ import PaginationLaoyut from "../../../components/common/Pagination";
 const CoursesDisplay = () => {
   const [courseSelect, setCourseSelect] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(2);
+  const [postsPerPage, setPostsPerPage] = useState(3);
+
   const menuItems = Data.categories.map((item) => {
     return item;
   });
@@ -29,12 +30,11 @@ const CoursesDisplay = () => {
   const lastCourse = currentPage * postsPerPage;
   const firstCourse = lastCourse - postsPerPage;
 
-  const currentCourse = FilterCourse(menuItems)[0].courses.slice(
-    firstCourse,
-    lastCourse
+  const allFilteredCourses = FilterCourse(menuItems).flatMap(
+    (item) => item.courses
   );
-  console.log(currentCourse);
 
+  const currentCourse = allFilteredCourses.slice(firstCourse, lastCourse);
   const CourseLayout = (props) => {
     return (
       <div className="profile-card flex flex-col gap-3">
@@ -92,7 +92,7 @@ const CoursesDisplay = () => {
     );
   };
 
-  const DetailCourse = currentCourse.map((course , index) => (
+  const DetailCourse = currentCourse.map((course, index) => (
     <CardWithImage
       key={index}
       image={course.image_url}
@@ -103,8 +103,6 @@ const CoursesDisplay = () => {
 
   return (
     <div className="flex flex-col gap-4 bg-[#F8F8F6]">
-      {/* <Sidebar menuItems={menuItems} /> */}
-
       <div className="flex flex-col sm:flex-row items-center gap-5 p-5 sm:px-15 justify-between">
         <h1 className=" text-4xl sm:text-5xl font-semibold">
           Find your own Way
@@ -112,11 +110,14 @@ const CoursesDisplay = () => {
 
         <div className="flex justify-center items-center gap-3">
           <DropDown
-            items={menuItems.title}
-            triggerContent={"Select Your Course"}
-            className="cursor-pointer sm:hidden  text-sm font-semibold text-black border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+            items={menuItems.map((item) => ({
+              key: item.title,
+              label: item.title,
+            }))}
+            onSelect={(value) => [setCourseSelect(value), setCurrentPage(1)]}
+            triggerContent={courseSelect ? courseSelect : "Select Your Course"}
+            className="cursor-pointer sm:hidden text-sm font-semibold text-black border border-white rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
           />
-
           <SearchIcon />
         </div>
       </div>
@@ -128,7 +129,7 @@ const CoursesDisplay = () => {
               to={item.link}
               activeClassName="bg-[#e9e3fc]"
               className=" text-[14px] sm:text-[18px] w-full  py-2 px-4 rounded-2xl hover:bg-[var(--color-medium-green)]"
-              onClick={() => setCourseSelect(item.title)}
+              onClick={() => [setCourseSelect(item.title), setCurrentPage(1)]}
             >
               {item.title}
             </ActiveLink>
@@ -139,7 +140,12 @@ const CoursesDisplay = () => {
           <div className="flex  flex-wrap justify-start  w-full md:flex-row gap-4 p-4 pt-0 md:p-8 md:pt-0">
             {DetailCourse}
           </div>
-          <PaginationLaoyut />
+          <PaginationLaoyut
+            totalitems={allFilteredCourses.length}
+            itemsPerPage={postsPerPage}
+            pageSize={postsPerPage}
+            onChange={(page) => setCurrentPage(page)}
+          />
         </div>
       </div>
     </div>

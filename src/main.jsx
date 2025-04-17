@@ -20,12 +20,12 @@ if (import.meta.env.PROD) {
 }
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  <>
     {import.meta.env.PROD && <SpeedInsights debug={false} />}
     <FirebaseProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
     </FirebaseProvider>
-  </StrictMode>
+  </>
 );
