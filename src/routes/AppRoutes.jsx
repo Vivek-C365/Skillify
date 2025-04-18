@@ -18,7 +18,6 @@ function AppRoutes() {
 
         <Route element={<ProtectdRoute />}>
           <Route path="/Profile" element={<UserProfileDetail />} />
-
           <Route path="/addCourse" element={<AddCourseDetailForm />} />
         </Route>
       </Routes>

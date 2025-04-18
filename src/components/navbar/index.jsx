@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
 import { Link } from "react-router-dom";
 import { useFirebase } from "../../hooks/useFirebase";
 import Dropdown from "../common/DropDown";
@@ -15,10 +16,28 @@ const NAV_ITEMS = [
 ];
 
 const Navbar = () => {
+  const boxRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
   const user = Firebase.userLoggedIn;
+  useEffect(() => {
+    if (boxRef.current) {
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
+      tl.from(boxRef.current, {
+        duration: 0.5,
+      }).from(
+        boxRef.current.querySelectorAll("a"),
+        {
+          y: 20,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.3,
+        },
+        "-=0.3"
+      );
+    }
+  }, []);
   const LoginsignupButton = () => {
     return user ? (
       <Dropdown
@@ -44,7 +63,7 @@ const Navbar = () => {
       <nav className="mx-auto  flex max-w-7xl items-center justify-between p-2 lg:px-8">
         <Logo />
 
-        <DesktopMenu />
+        <DesktopMenu boxRef={boxRef} />
         <div className="flex gap-3">
           <LoginsignupButton />
 
@@ -120,8 +139,11 @@ const MobileMenuButton = ({ isOpen, toggleMenu }) => (
   </div>
 );
 
-const DesktopMenu = () => (
-  <div className="hidden flex gap-2 items-center bg-white p-[5px] rounded-full lg:flex">
+const DesktopMenu = ({ boxRef }) => (
+  <div
+    className="hidden flex gap-2 items-center bg-white p-[5px] rounded-full lg:flex"
+    ref={boxRef}
+  >
     {NAV_ITEMS.map((item) => (
       <ActiveLink
         to={item.link}

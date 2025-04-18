@@ -32,7 +32,7 @@ export default function CourseSection2() {
       {/* Platform Section */}
       <div className="flex flex-wrap items-center justify-evenly mx-auto">
         <div className="left-section max-w-[30rem] m-5 p-3 ">
-          <HeadingDescription className="!text-[var(--color-primary-blue);] font-semibold">
+          <HeadingDescription className="!text-[var(--color-primary-blue);] text-center sm:text-left font-semibold">
             On our platform you will find a wide range of online courses
           </HeadingDescription>
           <h6 className="text-[1rem] text-[var(--secondry-text-Lightblue)] mt-6 mx-auto mr-2 text-justify mb-6">

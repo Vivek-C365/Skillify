@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Data from "../../../services/api/courseData.json";
 import CardWithImage from "../../../components/common/CardWithImage";
-import Sidebar from "../../../components/common/Sidebar";
 import { Button } from "../../../components/common/button";
 import HeartOutlined from "@ant-design/icons/HeartOutlined";
 import SafetyCertificateFilled from "@ant-design/icons/SafetyCertificateFilled";
@@ -10,11 +9,13 @@ import SearchIcon from "../../../components/common/searchIcon";
 import DropDown from "../../../components/common/DropDown";
 import ActiveLink from "../../../components/common/ActiveLink";
 import PaginationLaoyut from "../../../components/common/Pagination";
+import CarouselLayout from "../../../components/common/carousel ";
+import ModalPage from "../../../components/common/Modal";
 
 const CoursesDisplay = () => {
   const [courseSelect, setCourseSelect] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(3);
+  const [postsPerPage] = useState(3);
 
   const menuItems = Data.categories.map((item) => {
     return item;
@@ -35,6 +36,7 @@ const CoursesDisplay = () => {
   );
 
   const currentCourse = allFilteredCourses.slice(firstCourse, lastCourse);
+
   const CourseLayout = (props) => {
     return (
       <div className="profile-card flex flex-col gap-3">
@@ -104,7 +106,7 @@ const CoursesDisplay = () => {
   return (
     <div className="flex flex-col gap-4 bg-[#F8F8F6]">
       <div className="flex flex-col sm:flex-row items-center gap-5 p-5 sm:px-15 justify-between">
-        <h1 className=" text-4xl sm:text-5xl font-semibold">
+        <h1 className=" text-4xl sm:text-5xl text-[var(--color-primary-blue)] font-semibold">
           Find your own Way
         </h1>
 
@@ -116,12 +118,12 @@ const CoursesDisplay = () => {
             }))}
             onSelect={(value) => [setCourseSelect(value), setCurrentPage(1)]}
             triggerContent={courseSelect ? courseSelect : "Select Your Course"}
-            className="cursor-pointer sm:hidden text-sm font-semibold text-black border border-white rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
+            className="cursor-pointer bg-white sm:hidden text-gray-500 text-sm font-semibold  border border-gray-300 rounded-full p-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
           />
-          <SearchIcon />
+          <ModalPage icon={"Search"} />
         </div>
       </div>
-      <div className="flex p-7">
+      <div className="flex sm:p-7">
         <div className="sidenav rounded-2xl bg-white  p-3 gap-4 w-full  hidden sm:flex sm:flex-col max-w-max">
           {menuItems.map((item, index) => (
             <ActiveLink
@@ -136,16 +138,21 @@ const CoursesDisplay = () => {
           ))}
         </div>
 
-        <div className="flex flex-col w-full">
-          <div className="flex  flex-wrap justify-start  w-full md:flex-row gap-4 p-4 pt-0 md:p-8 md:pt-0">
+        <div className="flex flex-col w-full gap-8">
+          <div className="flex flex-wrap justify-center sm:hidden  w-full md:flex-row gap-4 p-4 pt-0 md:p-8 md:pt-0">
+            <CarouselLayout contentList={DetailCourse} />
+          </div>
+          <div className=" hidden sm:flex  flex-wrap justify-start  w-full md:flex-row gap-4 p-4 pt-0 md:p-8 md:pt-0">
             {DetailCourse}
           </div>
-          <PaginationLaoyut
-            totalitems={allFilteredCourses.length}
-            itemsPerPage={postsPerPage}
-            pageSize={postsPerPage}
-            onChange={(page) => setCurrentPage(page)}
-          />
+          <div className="flex justify-center sm:justify-end mb-3">
+            <PaginationLaoyut
+              totalitems={allFilteredCourses.length}
+              itemsPerPage={postsPerPage}
+              pageSize={postsPerPage}
+              onChange={(page) => setCurrentPage(page)}
+            />
+          </div>
         </div>
       </div>
     </div>
