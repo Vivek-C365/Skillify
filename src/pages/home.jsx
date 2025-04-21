@@ -2,8 +2,6 @@ import Navbar from "../components/navbar/index";
 import ContentSection from "../components/common/ContentSection";
 import Cards from "../components/common/card";
 import { responsiveFlex } from "../styles/responsiveFlex";
-import img1 from "../assets/images/img1.jpg";
-import { responsiveImage } from "../components/common/responsiveImage";
 import CourseSection2 from "../features/courses/pages/CourseSection2";
 import CoursesDisplay from "../features/courses/pages/coursesDisplay";
 
@@ -12,11 +10,6 @@ import {
   responsiveTextBodyLarge,
   responsiveTextH1,
 } from "../styles/responsiveText";
-import {
-  HeadingDescriptionText,
-  HeadingDescription,
-} from "../components/common/HeadingDescriptionText";
-
 import ProgressBar from "../components/common/ProgressBar";
 import { AvatarGroup } from "../components/common/AvatarGroup";
 import CountingNumber from "../components/common/CountingNumber";
@@ -44,15 +37,17 @@ const Home = () => {
       rightContent: (
         <Cards className="hidden sm:block">
           {" "}
-          <>
+          <div>
             <div>
               <h3 className="text-black text-2xl mx-auto text-start max-w-[40rem] mb-5">
                 Active Now
               </h3>
               <ProgressBar />
             </div>
-            <AvatarGroup />
-          </>{" "}
+            <div className="absolute top-12  right-[-7rem]">
+              <AvatarGroup />
+            </div>
+          </div>{" "}
         </Cards>
       ),
     },
@@ -62,7 +57,12 @@ const Home = () => {
       biggerText: "EdTech",
       tags: [
         { text: "Get started" },
-        { icon: true, bgColor: "transparent", item: <>&#8599;</> },
+        {
+          icon: true,
+          bgColor: "transparent",
+          rotate: "rotate-90",
+          item: <>&#8599;</>,
+        },
       ],
     },
     {
@@ -91,6 +91,32 @@ const Home = () => {
       description: "Top Mentors",
     },
   ];
+  const achieveData = [
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/e13888bfb8ff08a67b95eba8721ce071e86065d8c550324be1f8e29697d2a586?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Learn latest skills",
+      description:
+        "Learn new skills like Project management, AWS, Security or anything that matters to you in your industry. New skills translate to new opportunities.",
+    },
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/dadc5fed5ab197a2a006bfe7ff4adff495f7aa0fa76bc36478d2b47884aa3ace?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Upgrade your skills",
+      description:
+        "Upskill your current skillsets to the latest trends, developments or new versions. Stay at fore-front, current and relevant in the ever changing world of skills.",
+    },
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/54ecde977ac2e1733aa3a7c80783b77c22b9fa098996ce3882be83159defd4a7?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Further your career",
+      description:
+        "Don't let your previous skills become the bottleneck of your career growth in today's fast-changing skill demands. Upgrade your skills today.",
+    },
+    {
+      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/d998ce4a1565c48cb9d7f2c33948f0574978643c665ed8c55d69172b6177fbec?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
+      title: "Upskill your team",
+      description:
+        "With our tailored training approaches, give your team the latest skillsets needed for the optimum productivity; stay ahead of the competition.",
+    },
+  ];
 
   return (
     <div>
@@ -98,7 +124,7 @@ const Home = () => {
         <Navbar />
 
         {/* Main Top Content */}
-        <div className="p-4 md:p-8">
+        <div className="p-4 md:p-8 ">
           {sections.map((section, index) => (
             <ContentSection
               key={index}
@@ -116,7 +142,7 @@ const Home = () => {
       {/* About Us */}
 
       <div
-        className={` ${responsiveFlex} bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
+        className={` ${responsiveFlex}  bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
       >
         <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-8">
           <div>
@@ -140,7 +166,7 @@ const Home = () => {
           </div>
         </div>
         <div className="w-full md:w-1/2">
-          <p className={` text-center ${responsiveTextBodyLarge}`}>
+          <p className={`  ${responsiveTextBodyLarge}`}>
             At skillify, we offer comprehensive English language courses
             tailored to your personal and professional growth. Whether you're a
             beginner or seeking advanced fluency. our dynamic lessons will help
@@ -149,33 +175,33 @@ const Home = () => {
         </div>
       </div>
 
-      <div className={`text-black p-6  md:p-8 gap-4 md:gap-8`}>
-        <div className="max-w-[1200px] flex flex-col md:gap-8 m-auto justify-center items-center ">
-          <div>
-            <HeadingDescription>
-              Digital <span>education</span> is a key to your future success
-            </HeadingDescription>
-            <div className="text-center w-4 rounded-full h-1 bg-indigo-500 mx-auto mt-2 "></div>
-            <HeadingDescriptionText>
-              On our platform you will find the largest selection pf IT courses
-              that will help you develop skills and gain new knowledge in this
-              area.
-            </HeadingDescriptionText>
-
-            <div>
-              <img
-                className={`${responsiveImage}`}
-                src={img1}
-                alt="this is image 1"
-                loading="lazy"
-              />
-            </div>
+      <section className="achieve_section my-4">
+        <div className="content_wrapper">
+          <div className="title_wrapper">
+            <h2 className="title flex gap-2">
+              <span className="title-primary text-[var(--color-primary-blue);]">Achieve with </span>
+              <span className="title-secondary text-[var(--color-dark-lavender)]"> Skillify</span>
+            </h2>
+          </div>
+          <div className="achieve_items_wrapper">
+            {achieveData.map((item, index) => (
+              <div className="achieve_item" key={index}>
+                <div className="icon_wrapper">
+                  <img src={item.icon} alt="" />
+                </div>
+                <h3 className="achieve_title text-[var(--color-primary-blue);]">{item.title}</h3>
+                <p className="achieve_description text-[var(--secondry-text-Lightblue)]">{item.description}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
       <CourseSection2 />
 
-      <CoursesDisplay />
+      <div className="divider"></div>
+      <div>
+        <CoursesDisplay />
+      </div>
     </div>
   );
 };

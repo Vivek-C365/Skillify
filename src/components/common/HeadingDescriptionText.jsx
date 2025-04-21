@@ -1,9 +1,9 @@
-export  function HeadingDescription({ children, contentPosition }) {
+export  function HeadingDescription({ children, contentPosition , className }) {
   return (
     <h3
-      className={`text-black text-3xl mx-auto text-center  ${
+      className={`  text-3xl mx-auto   ${
         contentPosition === "center" ? "text-center" : "text-"
-      } max-w-[40rem] mb-5`}
+      } max-w-[40rem] mb-5 ${className}`}
     >
       {children}
     </h3>

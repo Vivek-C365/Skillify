@@ -4,6 +4,7 @@ import { useFirebase } from "../../hooks/useFirebase";
 import Dropdown from "../common/DropDown";
 import Eduaide_cube from "../../assets/images/eduaide_cube.png";
 import { AvatarWithText } from "../common/AvatarGroup";
+import ActiveLink from "../common/ActiveLink";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
@@ -39,8 +40,8 @@ const Navbar = () => {
   };
 
   return (
-    <header>
-      <nav className="mx-auto flex max-w-7xl items-center justify-between p-2 lg:px-8">
+    <header className="bg-[var(--color-lavender)]">
+      <nav className="mx-auto  flex max-w-7xl items-center justify-between p-2 lg:px-8">
         <Logo />
 
         <DesktopMenu />
@@ -122,14 +123,15 @@ const MobileMenuButton = ({ isOpen, toggleMenu }) => (
 const DesktopMenu = () => (
   <div className="hidden flex gap-2 items-center bg-white p-[5px] rounded-full lg:flex">
     {NAV_ITEMS.map((item) => (
-          <a
-            key={item.link}
-            href={item.link}
-            className="text-sm flex font-semibold nav-hover text-gray-900"
-          >
-            {item.text}
-          </a>
-        ))}
+      <ActiveLink
+        to={item.link}
+        key={item.link}
+        activeClassName="bg-[#e9e3fc]"
+        className="text-sm flex font-semibold nav-hover text-gray-900"
+      >
+        {item.text}
+      </ActiveLink>
+    ))}
   </div>
 );
 

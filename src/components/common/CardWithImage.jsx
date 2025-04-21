@@ -9,11 +9,7 @@ const CardWithImage = ({ children, image, imageStyle }) => (
       border: "1.5px solid black",
       borderRadius: "18px",
     }}
-    bodyStyle={{
-      padding: "11px",
-      backgroundColor: "#yourColor",
-      // Add any other body styles here
-    }}
+   
     cover={<img className={imageStyle} alt="example" src={image} />}
   >
     {children}

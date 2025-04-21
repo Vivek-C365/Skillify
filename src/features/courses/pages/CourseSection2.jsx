@@ -10,9 +10,11 @@ import TagSingle from "../../../components/common/TagSingle";
 // import page_img2 from "../assets/page_img2.jpg";
 
 export default function CourseSection2() {
-  const PLatformCard = ({ images, content, styleclass}) => {
+  const PLatformCard = ({ images, content, styleclass }) => {
     return (
-      <div className={` ${styleclass} right-section flex flex-wrap  gap-5 justify-center items-center  m-5 `}>
+      <div
+        className={` ${styleclass} right-section flex flex-wrap  gap-5 justify-center items-center  m-5 `}
+      >
         <div className=" relative max-w-72">
           <img
             className="w-full h-full object-cover rounded-2xl"
@@ -28,12 +30,12 @@ export default function CourseSection2() {
   return (
     <>
       {/* Platform Section */}
-      <div className="flex flex-wrap justify-evenly mx-auto">
-        <div className="left-section max-w-[25rem] m-5 p-3 ">
-          <HeadingDescription>
+      <div className="flex flex-wrap items-center justify-evenly mx-auto">
+        <div className="left-section max-w-[30rem] m-5 p-3 ">
+          <HeadingDescription className="!text-[var(--color-primary-blue);] font-semibold">
             On our platform you will find a wide range of online courses
           </HeadingDescription>
-          <h6 className="text-[1rem] mt-6 mx-auto mr-2 text-justify mb-6">
+          <h6 className="text-[1rem] text-[var(--secondry-text-Lightblue)] mt-6 mx-auto mr-2 text-justify mb-6">
             We offer the highest quality education resources an individual
             approach to each student and modern technologies to make learning
             accessible & effective
@@ -46,12 +48,12 @@ export default function CourseSection2() {
             content={
               <div className="absolute bottom-3 p-2 bg-white left-3 rounded-2xl">
                 <p className="text-[1rem] rounded-2xl">Business & Finance</p>
-                <h6 className="text-[0.7rem] mt-1">Financial Literacy</h6>
+                <h6 className="text-[0.7rem] text-[var(--secordry-text-gray)] mt-1">Financial Literacy</h6>
               </div>
             }
           />
           <PLatformCard
-           styleclass= "!hidden sm:!block"
+            styleclass="!hidden sm:!block"
             images={Platform2}
             content={
               <div className="flex absolute flex-col gap-1.5 h-full justify-end bottom-5 left-2">

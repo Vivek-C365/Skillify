@@ -3,7 +3,7 @@ import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Divider, Tooltip } from "antd";
 export const AvatarGroup = () => (
   <>
-    <Avatar.Group>
+    <Avatar.Group size={"large"}>
       <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />
       <a href="https://ant.design">
         <Avatar style={{ backgroundColor: "#f56a00" }}>K</Avatar>
@@ -27,7 +27,7 @@ export const AvatarWithText = ({ useremail }) => {
   const firstLetter = name.charAt(0).toUpperCase();
   return (
     <>
-      <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
+      <Avatar  style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
         {firstLetter}
       </Avatar>
     </>
