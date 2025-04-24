@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { Children, useState } from "react";
 import { Button, Flex, Modal } from "antd";
-const ModalPage = ({ icon }) => {
+import SearchIcon from "./searchIcon";
+const ModalPage = ({ icon, children }) => {
   const [openResponsive, setOpenResponsive] = useState(false);
   return (
-    <Flex >
-      <Button className="w-[50px]" onClick={() => setOpenResponsive(true)}>
+    <Flex>
+      <Button
+        className="w-[50px] aspect-square !rounded-full"
+        onClick={() => setOpenResponsive(true)}
+      >
         {icon}
       </Button>
       <Modal
-        title="Modal responsive width"
         centered
         open={openResponsive}
-        onOk={() => setOpenResponsive(false)}
         onCancel={() => setOpenResponsive(false)}
+        closable={false}
+        footer={false}
         width={{
           xs: "90%",
           sm: "80%",
@@ -20,11 +24,9 @@ const ModalPage = ({ icon }) => {
           lg: "60%",
           xl: "50%",
           xxl: "40%",
-        }}
+        }}// This removes the default footer including the OK button
       >
-        <p>some contents...</p>
-        <p>some contents...</p>
-        <p>some contents...</p>
+        {children}
       </Modal>
     </Flex>
   );

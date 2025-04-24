@@ -6,7 +6,7 @@ function ProtectdRoute() {
   const { userLoggedIn, loading } = useFirebase();
 
   if (loading) {
-    return <div><Loading/></div>; // or a spinner component
+    return <div><Loading/></div>; 
   }
 
   return userLoggedIn ? <Outlet /> : <Navigate to="/login" />;

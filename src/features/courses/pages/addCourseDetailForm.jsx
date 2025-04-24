@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Card, Row, Col } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   FormSelect,
   FormInput,
@@ -10,6 +9,7 @@ import {
 import { FormSectionDivider } from "../../../components/common/FormSections";
 import { Button } from "../../../components/common/button";
 import { useFirebase } from "../../../hooks/useFirebase";
+import NaigationSteps from "../../../components/common/NaigationSteps";
 const AddCourseDetailForm = () => {
   const [form] = Form.useForm();
   const Firebase = useFirebase();
@@ -41,8 +41,8 @@ const AddCourseDetailForm = () => {
 
   const proficiencyLevels = ["Beginner", "Intermediate", "Fluent", "Native"];
 
-  return (
-    <div style={{ maxWidth: 800, margin: "auto", padding: "2rem" }}>
+  const CourseForm = () => {
+    return (
       <Card
         title="Add New Course"
         variant="outlined"
@@ -144,7 +144,29 @@ const AddCourseDetailForm = () => {
           </Form.Item>
         </Form>
       </Card>
-    </div>
+    );
+  };
+
+  const steps = [
+    {
+      title: "Add Category",
+      content: "First-content",
+    },
+    {
+      title: "Course Deatails",
+      content: <CourseForm />,
+    },
+    {
+      title: "Last",
+      content: "Last-content",
+    },
+  ];
+  return (
+    <>
+      <div style={{ maxWidth: 800, margin: "auto", padding: "2rem" }}>
+        <NaigationSteps steps={steps} />
+      </div>
+    </>
   );
 };
 

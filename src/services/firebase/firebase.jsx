@@ -17,25 +17,28 @@ import { getFirestore } from "firebase/firestore";
 
 import { addDocument } from "../firebase/cloudFirestore";
 import { handleError, handleSuccess } from "../../utils/tostify";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../features/user/pages/userProfileSlice";
 
 const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
 
-// Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(firebaseApp);
 
 export const FirebaseProvider = ({ children }) => {
   const [loggedIn, setLoggedInUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setLoggedInUser(user || null);
-      setLoading(false); // Set loading to false once auth check is done
+      setLoading(false);
+      dispatch(setUserData(user.providerData[0]));
     });
 
-    return () => unsubscribe(); // Cleanup
+    return () => unsubscribe();
   }, []);
 
   const userLoggedIn = loggedIn ? loggedIn : null;
@@ -43,8 +46,6 @@ export const FirebaseProvider = ({ children }) => {
   const signupWithEmailAndPassword = async (email, password) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-
-      handleSuccess("User created successfully!");
     } catch (error) {
       handleError(error.message);
     }
@@ -53,7 +54,6 @@ export const FirebaseProvider = ({ children }) => {
   const UserSignInwithEmailAndPassword = async (email, password) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      handleSuccess("User Sign In Successfully!");
     } catch (error) {
       handleError(error.message);
     }
@@ -61,10 +61,7 @@ export const FirebaseProvider = ({ children }) => {
 
   const signupWithGoogle = async () => {
     try {
-      console.log("Google signup initiated");
       await signInWithPopup(auth, googleProvider);
-
-      handleSuccess("User created successfully!");
     } catch (error) {
       return error;
     }
@@ -73,7 +70,6 @@ export const FirebaseProvider = ({ children }) => {
   const signupWithPhone = async (phone, appVerifier) => {
     try {
       await signInWithPhoneNumber(auth, phone, appVerifier);
-      handleSuccess("User created successfully!");
     } catch (error) {
       return error;
     }
@@ -81,26 +77,26 @@ export const FirebaseProvider = ({ children }) => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      console.log("User logged out successfully");
     } catch (error) {
       console.error("Logout error:", error.message);
     }
   };
 
-  const addDocumentToFirestore = async (collectionName, data) => {
+  const addUserToFirestore = async (user) => {
     try {
-      await addDocument(db, collectionName, data);
-      handleSuccess("Added document successfully!");
+      const userData = {
+        email: user.email,
+      };
+      await addDocument(db, "users", userData);
+      console.log("User added to Firestore:", userData);
+      handleSuccess("User added to Firestore successfully!");
     } catch (error) {
       handleError(error.message);
-      console.error("Error adding document:", error.message);
-      handleError("Error adding document:", error.message);
-      return false;
     }
   };
+
   return (
     <firebaseContext.Provider
-      // value={{ signupWithEmailAndPassword, , signupWithGoogle, userLoggedIn  , handleLogout}}
       value={{
         signupWithEmailAndPassword,
         signupWithGoogle,
@@ -108,14 +104,11 @@ export const FirebaseProvider = ({ children }) => {
         userLoggedIn,
         handleLogout,
         UserSignInwithEmailAndPassword,
-        addDocumentToFirestore,
         loading,
+        addUserToFirestore,
       }}
     >
       {children}
     </firebaseContext.Provider>
   );
 };
-
-
-

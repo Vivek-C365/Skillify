@@ -1,21 +1,22 @@
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useFirebase } from "../../hooks/useFirebase";
 import Dropdown from "../common/DropDown";
 import Eduaide_cube from "../../assets/images/eduaide_cube.png";
 import { AvatarWithText } from "../common/AvatarGroup";
 import ActiveLink from "../common/ActiveLink";
+import { useNavigate } from "react-router-dom";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
-  { text: "About", link: "/about" },
-  { text: "Prices", link: "/Prices" },
   { text: "Quick Quiz", link: "/QuickQuiz" },
-  { text: "How it works", link: "/Work" },
+  { text: "Prices", link: "/Prices" },
+  { text: "About", link: "/about" },
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const boxRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
@@ -37,12 +38,18 @@ const Navbar = () => {
         "-=0.3"
       );
     }
-  }, []);
+  }, [boxRef]);
   const LoginsignupButton = () => {
     return user ? (
       <Dropdown
         items={[
-          { key: "edit", label: "Edit" },
+          {
+            key: "profile",
+            label: "Profile",
+            onClick: () => {
+              navigate("/Profile");
+            },
+          },
           {
             key: "logout",
             label: "logout",
@@ -50,7 +57,7 @@ const Navbar = () => {
             onClick: () => Firebase.handleLogout(),
           },
         ]}
-        triggerContent={<AvatarWithText useremail={user?.email} />}
+        triggerContent={<AvatarWithText useremail={user?.email || "Guest"} />}
         className="cursor-pointer text-sm font-semibold text-white border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
       />
     ) : (
@@ -141,7 +148,7 @@ const MobileMenuButton = ({ isOpen, toggleMenu }) => (
 
 const DesktopMenu = ({ boxRef }) => (
   <div
-    className="hidden flex gap-2 items-center bg-white p-[5px] rounded-full lg:flex"
+    className="hidden lg:flex gap-2 items-center bg-white p-[5px] rounded-full "
     ref={boxRef}
   >
     {NAV_ITEMS.map((item) => (

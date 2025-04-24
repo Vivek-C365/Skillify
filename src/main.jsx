@@ -1,10 +1,10 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { FirebaseProvider } from "./services/firebase/firebase";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { inject } from "@vercel/analytics";
-
+import { store } from "./redux/Store";
+import { Provider } from "react-redux";
 import "./styles/globalStyles.css";
 import App from "./App.jsx";
 
@@ -22,10 +22,12 @@ if (import.meta.env.PROD) {
 createRoot(document.getElementById("root")).render(
   <>
     {import.meta.env.PROD && <SpeedInsights debug={false} />}
-    <FirebaseProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </FirebaseProvider>
+    <Provider store={store}>
+      <FirebaseProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </FirebaseProvider>
+    </Provider>
   </>
 );
