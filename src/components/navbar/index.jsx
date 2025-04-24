@@ -1,29 +1,55 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
+import { Link, Navigate } from "react-router-dom";
 import { useFirebase } from "../../hooks/useFirebase";
 import Dropdown from "../common/DropDown";
 import Eduaide_cube from "../../assets/images/eduaide_cube.png";
 import { AvatarWithText } from "../common/AvatarGroup";
 import ActiveLink from "../common/ActiveLink";
+import { useNavigate } from "react-router-dom";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
-  { text: "About", link: "/about" },
-  { text: "Prices", link: "/Prices" },
   { text: "Quick Quiz", link: "/QuickQuiz" },
-  { text: "How it works", link: "/Work" },
+  { text: "Prices", link: "/Prices" },
+  { text: "About", link: "/about" },
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const boxRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
   const user = Firebase.userLoggedIn;
+  useEffect(() => {
+    if (boxRef.current) {
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
+      tl.from(boxRef.current, {
+        duration: 0.5,
+      }).from(
+        boxRef.current.querySelectorAll("a"),
+        {
+          y: 20,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.3,
+        },
+        "-=0.3"
+      );
+    }
+  }, [boxRef]);
   const LoginsignupButton = () => {
     return user ? (
       <Dropdown
         items={[
-          { key: "edit", label: "Edit" },
+          {
+            key: "profile",
+            label: "Profile",
+            onClick: () => {
+              navigate("/Profile");
+            },
+          },
           {
             key: "logout",
             label: "logout",
@@ -31,7 +57,7 @@ const Navbar = () => {
             onClick: () => Firebase.handleLogout(),
           },
         ]}
-        triggerContent={<AvatarWithText useremail={user?.email} />}
+        triggerContent={<AvatarWithText useremail={user?.email || "Guest"} />}
         className="cursor-pointer text-sm font-semibold text-white border border-white  rounded-full px-2 py-1 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-300"
       />
     ) : (
@@ -44,7 +70,7 @@ const Navbar = () => {
       <nav className="mx-auto  flex max-w-7xl items-center justify-between p-2 lg:px-8">
         <Logo />
 
-        <DesktopMenu />
+        <DesktopMenu boxRef={boxRef} />
         <div className="flex gap-3">
           <LoginsignupButton />
 
@@ -120,8 +146,11 @@ const MobileMenuButton = ({ isOpen, toggleMenu }) => (
   </div>
 );
 
-const DesktopMenu = () => (
-  <div className="hidden flex gap-2 items-center bg-white p-[5px] rounded-full lg:flex">
+const DesktopMenu = ({ boxRef }) => (
+  <div
+    className="hidden lg:flex gap-2 items-center bg-white p-[5px] rounded-full "
+    ref={boxRef}
+  >
     {NAV_ITEMS.map((item) => (
       <ActiveLink
         to={item.link}

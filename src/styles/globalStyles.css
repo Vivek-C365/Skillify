@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+@theme {
+  --breakpoint-3xl: 120rem;
+}
 :root {
   --color-lavender: #bab2e7; /* Custom blue */
   --color-secondary: #ff5722; /* Custom orange */
@@ -138,10 +140,23 @@
   margin-top: 15px;
 }
 
-
-
 .sidenav a {
   text-decoration: none;
   display: block;
 }
 
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-card {
+  opacity: 0; /* optional fallback */
+  animation: fadeSlideIn 0.4s ease forwards;
+}

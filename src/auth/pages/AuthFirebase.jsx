@@ -50,6 +50,8 @@ const SignUp = ({
     try {
       if (type == "signup") {
         await firebase.signupWithEmailAndPassword(email, password);
+        await firebase.addUserToFirestore(user);
+        handleSuccess("User successfully created");
       } else {
         await firebase.UserSignInwithEmailAndPassword(email, password);
       }
