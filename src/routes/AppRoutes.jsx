@@ -5,6 +5,7 @@ import UserProfileDetail from "../features/user/pages/userProfileDetail";
 import LoginPage from "../auth/pages/LoginPage";
 import SignupPage from "../auth/pages/SignUpPage";
 import AddCourseDetailForm from "../features/courses/pages/addCourseDetailForm";
+import AddTeachers from "../features/teachers/pages/AddTeachers";
 import ProtectdRoute from "./ProtectdRoute";
 
 function AppRoutes() {
@@ -18,8 +19,8 @@ function AppRoutes() {
 
         <Route element={<ProtectdRoute />}>
           <Route path="/Profile" element={<UserProfileDetail />} />
-
           <Route path="/addCourse" element={<AddCourseDetailForm />} />
+          <Route path="/addTeacher" element={<AddTeachers />} />
         </Route>
       </Routes>
     </>

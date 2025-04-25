@@ -25,9 +25,6 @@ dist-ssr
 
 test.jsx
 
-#Firebase env file
-src\services\AuthPages\AuthForm.jsx
-C:\Project\Skillify\src\services\AuthPages\AuthForm.jsx
 
 .env
 .env.local

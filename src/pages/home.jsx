@@ -159,14 +159,14 @@ const Home = () => {
                   >
                     {item.text}
                   </span>
-                  <p className="flex text-center">{item.description}</p>
+                  <p className="flex text-[13px] sm:text-[18px] text-center">{item.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
         <div className="w-full md:w-1/2">
-          <p className={`  ${responsiveTextBodyLarge}`}>
+          <p className={`  ${responsiveTextBodyLarge} text-center sm:text-left `}>
             At skillify, we offer comprehensive English language courses
             tailored to your personal and professional growth. Whether you're a
             beginner or seeking advanced fluency. our dynamic lessons will help
@@ -178,9 +178,14 @@ const Home = () => {
       <section className="achieve_section my-4">
         <div className="content_wrapper">
           <div className="title_wrapper">
-            <h2 className="title flex gap-2">
-              <span className="title-primary text-[var(--color-primary-blue);]">Achieve with </span>
-              <span className="title-secondary text-[var(--color-dark-lavender)]"> Skillify</span>
+            <h2 className="title flex gap-2 ">
+              <span className="title-primary text-3xl sm:text-5xl text-[var(--color-primary-blue);]">
+                Achieve with{" "}
+              </span>
+              <span className="title-secondary text-3xl sm:text-5xl text-[var(--color-dark-lavender)]">
+                {" "}
+                Skillify
+              </span>
             </h2>
           </div>
           <div className="achieve_items_wrapper">
@@ -189,8 +194,12 @@ const Home = () => {
                 <div className="icon_wrapper">
                   <img src={item.icon} alt="" />
                 </div>
-                <h3 className="achieve_title text-[var(--color-primary-blue);]">{item.title}</h3>
-                <p className="achieve_description text-[var(--secondry-text-Lightblue)]">{item.description}</p>
+                <h3 className="achieve_title text-[var(--color-primary-blue);]">
+                  {item.title}
+                </h3>
+                <p className="achieve_description  text-[var(--secondry-text-Lightblue)]">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
@@ -199,7 +208,7 @@ const Home = () => {
       <CourseSection2 />
 
       <div className="divider"></div>
-      <div>
+      <div className="CourseDisplay">
         <CoursesDisplay />
       </div>
     </div>
