@@ -35,7 +35,9 @@ export const FirebaseProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setLoggedInUser(user || null);
       setLoading(false);
-      dispatch(setUserData(user.providerData[0]));
+      if (user) {
+        dispatch(setUserData(user.providerData[0]));
+      }
     });
 
     return () => unsubscribe();
