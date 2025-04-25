@@ -7,6 +7,7 @@ import SignupPage from "../auth/pages/SignUpPage";
 import AddCourseDetailForm from "../features/courses/pages/addCourseDetailForm";
 import AddTeachers from "../features/teachers/pages/AddTeachers";
 import ProtectdRoute from "./ProtectdRoute";
+import Courses from "../pages/Courses"
 
 function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ function AppRoutes() {
           <Route path="/Profile" element={<UserProfileDetail />} />
           <Route path="/addCourse" element={<AddCourseDetailForm />} />
           <Route path="/addTeacher" element={<AddTeachers />} />
+          <Route path="/courses" element={<Courses/>} />
         </Route>
       </Routes>
     </>
