@@ -15,7 +15,11 @@ import {
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-import { addDocument, readDocument } from "../firebase/cloudFirestore";
+import {
+  addDocument,
+  readOrCreateDocument,
+  updateDocument,
+} from "../firebase/cloudFirestore";
 import { handleError, handleSuccess } from "../../utils/tostify";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../features/user/pages/userProfileSlice";
@@ -103,7 +107,7 @@ export const FirebaseProvider = ({ children }) => {
     fieldvalue
   ) => {
     try {
-      const data = await readDocument(
+      const data = await readOrCreateDocument(
         db,
         collectionname,
         fieldname,
@@ -115,6 +119,14 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
+  const UpdateUser = async (collectionName, docid, updatedData) => {
+    try {
+      const data = await updateDocument(db, collectionName, docid, updatedData);
+      console.log("updated Data", data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <firebaseContext.Provider
       value={{
@@ -127,6 +139,7 @@ export const FirebaseProvider = ({ children }) => {
         loading,
         addUserToFirestore,
         readUserFromFirestore,
+        UpdateUser
       }}
     >
       {children}
