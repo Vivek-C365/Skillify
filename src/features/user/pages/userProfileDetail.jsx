@@ -140,13 +140,13 @@ const UserProfileDetail = () => {
 
   const ProfileCard = () => (
     <section className="p-4 sm:p-6 md:p-10 bg-white text-zinc-800">
-      <div className="flex flex-col gap-6 md:gap-8 mx-auto max-w-5xl">
+      <div className="flex flex-col gap-6 md:gap-8 mx-auto">
         <header className="flex flex-col gap-2 text-center md:text-left">
           <h1 className="m-0 text-xl md:text-2xl font-semibold">
             Profile Information
           </h1>
         </header>
-        <article className="flex flex-col gap-4 p-4 sm:p-6 bg-gray-50 rounded-lg border">
+        <article className="flex flex-col gap-4 p-4 sm:p-6 bg-gray-50 rounded-lg ">
           <section className="flex flex-col gap-2">
             <SectionTitle title="About Me" className="text-violet-700" />
             <p className="m-0 text-sm md:text-base leading-relaxed text-zinc-600">
@@ -173,8 +173,8 @@ const UserProfileDetail = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
-      <section className="container mx-auto px-4 py-8">
-        <div className="relative flex flex-col bg-white border rounded-2xl shadow-sm overflow-hidden">
+      <section className="container mx-auto px-4 pb-4 ">
+        <div className="relative flex flex-col bg-white  rounded-2xl shadow-lg overflow-hidden">
           <div className="relative md:h-60 w-full overflow-hidden">
             <img
               src="https://static.vecteezy.com/system/resources/previews/039/920/245/non_2x/artificial-intelligence-technology-facebook-cover-free-editor_template.jpeg"
