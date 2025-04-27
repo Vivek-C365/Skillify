@@ -139,15 +139,17 @@ const UserProfileDetail = () => {
   };
 
   const ProfileCard = () => (
-    <section className="p-10 bg-white text-zinc-800">
-      <div className="flex flex-col gap-8 mx-auto">
-        <header className="flex flex-col gap-2">
-          <h1 className="m-0 text-2xl font-medium">Profile Information</h1>
+    <section className="p-4 sm:p-6 md:p-10 bg-white text-zinc-800">
+      <div className="flex flex-col gap-6 md:gap-8 mx-auto max-w-5xl">
+        <header className="flex flex-col gap-2 text-center md:text-left">
+          <h1 className="m-0 text-xl md:text-2xl font-semibold">
+            Profile Information
+          </h1>
         </header>
-        <article className="flex flex-col gap-6 p-6 bg-gray-50 rounded-lg border">
+        <article className="flex flex-col gap-4 p-4 sm:p-6 bg-gray-50 rounded-lg border">
           <section className="flex flex-col gap-2">
             <SectionTitle title="About Me" className="text-violet-700" />
-            <p className="m-0 text-sm leading-relaxed text-zinc-600">
+            <p className="m-0 text-sm md:text-base leading-relaxed text-zinc-600">
               {userData.about || "No description provided."}
             </p>
           </section>
@@ -183,13 +185,15 @@ const UserProfileDetail = () => {
           </div>
           <div className="p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3 w-full">
                 {userProfilePic}
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-1 min-w-0 flex-col gap-1">
                   <h2 className="text-lg font-semibold text-gray-900">
                     {userData.name}
                   </h2>
-                  <p className="text-sm text-gray-600">{userData.email}</p>
+                  <p className="text-sm text-gray-600 break-words truncate">
+                    {userData.email}
+                  </p>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(true)}
