@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Modal, Input } from "antd";
+
 import { EditOutlined } from "@ant-design/icons";
 
-import * as Yup from "yup";
 import { AvatarWithText } from "../../../components/common/AvatarGroup";
 import Navbar from "../../../components/navbar";
 import { useFirebase } from "../../../hooks/useFirebase";
 import EditProfileModal from "./EditProfileModal";
 
 const UserProfileDetail = () => {
-  const reduxUser = useSelector((state) => state.User.userDetails);
+  const reduxUser = useSelector((state) => state.user?.userDetails);
   const firebase = useFirebase();
 
   const [userData, setUserData] = useState({
@@ -170,6 +169,31 @@ const UserProfileDetail = () => {
     { name: "Medium", url: userData.medium },
   ];
 
+  const SocialButtonDisplay = () => {
+    return (
+      <>
+        <div className="flex gap-2">
+          {socialButtons.map(({ name, url }) => (
+            <button
+              key={name}
+              disabled={!url}
+              onClick={() => {
+                if (url) window.open(url, "_blank", "noopener noreferrer");
+              }}
+              className={`flex   gap-2 p-2 text-xs font-bold uppercase border rounded-lg transition ${
+                url
+                  ? "hover:bg-gray-50 text-gray-700 cursor-pointer"
+                  : "bg-gray-200 text-gray-400 hidden cursor-not-allowed"
+              }`}
+            >
+              <span>{name}</span>
+            </button>
+          ))}
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
@@ -202,25 +226,7 @@ const UserProfileDetail = () => {
                   <EditOutlined />
                 </button>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {socialButtons.map(({ name, url }) => (
-                  <button
-                    key={name}
-                    disabled={!url}
-                    onClick={() => {
-                      if (url)
-                        window.open(url, "_blank", "noopener noreferrer");
-                    }}
-                    className={`flex   gap-2 p-2 text-xs font-bold uppercase border rounded-lg transition ${
-                      url
-                        ? "hover:bg-gray-50 text-gray-700 cursor-pointer"
-                        : "bg-gray-200 text-gray-400 hidden cursor-not-allowed"
-                    }`}
-                  >
-                    <span>{name}</span>
-                  </button>
-                ))}
-              </div>
+              <SocialButtonDisplay />
             </div>
           </div>
         </div>

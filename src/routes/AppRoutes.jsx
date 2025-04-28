@@ -5,9 +5,10 @@ import UserProfileDetail from "../features/user/pages/userProfileDetail";
 import LoginPage from "../auth/pages/LoginPage";
 import SignupPage from "../auth/pages/SignUpPage";
 import AddCourseDetailForm from "../features/courses/pages/addCourseDetailForm";
-import AddTeachers from "../features/teachers/pages/AddTeachers";
+import { AdminDashboard } from "../components/dasboard/admin/AdminDasboard";
 import ProtectdRoute from "./ProtectdRoute";
 import AdminRoute from "./PrivateRoute";
+import DashboardLayout from "../components/dasboard/layout/Dashboard";
 
 function AppRoutes() {
   return (
@@ -23,7 +24,14 @@ function AppRoutes() {
         </Route>
         <Route element={<AdminRoute />}>
           <Route path="/addCourse" element={<AddCourseDetailForm />} />
-          <Route path="/addTeacher" element={<AddTeachers />} />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <DashboardLayout>
+                <AdminDashboard />
+              </DashboardLayout>
+            }
+          />
         </Route>
       </Routes>
     </>

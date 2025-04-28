@@ -40,7 +40,7 @@ export const FirebaseProvider = ({ children }) => {
       setLoggedInUser(user || null);
       setLoading(false);
       if (user) {
-        dispatch(setUserData(user.providerData[0]));
+        dispatch(setUserData(user));
       }
     });
 
