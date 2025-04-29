@@ -1,4 +1,4 @@
-import data from '../data.json'
+import data from '../services/api/data.json'
 import CourseTitle from '../components/coursedetail/CourseTitle'
 import CourseDetails from '../components/coursedetail/CourseDetails'
 import CourseVedio from '../components/coursedetail/CourseVedio'
