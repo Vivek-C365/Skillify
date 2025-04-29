@@ -4,11 +4,11 @@ import { BrowserRouter } from 'react-router-dom'
 import { FirebaseProvider } from './services/firebase/firebase'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { inject } from '@vercel/analytics'
-import { store } from './redux/Store'
+import { store, persistor } from "./redux/Store"; // Import persistor
 import { Provider } from 'react-redux'
 import './styles/globalStyles.css'
 import App from './App.jsx'
-import { CourseContextProvider } from '../src/context/CourseGlobal.jsx'
+
 
 
 // Initialize analytics
@@ -41,3 +41,7 @@ createRoot(document.getElementById('root')).render(
     </Provider>
   </>
 )
+
+
+
+// import { CourseContextProvider } from '../src/context/CourseGlobal.jsx's

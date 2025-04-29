@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { EditOutlined } from "@ant-design/icons";
 
 import { AvatarWithText } from "../../../components/common/AvatarGroup";
-import Navbar from "../../../components/navbar";
+import Navbar from "../../../components/navbar/index";
 import { useFirebase } from "../../../hooks/useFirebase";
 import EditProfileModal from "./EditProfileModal";
 
