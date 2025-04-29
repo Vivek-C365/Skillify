@@ -7,8 +7,12 @@ import SignupPage from "../auth/pages/SignUpPage";
 import AddCourseDetailForm from "../features/courses/pages/addCourseDetailForm";
 import { AdminDashboard } from "../components/dasboard/admin/AdminDasboard";
 import ProtectdRoute from "./ProtectdRoute";
+
+import Courses from "../pages/Courses"
+
 import AdminRoute from "./PrivateRoute";
 import DashboardLayout from "../components/dasboard/layout/Dashboard";
+
 
 function AppRoutes() {
   return (
@@ -24,6 +28,10 @@ function AppRoutes() {
         </Route>
         <Route element={<AdminRoute />}>
           <Route path="/addCourse" element={<AddCourseDetailForm />} />
+
+          <Route path="/addTeacher" element={<AddTeachers />} />
+          <Route path="/courses" element={<Courses/>} />
+
           <Route
             path="/admin-dashboard"
             element={
@@ -32,6 +40,7 @@ function AppRoutes() {
               </DashboardLayout>
             }
           />
+
         </Route>
       </Routes>
     </>
