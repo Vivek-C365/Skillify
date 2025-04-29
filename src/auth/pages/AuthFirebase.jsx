@@ -82,7 +82,10 @@ const SignUp = ({
         await firebase.addUserToFirestore({ email });
         handleSuccess("User successfully created");
       } else {
-        await firebase.UserSignInwithEmailAndPassword(email, password);
+         const userlogged =  await firebase.UserSignInwithEmailAndPassword(email, password);
+         if(userlogged){
+          console.log(userlogged)
+         }
       }
       setUser({ email: "", password: "" });
     } catch (error) {

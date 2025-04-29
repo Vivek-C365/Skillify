@@ -1,7 +1,7 @@
 import React from "react";
 import { X, AlignLeft } from "lucide-react";
 import { Badge } from "../../common/Badge";
-import { DasboardButton } from "../../common/button";
+import { Button } from "../../common/button";
 import { useSelector } from "react-redux";
 
 const Header = ({ onToggleSidebar, sidebarOpen }) => {
@@ -39,15 +39,15 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <DasboardButton
+            <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden"
+              className="lg:hidden !text-black"
               onClick={onToggleSidebar}
               aria-label="Toggle menu"
             >
               {sidebarOpen ? <X size={20} /> : <AlignLeft size={20} />}
-            </DasboardButton>
+            </Button>
             <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">
               {getHeaderTitle()}
             </h1>

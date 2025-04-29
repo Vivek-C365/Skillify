@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Users,
@@ -15,13 +15,14 @@ import {
   CardFooter,
 } from "../../common/DashboardCard";
 import { StatCard } from "../../common/StatCard";
-import { DasboardButton } from "../../common/button";
-
+import { Button } from "../../common/button";
+import { AddInstructorForm } from "../../../features/teachers/pages/AddInstructorForm";
+import ModalPage from "../../common/Modal";
 import dashboardData from "../../../services/api/adminDashboard.json";
 
 export const AdminDashboard = () => {
   const { adminAnalytics, courses, topInstructors } = dashboardData;
-
+  const [showAddInstructor, setShowAddInstructor] = useState(true);
   return (
     <div className="space-y-6">
       <div>
@@ -29,13 +30,24 @@ export const AdminDashboard = () => {
           <h1 className="text-2xl font-bold text-gray-800">
             Platform Overview
           </h1>
-          <div className="flex gap-2">
-            <DasboardButton variant="outline" leftIcon={<UserPlus size={16} />}>
-              Add Instructor
-            </DasboardButton>
-            <DasboardButton leftIcon={<BookOpen size={16} />}>
-              Add Categories
-            </DasboardButton>
+          <div className="flex  gap-2">
+            {showAddInstructor && (
+              <ModalPage
+                icon={
+                  <Button
+                    variant="outline"
+                    className="!text-black"
+                    size="lg"
+                    leftIcon={<UserPlus size={16} />}
+                    onClick={() => setShowAddInstructor(true)} // ✅ show modal on click
+                  >
+                    Add Instructor
+                  </Button>
+                }
+                children={<AddInstructorForm  />}
+              />
+            )}
+            <Button leftIcon={<BookOpen size={16} />}>Add Categories</Button>
           </div>
         </div>
       </div>

@@ -111,8 +111,7 @@ const Sidebar = () => {
   return (
     <div className={`h-full ${getRoleColor()} text-white flex flex-col`}>
       <div className="flex items-center justify-center h-16 px-4">
-        <GraduationCap size={32} />
-        <span className="ml-2 text-xl font-bold">LearnHub</span>
+        <span className="ml-2 text-xl font-bold">Skillify</span>
       </div>
 
       <nav className="flex-1 overflow-y-auto">

@@ -21,8 +21,6 @@ import {
   updateDocument,
 } from "../firebase/cloudFirestore";
 import { handleError, handleSuccess } from "../../utils/tostify";
-import { useDispatch } from "react-redux";
-import { setUserData } from "../../features/user/pages/userProfileSlice";
 
 const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
@@ -33,15 +31,12 @@ const db = getFirestore(firebaseApp);
 export const FirebaseProvider = ({ children }) => {
   const [loggedIn, setLoggedInUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setLoggedInUser(user || null);
       setLoading(false);
-      if (user) {
-        dispatch(setUserData(user));
-      }
+     
     });
 
     return () => unsubscribe();
@@ -83,6 +78,7 @@ export const FirebaseProvider = ({ children }) => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+
     } catch (error) {
       console.error("Logout error:", error.message);
     }

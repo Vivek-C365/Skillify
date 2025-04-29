@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 const DashboardLayout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -13,7 +13,7 @@ const DashboardLayout = ({ children }) => {
     <div className="flex h-screen overflow-hidden">
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-20 bg-[#000000b8] bg-opacity-50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

@@ -20,6 +20,7 @@ export const addDocument = async (db, collectionName, data) => {
   }
 };
 
+
 export const readOrCreateDocument = async (
   db,
   collectionName,

@@ -10,6 +10,7 @@ function AdminRoute() {
   const loading = false;
 
   if (loading) return <Loading />;
+  
   return userDetails ? <Outlet /> : <Navigate to="/login" />;
 }
 
