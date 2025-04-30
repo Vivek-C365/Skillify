@@ -71,7 +71,7 @@ const Sidebar = () => {
     {
       title: "All Courses",
       icon: <BookOpen size={20} />,
-      path: "/courses",
+      path: "/Allcourses",
       roles: ["admin"],
     },
     {

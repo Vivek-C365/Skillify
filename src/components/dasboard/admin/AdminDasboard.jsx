@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Users,
@@ -18,11 +18,34 @@ import { StatCard } from "../../common/StatCard";
 import { Button } from "../../common/button";
 import { AddInstructorForm } from "../../../features/teachers/pages/AddInstructorForm";
 import ModalPage from "../../common/Modal";
-import dashboardData from "../../../services/api/adminDashboard.json";
+import { useFirebase } from "../../../hooks/useFirebase";
+import CountingNumber from "../../common/CountingNumber";
 
 export const AdminDashboard = () => {
-  const { adminAnalytics, courses, topInstructors } = dashboardData;
-  const [showAddInstructor, setShowAddInstructor] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [topInstructors, setTopInstructors] = useState([]);
+  const [showAddInstructor, setShowAddInstructor] = useState(false);
+  const firebase = useFirebase();
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const usersData = await firebase.readUser("users");
+        const coursesData = await firebase.readUser("CouseDetails");
+        const instructorsData = await firebase.readUser("Instructor");
+
+        setUsers(usersData || []);
+        setCourses(coursesData || []);
+        setTopInstructors(instructorsData || []);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, [firebase]);
+  console.log(users , courses , topInstructors)
   return (
     <div className="space-y-6">
       <div>
@@ -30,7 +53,7 @@ export const AdminDashboard = () => {
           <h1 className="text-2xl font-bold text-gray-800">
             Platform Overview
           </h1>
-          <div className="flex  gap-2">
+          <div className="flex gap-2">
             {showAddInstructor && (
               <ModalPage
                 icon={
@@ -39,13 +62,15 @@ export const AdminDashboard = () => {
                     className="!text-black"
                     size="lg"
                     leftIcon={<UserPlus size={16} />}
-                    onClick={() => setShowAddInstructor(true)} // ✅ show modal on click
+                    onClick={() => setShowAddInstructor(true)}
                   >
                     Add Instructor
                   </Button>
                 }
-                children={<AddInstructorForm  />}
-              />
+                closable={true}
+              >
+                <AddInstructorForm />
+              </ModalPage>
             )}
             <Button leftIcon={<BookOpen size={16} />}>Add Categories</Button>
           </div>
@@ -56,33 +81,40 @@ export const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <StatCard
             title="Total Students"
-            value={adminAnalytics.totalStudents}
+            value={
+              users.length > 0 ? <CountingNumber maxnumber={users.length} /> : 0
+            }
             change={7.2}
             icon={<Users size={24} />}
             variant="primary"
           />
+
           <StatCard
-            title="Total Revenue"
-            value={adminAnalytics.totalRevenue}
+            title="Total Instructors"
+            value={
+              topInstructors.length > 0 ? (
+                <CountingNumber maxnumber={topInstructors.length} />
+              ) : (
+                0
+              )
+            }
             change={15.3}
-            icon={<DollarSign size={24} />}
+            icon={<Users size={24} />}
             variant="success"
-            prefix="$"
           />
+
           <StatCard
             title="Active Courses"
-            value={adminAnalytics.totalCourses}
+            value={
+              courses.length > 0 ? (
+                <CountingNumber maxnumber={courses.length} />
+              ) : (
+                0
+              )
+            }
             change={4.8}
             icon={<BookOpen size={24} />}
             variant="info"
-          />
-          <StatCard
-            title="Completion Rate"
-            value={adminAnalytics.courseCompletionRate}
-            change={1.4}
-            icon={<TrendingUp size={24} />}
-            variant="warning"
-            suffix="%"
           />
         </div>
       </div>

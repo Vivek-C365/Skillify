@@ -12,6 +12,7 @@ import Courses from "../pages/Courses";
 
 import AdminRoute from "./PrivateRoute";
 import DashboardLayout from "../components/dasboard/layout/Dashboard";
+import TableRepresent from "../components/common/Table";
 
 function AppRoutes() {
   return (
@@ -36,6 +37,14 @@ function AppRoutes() {
             element={
               <DashboardLayout>
                 <AdminDashboard />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/Allcourses"
+            element={
+              <DashboardLayout>
+                <TableRepresent />
               </DashboardLayout>
             }
           />

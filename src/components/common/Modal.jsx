@@ -17,7 +17,7 @@ const ModalPage = ({ icon, children }) => {
         open={openResponsive}
         onCancel={() => setOpenResponsive(false)}
         footer={null}  
-        closable={false}
+        // closable={false}
         width={600}   
       >
         {children}

@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
   { text: "Quick Quiz", link: "/QuickQuiz" },
-  { text: "Prices", link: "/Prices" },
   { text: "About", link: "/about" },
 ];
 
