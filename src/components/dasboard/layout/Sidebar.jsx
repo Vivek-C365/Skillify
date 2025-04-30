@@ -28,7 +28,7 @@ const Sidebar = () => {
       title: "Dashboard",
       icon: <Home size={20} />,
       path: "/",
-      roles: ["student", "teacher", "admin"],
+      roles: ["student", "teacher"],
     },
     {
       title: "My Courses",
@@ -66,6 +66,13 @@ const Sidebar = () => {
       icon: <GraduationCap size={20} />,
       path: "/students",
       roles: ["teacher"],
+    },
+
+    {
+      title: "Dashboard",
+      icon: <Home size={20} />,
+      path: "/admin-dashboard",
+      roles: [ "admin"],
     },
 
     {

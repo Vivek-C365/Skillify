@@ -1,29 +1,43 @@
 import React, { useState } from "react";
-import { Modal } from "antd";
+import { Modal, Button } from "antd";
+
+
 
 const ModalPage = ({ icon, children }) => {
-  const [openResponsive, setOpenResponsive] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState("Content of the modal");
+  const showModal = () => {
+    setOpen(true);
+  };
+  const handleOk = () => {
+    setModalText("The modal will be closed after two seconds");
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setOpen(false);
+  };
   return (
     <>
- 
-      <div onClick={() => setOpenResponsive(true)} className="cursor-pointer">
-        {icon}
+      <div onClick={showModal} className="cursor-pointer">
+        {" "}
+        {icon}{" "}
       </div>
-
-
       <Modal
-        centered
-        open={openResponsive}
-        onCancel={() => setOpenResponsive(false)}
-        footer={null}  
-        // closable={false}
-        width={600}   
+        title="Title"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
       >
         {children}
       </Modal>
     </>
   );
 };
-
 export default ModalPage;

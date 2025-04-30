@@ -4,14 +4,13 @@ import Loading from "../components/common/Loading";
 
 function AdminRoute() {
   const user = useSelector((state) => state.user);
-  const userDetails = user?.userDetails;
-  
+  const userDetails = user?.userDetails.isAdmin;
 
   const loading = false;
 
   if (loading) return <Loading />;
   
-  return userDetails ? <Outlet /> : <Navigate to="/login" />;
+  return userDetails? <Outlet /> : <Navigate to="/login" />;
 }
 
 export default AdminRoute;

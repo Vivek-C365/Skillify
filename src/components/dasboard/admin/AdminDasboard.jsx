@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Users,
-  DollarSign,
-  BookOpen,
-  TrendingUp,
-  UserPlus,
-} from "lucide-react";
+import { Users, BookOpen, UserPlus } from "lucide-react";
 
 import {
   Card,
@@ -25,15 +19,16 @@ export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [topInstructors, setTopInstructors] = useState([]);
-  const [showAddInstructor, setShowAddInstructor] = useState(false);
+  const [showAddInstructor, setShowAddInstructor] = useState(true);
   const firebase = useFirebase();
 
+  console.log(topInstructors)
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const usersData = await firebase.readUser("users");
-        const coursesData = await firebase.readUser("CouseDetails");
-        const instructorsData = await firebase.readUser("Instructor");
+        const usersData = await firebase.readData("users");
+        const coursesData = await firebase.readData("CouseDetails");
+        const instructorsData = await firebase.readData("Instructor");
 
         setUsers(usersData || []);
         setCourses(coursesData || []);
@@ -44,8 +39,31 @@ export const AdminDashboard = () => {
     };
 
     fetchDashboardData();
-  }, [firebase]);
-  console.log(users , courses , topInstructors)
+  }, [firebase, showAddInstructor]);
+
+  const stats = [
+    {
+      title: "Total Students",
+      value: users.length,
+
+      icon: <Users size={24} />,
+      variant: "primary",
+    },
+    {
+      title: "Total Instructors",
+      value: topInstructors.length,
+      icon: <Users size={24} />,
+      variant: "success",
+    },
+    {
+      title: "Active Courses",
+      value: courses.length,
+      icon: <BookOpen size={24} />,
+      variant: "info",
+      link: "/Allcourses",
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
@@ -77,46 +95,30 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard
-            title="Total Students"
-            value={
-              users.length > 0 ? <CountingNumber maxnumber={users.length} /> : 0
-            }
-            change={7.2}
-            icon={<Users size={24} />}
-            variant="primary"
-          />
 
-          <StatCard
-            title="Total Instructors"
-            value={
-              topInstructors.length > 0 ? (
-                <CountingNumber maxnumber={topInstructors.length} />
-              ) : (
-                0
-              )
-            }
-            change={15.3}
-            icon={<Users size={24} />}
-            variant="success"
-          />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {stats.map((stat, index) => {
+          const card = (
+            <StatCard
+              key={index}
+              title={stat.title}
+              value={
+                stat.value > 0 ? <CountingNumber maxnumber={stat.value} /> : 0
+              }
+              change={stat.change}
+              icon={stat.icon}
+              variant={stat.variant}
+            />
+          );
 
-          <StatCard
-            title="Active Courses"
-            value={
-              courses.length > 0 ? (
-                <CountingNumber maxnumber={courses.length} />
-              ) : (
-                0
-              )
-            }
-            change={4.8}
-            icon={<BookOpen size={24} />}
-            variant="info"
-          />
-        </div>
+          return stat.link ? (
+            <Link key={index} to={stat.link}>
+              {card}
+            </Link>
+          ) : (
+            <div key={index}>{card}</div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -133,21 +135,19 @@ export const AdminDashboard = () => {
                       {index + 1}
                     </div>
                     <img
-                      src={course.thumbnail}
-                      alt={course.title}
+                      src="https://www.anglofone.co.in/static/media/foundation%20course.7e6169c6cb93cdb42fb4.png"
                       className="w-12 h-12 object-cover rounded mr-3"
                     />
                     <div className="flex-1">
-                      <p className="font-medium">{course.title}</p>
+                      <p className="font-medium">{course.data.category}</p>
                       <p className="text-sm text-gray-600">
-                        {course.instructor}
+                        {course.data.name}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">${course.price}</p>
+                      <p className="font-medium">${course.data.hourly_rate}</p>
                       <div className="flex items-center text-sm text-gray-600">
-                        <Users size={14} className="mr-1" />
-                        {course.enrolled}
+                        <span>Hourly rate</span>
                       </div>
                     </div>
                   </div>
@@ -156,7 +156,7 @@ export const AdminDashboard = () => {
             </CardContent>
             <CardFooter className="border-t">
               <Link
-                to="/courses"
+                to="/Allcourses"
                 className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
               >
                 View all courses
@@ -179,15 +179,15 @@ export const AdminDashboard = () => {
                     </div>
                     <img
                       src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                        instructor.name
+                        instructor.data.name
                       )}&background=random`}
-                      alt={instructor.name}
+                      alt={instructor.data.name}
                       className="w-12 h-12 rounded-full mr-3"
                     />
                     <div className="flex-1">
-                      <p className="font-medium">{instructor.name}</p>
+                      <p className="font-medium">{instructor.data.name}</p>
                       <p className="text-sm text-gray-600">
-                        {instructor.course}
+                        {instructor.data.expertise}
                       </p>
                     </div>
                     <div className="text-right">

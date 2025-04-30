@@ -48,6 +48,22 @@ function AppRoutes() {
               </DashboardLayout>
             }
           />
+          <Route
+            path="/instructors"
+            element={
+              <DashboardLayout>
+                <TableRepresent />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/students"
+            element={
+              <DashboardLayout>
+                <TableRepresent />
+              </DashboardLayout>
+            }
+          />
         </Route>
       </Routes>
     </>

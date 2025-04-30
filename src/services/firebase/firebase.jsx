@@ -123,7 +123,7 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
-  const readUser = async (collectionname) => {
+  const readData = async (collectionname) => {
     try {
       const dataRead = await readDocuments(db, collectionname);
 
@@ -156,7 +156,7 @@ export const FirebaseProvider = ({ children }) => {
         readUserFromFirestore,
         UpdateUser,
         addInstructor,
-        readUser,
+        readData,
       }}
     >
       {children}
