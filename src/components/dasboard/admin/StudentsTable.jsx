@@ -108,18 +108,6 @@ const StudentsTable = () => {
             </div>
           </div>
         </div>
-
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-sm">
-            <span>Progress</span>
-            <span>{student.data?.progress || 0}%</span>
-          </div>
-          <Progress
-            percent={student.data?.progress || 0}
-            size="small"
-            showInfo={false}
-          />
-        </div>
       </div>
     </Card>
   );
@@ -150,14 +138,7 @@ const StudentsTable = () => {
         </Tag>
       ),
     },
-    {
-      title: "Progress",
-      dataIndex: ["data", "progress"],
-      key: "progress",
-      render: (progress) => (
-        <Progress percent={progress || 0} size="small" className="w-32" />
-      ),
-    },
+    
     {
       title: "Last Active",
       dataIndex: ["data", "lastActive"],
