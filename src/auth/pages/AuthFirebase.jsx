@@ -50,15 +50,13 @@ const SignUp = ({
       return;
     }
 
-    // Admin login check
     if (email === adminEmail && password === adminPassword) {
       dispatch(setUserData({ email, isAdmin: true  , role : "admin" , username : "Stebin Ben"})); // store that this is admin
       handleSuccess("Admin login successful");
-      navigate("/admin-dashboard"); // Redirect to Admin private page
+      navigate("/admin-dashboard");
       return;
     }
 
-    // Normal user login/signup
     try {
       if (email.includes("@")) {
         await handleEmailLoginOrSignup(email, password);
@@ -82,10 +80,17 @@ const SignUp = ({
         await firebase.addUserToFirestore({ email });
         handleSuccess("User successfully created");
       } else {
-         const userlogged =  await firebase.UserSignInwithEmailAndPassword(email, password);
-         if(userlogged){
-          console.log(userlogged)
-         }
+        const userlogged = await firebase.UserSignInwithEmailAndPassword(email, password);
+        if (userlogged) {
+          dispatch(setUserData({ 
+            email, 
+            isAdmin: false, 
+            role: "user",
+            username: userlogged.displayName || email.split('@')[0]
+          }));
+          handleSuccess("Login successful");
+          navigate("/");
+        }
       }
       setUser({ email: "", password: "" });
     } catch (error) {
@@ -112,7 +117,7 @@ const SignUp = ({
 
   return (
     <div className="flex flex-wrap bg-white signup_texture_backdrop">
-      {/* Left section */}
+
       <div className="flex w-full flex-col md:w-1/2">
         <div className="flex justify-center pt-12 md:justify-start md:pl-12">
           <Link
@@ -213,7 +218,6 @@ const SignUp = ({
         </div>
       </div>
 
-      {/* Right side image */}
       {analyticsImage && (
         <div className="pointer-events-none hidden h-screen md:block md:w-1/2">
           <img
