@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
-import { Input, Button } from 'antd';
 
 const Footer = () => {
   const quickLinks = [
@@ -19,9 +18,9 @@ const Footer = () => {
   ];
 
   const contact = [
-    { icon: <Mail size={16} />, text: 'info@skillify.com' },
-    { icon: <Phone size={16} />, text: '+1 234 567 890' },
-    { icon: <MapPin size={16} />, text: '123 Education Street, Learning City, LC 12345' },
+    { icon: <Mail size={16} />, text: 'info@skillify.com', type: 'email' },
+    { icon: <Phone size={16} />, text: '+1 234 567 890', type: 'tel' },
+    { icon: <MapPin size={16} />, text: '123 Education Street, Learning City, LC 12345', type: 'address' },
   ];
 
   const socialLinks = [
@@ -32,7 +31,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white pt-16 pb-8">
+    <footer className="bg-gray-900 text-white pt-16 pb-8" role="contentinfo">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -41,13 +40,15 @@ const Footer = () => {
             <p className="text-gray-400 mb-4">
               Empowering learners worldwide with quality education and practical skills for the future.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4" role="list" aria-label="Social media links">
               {socialLinks.map((social, index) => (
                 <a
                   key={index}
                   href={social.url}
                   className="hover:text-[var(--color-dark-lavender)] transition-colors"
-                  aria-label={social.name}
+                  aria-label={`Follow us on ${social.name}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {social.icon}
                 </a>
@@ -58,7 +59,7 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <Link
@@ -75,7 +76,7 @@ const Footer = () => {
           {/* Popular Courses */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Popular Courses</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               {courses.map((course, index) => (
                 <li key={index}>
                   <Link
@@ -89,30 +90,23 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Info & Newsletter */}
+          {/* Contact Info */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3" role="list">
               {contact.map((item, index) => (
                 <li key={index} className="flex items-center space-x-2 text-gray-400">
                   {item.icon}
-                  <span>{item.text}</span>
+                  <a 
+                    href={item.type === 'email' ? `mailto:${item.text}` : 
+                          item.type === 'tel' ? `tel:${item.text}` : '#'}
+                    className="hover:text-[var(--color-dark-lavender)] transition-colors"
+                  >
+                    {item.text}
+                  </a>
                 </li>
               ))}
             </ul>
-
-            <div className="mt-6">
-              <h5 className="text-lg font-semibold mb-2">Newsletter</h5>
-              <div className="flex gap-2">
-                <Input 
-                  placeholder="Enter your email" 
-                  className="bg-gray-800 border-gray-700 text-white"
-                />
-                <Button type="primary" className="bg-[var(--color-dark-lavender)]">
-                  Subscribe
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -122,14 +116,14 @@ const Footer = () => {
             <p className="text-gray-400 text-sm">
               © {new Date().getFullYear()} Skillify. All rights reserved.
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
+            <nav className="flex space-x-6 mt-4 md:mt-0" aria-label="Footer links">
               <Link to="/privacy" className="text-gray-400 hover:text-[var(--color-dark-lavender)] text-sm">
                 Privacy Policy
               </Link>
               <Link to="/terms" className="text-gray-400 hover:text-[var(--color-dark-lavender)] text-sm">
                 Terms of Service
               </Link>
-            </div>
+            </nav>
           </div>
         </div>
       </div>

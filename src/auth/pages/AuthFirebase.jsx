@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { handleSuccess, handleError } from "../../utils/tostify";
 import { useFirebase } from "../../hooks/useFirebase";
-import { emailValidate, phoneValidate } from "../../utils/regexValidation";
+import { emailValidate } from "../../utils/regexValidation";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../features/user/pages/userProfileSlice";
 
@@ -51,18 +51,21 @@ const SignUp = ({
     }
 
     if (email === adminEmail && password === adminPassword) {
-      dispatch(setUserData({ email, isAdmin: true  , role : "admin" , username : "Stebin Ben"})); // store that this is admin
+      dispatch(
+        setUserData({
+          email,
+          isAdmin: true,
+          role: "admin",
+          username: "Stebin Ben",
+        })
+      ); // store that this is admin
       handleSuccess("Admin login successful");
       navigate("/admin-dashboard");
       return;
     }
 
     try {
-      if (email.includes("@")) {
-        await handleEmailLoginOrSignup(email, password);
-      } else if (email.length === 10) {
-        await handlePhoneLoginOrSignup(email, password);
-      }
+      await handleEmailLoginOrSignup(email, password);
     } catch (error) {
       handleError(error.message);
     }
@@ -77,17 +80,22 @@ const SignUp = ({
     try {
       if (type === "signup") {
         await firebase.signupWithEmailAndPassword(email, password);
-        await firebase.addUserToFirestore({ email });
         handleSuccess("User successfully created");
       } else {
-        const userlogged = await firebase.UserSignInwithEmailAndPassword(email, password);
+        const userlogged = await firebase.UserSignInwithEmailAndPassword(
+          email,
+          password
+        );
+        await firebase.addUserToFirestore({ email });
         if (userlogged) {
-          dispatch(setUserData({ 
-            email, 
-            isAdmin: false, 
-            role: "user",
-            username: userlogged.displayName || email.split('@')[0]
-          }));
+          dispatch(
+            setUserData({
+              email,
+              isAdmin: false,
+              role: "user",
+              username: userlogged.displayName || email.split("@")[0],
+            })
+          );
           handleSuccess("Login successful");
           navigate("/");
         }
@@ -100,24 +108,8 @@ const SignUp = ({
     }
   };
 
-  const handlePhoneLoginOrSignup = async (phone) => {
-    if (!phoneValidate.test(Number(phone))) {
-      handleError("Invalid Phone Number");
-      return;
-    }
-    try {
-      const phoneNumber = "+91" + phone;
-      const appVerifier = window.recaptchaVerifier;
-      await firebase.signupWithPhone(phoneNumber, appVerifier);
-      console.log("Phone auth successful");
-    } catch (error) {
-      handleError(error.message);
-    }
-  };
-
   return (
     <div className="flex flex-wrap bg-white signup_texture_backdrop">
-
       <div className="flex w-full flex-col md:w-1/2">
         <div className="flex justify-center pt-12 md:justify-start md:pl-12">
           <Link
@@ -163,16 +155,14 @@ const SignUp = ({
                 <input
                   id="email"
                   name="email"
-                  type="text"
+                  type="email"
                   value={user.email}
                   onChange={handleInputChange}
-                  placeholder="Email or Phone Number"
+                  placeholder="Email"
                   className="w-full flex-1 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
                 />
               </div>
             </div>
-
-            <div id="recaptcha-container" className="pt-4" />
 
             <div className="flex flex-col pt-4">
               <label htmlFor="password" className="sr-only">

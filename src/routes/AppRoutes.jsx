@@ -1,6 +1,9 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import Page404 from "../pages/Error404";
 import Home from "../pages/home";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
+import Blog from "../pages/Blog";
 import UserProfileDetail from "../features/user/pages/userProfileDetail";
 import LoginPage from "../auth/pages/LoginPage";
 import SignupPage from "../auth/pages/SignUpPage";
@@ -25,6 +28,9 @@ function AppRoutes() {
       {!isAdmin && (
         <>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
         </>
@@ -32,7 +38,7 @@ function AppRoutes() {
 
       <Route element={<ProtectdRoute />}>
         <Route path="/profile" element={<UserProfileDetail />} />
-        <Route path="/courses" element={<Courses />} />
+        {/* <Route path="/courses" element={<Courses />} /> */}
       </Route>
 
       <Route element={<AdminRoute />}>

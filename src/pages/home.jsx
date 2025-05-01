@@ -5,6 +5,8 @@ import Cards from "../components/common/card";
 import { responsiveFlex } from "../styles/responsiveFlex";
 import CourseSection2 from "../features/courses/pages/CourseSection2";
 import CoursesDisplay from "../features/courses/pages/coursesDisplay";
+import Testimonials from "../components/common/Testimonials";
+import Footer from "../components/common/Footer";
 
 import {
   responsiveTextH6,
@@ -221,6 +223,12 @@ const Home = () => {
       <div className="CourseDisplay" ref={sectionRef}>
         <CoursesDisplay />
       </div>
+
+      {/* Add Testimonials Section */}
+      <Testimonials />
+
+      {/* Add Footer */}
+      <Footer />
     </div>
   );
 };

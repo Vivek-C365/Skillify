@@ -1,5 +1,5 @@
-import React from 'react';
-import { Carousel, Rate, Avatar } from 'antd';
+import React, { useState } from 'react';
+import { Carousel, Rate, Avatar, Spin } from 'antd';
 import { Quote } from 'lucide-react';
 
 const testimonials = [
@@ -41,29 +41,45 @@ const testimonials = [
   }
 ];
 
-const TestimonialCard = ({ testimonial }) => (
-  <div className="bg-white rounded-xl p-6 shadow-lg mx-4 my-8 relative">
-    <div className="absolute -top-4 left-6 bg-[var(--color-dark-lavender)] p-2 rounded-full">
-      <Quote size={24} className="text-white" />
-    </div>
-    <div className="mt-4">
-      <div className="flex items-center gap-4 mb-4">
-        <Avatar 
-          size={64} 
-          className="bg-[var(--color-dark-lavender)]"
-          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=random`}
-        />
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">{testimonial.name}</h3>
-          <p className="text-sm text-gray-600">{testimonial.role}</p>
-          <p className="text-xs text-[var(--color-dark-lavender)]">{testimonial.course}</p>
-        </div>
+const TestimonialCard = ({ testimonial }) => {
+  const [imageLoading, setImageLoading] = useState(true);
+
+  return (
+    <div className="bg-white rounded-xl p-6 shadow-lg mx-4 my-8 relative" role="article" aria-label={`Testimonial from ${testimonial.name}`}>
+      <div className="absolute -top-4 left-6 bg-[var(--color-dark-lavender)] p-2 rounded-full">
+        <Quote size={24} className="text-white" aria-hidden="true" />
       </div>
-      <Rate disabled defaultValue={testimonial.rating} className="text-[var(--color-dark-lavender)] mb-3" />
-      <p className="text-gray-600 italic">{testimonial.text}</p>
+      <div className="mt-4">
+        <div className="flex items-center gap-4 mb-4">
+          {imageLoading && (
+            <div className="w-16 h-16 flex items-center justify-center">
+              <Spin size="small" />
+            </div>
+          )}
+          <Avatar 
+            size={64} 
+            className="bg-[var(--color-dark-lavender)]"
+            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=random`}
+            onLoad={() => setImageLoading(false)}
+            alt={`${testimonial.name}'s avatar`}
+          />
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800">{testimonial.name}</h3>
+            <p className="text-sm text-gray-600">{testimonial.role}</p>
+            <p className="text-xs text-[var(--color-dark-lavender)]">{testimonial.course}</p>
+          </div>
+        </div>
+        <Rate 
+          disabled 
+          defaultValue={testimonial.rating} 
+          className="text-[var(--color-dark-lavender)] mb-3"
+          aria-label={`${testimonial.rating} out of 5 stars`}
+        />
+        <p className="text-gray-600 italic">{testimonial.text}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Testimonials = () => {
   const settings = {
@@ -92,10 +108,10 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-gray-50" aria-labelledby="testimonials-heading">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">
+          <h2 id="testimonials-heading" className="text-4xl font-bold mb-4">
             <span className="text-[var(--color-primary-blue)]">Student </span>
             <span className="text-[var(--color-dark-lavender)]">Testimonials</span>
           </h2>
@@ -104,11 +120,13 @@ const Testimonials = () => {
           </p>
         </div>
         
-        <Carousel {...settings}>
-          {testimonials.map((testimonial) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-          ))}
-        </Carousel>
+        <div role="region" aria-label="Student testimonials carousel">
+          <Carousel {...settings}>
+            {testimonials.map((testimonial) => (
+              <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+            ))}
+          </Carousel>
+        </div>
       </div>
     </section>
   );
