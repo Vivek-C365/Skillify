@@ -19,8 +19,6 @@ import InstructorsTable from "../components/dasboard/admin/InstructorsTable";
 import StudentsTable from "../components/dasboard/admin/StudentsTable";
 import { useSelector } from "react-redux";
 
-import AdminRoute from "./PrivateRoute";
-
 
 function AppRoutes() {
   const user = useSelector((state) => state.user);
