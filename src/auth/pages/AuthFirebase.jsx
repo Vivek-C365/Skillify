@@ -8,8 +8,7 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "../../features/user/pages/userProfileSlice";
 
 import Analytics from "../../assets/images/svg/13246824_5191077.svg";
-import { useDispatch } from "react-redux";
-import { setUserData } from "../../features/user/pages/userProfileSlice";
+
 
 const SignUp = ({
   title,
