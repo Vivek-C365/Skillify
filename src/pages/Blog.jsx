@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Calendar, Clock, Tag, Search } from 'lucide-react';
 import Navbar from '../components/navbar';
+import Footer from '../components/common/Footer';
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Sample blog posts data
+
   const blogPosts = [
     {
       id: 1,
@@ -42,13 +43,12 @@ const Blog = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
+
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Blog</h1>
           <p className="text-lg text-gray-600">Insights, tips, and stories about learning and education</p>
         </div>
 
-        {/* Search and Categories */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
             <div className="relative w-full md:w-96">
@@ -74,7 +74,6 @@ const Blog = () => {
           </div>
         </div>
 
-        {/* Featured Post */}
         <div className="mb-12">
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <div className="md:flex">
@@ -105,7 +104,7 @@ const Blog = () => {
           </div>
         </div>
 
-        {/* Blog Posts Grid */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.slice(1).map((post) => (
             <article key={post.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -140,6 +139,7 @@ const Blog = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

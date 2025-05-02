@@ -98,6 +98,7 @@ const Logo = () => (
     <img
       className="h-8 w-auto sm:h-10 transition-all duration-300 group-hover:scale-105"
       src={Eduaide_cube}
+      loading="lazy"
     />
   </div>
 );

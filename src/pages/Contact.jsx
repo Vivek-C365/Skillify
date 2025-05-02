@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { handleSuccess, handleError } from '../utils/tostify';
 import Navbar from '../components/navbar';
+import Footer from '../components/common/Footer';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,6 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically handle the form submission
     handleSuccess('Message sent successfully!');
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
@@ -64,7 +64,6 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Contact Form */}
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">Send us a Message</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -139,6 +138,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -3,9 +3,10 @@ import Navbar from "../components/navbar/index";
 import ContentSection from "../components/common/ContentSection";
 import Cards from "../components/common/card";
 import { responsiveFlex } from "../styles/responsiveFlex";
-import CourseSection2 from "../features/courses/pages/CourseSection2";
-import CoursesDisplay from "../features/courses/pages/coursesDisplay";
-import Testimonials from "../components/common/Testimonials";
+import { Suspense, lazy } from "react";
+const CourseSection2 = lazy(() => import("../features/courses/pages/CourseSection2"));
+const CoursesDisplay = lazy(() => import("../features/courses/pages/coursesDisplay"));
+const Testimonials = lazy(() => import("../components/common/Testimonials"));
 import Footer from "../components/common/Footer";
 
 import {
@@ -145,7 +146,9 @@ const Home = () => {
             />
           ))}
         </div>
+        {/* Lazy loaded components */}
       </div>
+  
 
       {/* About Us */}
 
@@ -217,15 +220,17 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <CourseSection2 />
 
       <div className="divider"></div>
-      <div className="CourseDisplay" ref={sectionRef}>
+    
+      <Suspense fallback={<div>Loading courses...</div>}>
+          <CourseSection2 />
+            <div className="CourseDisplay" ref={sectionRef}>
         <CoursesDisplay />
       </div>
 
-      {/* Add Testimonials Section */}
-      <Testimonials />
+          <Testimonials />
+        </Suspense>
 
       {/* Add Footer */}
       <Footer />
