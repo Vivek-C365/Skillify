@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
+
 import { EditOutlined } from "@ant-design/icons";
 
 import { AvatarWithText } from "../../../components/common/AvatarGroup";
 import Navbar from "../../../components/navbar/index";
+
 import { useFirebase } from "../../../hooks/useFirebase";
 import EditProfileModal from "./EditProfileModal";
 
 const UserProfileDetail = () => {
+
   const reduxUser = useSelector((state) => state.user?.userDetails);
+
   const firebase = useFirebase();
 
   const [userData, setUserData] = useState({
@@ -60,6 +64,7 @@ const UserProfileDetail = () => {
     fetchUserData();
   }, [userData.email, firebase]);
 
+
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleProfileUpdate = async (values) => {
@@ -96,6 +101,7 @@ const UserProfileDetail = () => {
       setIsModalOpen(false);
     }
   };
+
 
   const userProfilePic = userData.photoURL ? (
     <img
@@ -169,6 +175,7 @@ const UserProfileDetail = () => {
     { name: "Medium", url: userData.medium },
   ];
 
+
   const SocialButtonDisplay = () => {
     return (
       <>
@@ -193,6 +200,7 @@ const UserProfileDetail = () => {
       </>
     );
   };
+
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -226,7 +234,9 @@ const UserProfileDetail = () => {
                   <EditOutlined />
                 </button>
               </div>
+
               <SocialButtonDisplay />
+
             </div>
           </div>
         </div>

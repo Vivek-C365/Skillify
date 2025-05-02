@@ -222,10 +222,12 @@ const Home = () => {
       </section>
 
       <div className="divider"></div>
+
     
       <Suspense fallback={<div>Loading courses...</div>}>
           <CourseSection2 />
             <div className="CourseDisplay" ref={sectionRef}>
+
         <CoursesDisplay />
       </div>
 

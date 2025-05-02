@@ -20,6 +20,7 @@ export const addDocument = async (db, collectionName, data) => {
   }
 };
 
+
 export const readDocuments = async (db, collectionName) => {
   try {
     const colRef = collection(db, collectionName);
@@ -36,6 +37,7 @@ export const readDocuments = async (db, collectionName) => {
     console.log(error);
   }
 };
+
 
 
 
