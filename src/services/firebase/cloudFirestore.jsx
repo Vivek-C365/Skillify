@@ -20,6 +20,28 @@ export const addDocument = async (db, collectionName, data) => {
   }
 };
 
+
+export const readDocuments = async (db, collectionName) => {
+  try {
+    const colRef = collection(db, collectionName);
+    const q = query(colRef);
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const results = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      return results;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+
+
 export const readOrCreateDocument = async (
   db,
   collectionName,

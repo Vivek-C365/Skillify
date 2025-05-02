@@ -1,0 +1,125 @@
+{
+  "courses": [
+    {
+      "id": "course-1",
+      "name": "Public Speaking",
+      "description": {
+        "content": "Public speaking is an essential skill that plays a significant role in both personal and professional development. Whether you are delivering a speech at a conference, giving a presentation at work, or speaking at a social event, being able to communicate effectively in front of an audience is invaluable.",
+        "tags": ["communication", "soft skills"],
+        "actions": ["Share lesson", "Download materials"],
+        "details": ["6 lessons","3hr 33min","4.5(83 review)"]
+      },
+      "mainVideo": {
+        "source": "https://example.com/videos/public-speaking-intro.mp4",
+        "thumbnail": "https://example.com/images/public-speaking-thumbnail.jpg",
+        "timestamps": [
+          {"time": "0:00", "title": "Introduction to Public Speaking"},
+          {"time": "2:34", "title": "The Importance of Public Speaking"},
+          {"time": "5:46", "title": "Types of Public Speaking"},
+          {"time": "7:12", "title": "Key Elements of Effective Public Speaking"}
+        ]
+      },
+      "modules": [
+        {
+          "id": "ps-01",
+          "title": "Introduction to Public Speaking and Leadership",
+          "topics": [
+            {
+              "title": "Overview of public speaking",
+              "video": "https://example.com/videos/ps-module1-topic1.mp4",
+              "thumbnail": "https://example.com/images/ps-module1-topic1-thumb.jpg",
+              "duration": "40 min"
+            },
+            {
+              "title": "Effective communication",
+              "video": "https://example.com/videos/ps-module1-topic2.mp4",
+              "thumbnail": "https://example.com/images/ps-module1-topic2-thumb.jpg",
+              "duration": "8 min"
+            }
+          ]
+        },
+        {
+          "id": "ps-02",
+          "title": "Foundations of Public Speaking",
+          "topics": [
+            {
+              "title": "Creating clear messages",
+              "video": "https://example.com/videos/ps-module2-topic1.mp4",
+              "thumbnail": "https://example.com/images/ps-module2-topic1-thumb.jpg",
+              "duration": "25 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "course-2",
+      "name": "Web Development",
+      "description": {
+        "content": "Learn modern web development from scratch, covering HTML, CSS, JavaScript, and popular frameworks. Build responsive websites and web applications that work across all devices.",
+        "tags": ["programming", "frontend", "backend"],
+        "actions": ["Share lesson", "Try code exercises"]
+      },
+      "mainVideo": {
+        "source": "https://example.com/videos/web-dev-intro.mp4",
+        "thumbnail": "https://example.com/images/web-dev-thumbnail.jpg",
+        "timestamps": [
+          {"time": "0:00", "title": "Course Introduction"},
+          {"time": "3:15", "title": "Web Development Roadmap"},
+          {"time": "6:40", "title": "Tools You'll Need"},
+          {"time": "10:20", "title": "Setting Up Your Environment"}
+        ]
+      },
+      "modules": [
+        {
+          "id": "wd-01",
+          "title": "HTML & CSS Fundamentals",
+          "topics": [
+            {
+              "title": "HTML Structure",
+              "video": "https://example.com/videos/wd-module1-topic1.mp4",
+              "thumbnail": "https://example.com/images/wd-module1-topic1-thumb.jpg",
+              "duration": "45 min"
+            },
+            {
+              "title": "CSS Styling",
+              "video": "https://example.com/videos/wd-module1-topic2.mp4",
+              "thumbnail": "https://example.com/images/wd-module1-topic2-thumb.jpg",
+              "duration": "60 min"
+            }
+          ]
+        },
+        {
+          "id": "wd-02",
+          "title": "JavaScript Basics",
+          "topics": [
+            {
+              "title": "Variables and Data Types",
+              "video": "https://example.com/videos/wd-module2-topic1.mp4",
+              "thumbnail": "https://example.com/images/wd-module2-topic1-thumb.jpg",
+              "duration": "35 min"
+            },
+            {
+              "title": "Functions and Events",
+              "video": "https://example.com/videos/wd-module2-topic2.mp4",
+              "thumbnail": "https://example.com/images/wd-module2-topic2-thumb.jpg",
+              "duration": "50 min"
+            }
+          ]
+        },
+        {
+          "id": "wd-03",
+          "title": "Frontend Frameworks",
+          "topics": [
+            {
+              "title": "Introduction to React",
+              "video": "https://example.com/videos/wd-module3-topic1.mp4",
+              "thumbnail": "https://example.com/images/wd-module3-topic1-thumb.jpg",
+              "duration": "55 min"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
