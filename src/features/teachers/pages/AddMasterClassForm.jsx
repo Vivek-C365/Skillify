@@ -120,7 +120,7 @@ export const AddMasterClassForm = ({ onClose }) => {
               >
                 <option value="">Select a Category</option>
                 <option value="Data Science">Programming Basics</option>
-                <option value="Computer Science"></option>
+                <option value="Computer Science">Industry Experience</option>
                 <option value="Cyber Security">Cyber Security</option>
                 <option value="Cloud">Cloud</option>
                 <option value="DevOps">DevOps</option>
