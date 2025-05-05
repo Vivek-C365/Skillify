@@ -14,12 +14,14 @@ import { AddInstructorForm } from "../../../features/teachers/pages/AddInstructo
 import ModalPage from "../../common/Modal";
 import { useFirebase } from "../../../hooks/useFirebase";
 import CountingNumber from "../../common/CountingNumber";
+import AddMasterClassForm from "../../../features/teachers/pages/AddMasterClassForm";
 
 export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [topInstructors, setTopInstructors] = useState([]);
   const [showAddInstructor, setShowAddInstructor] = useState(true);
+  const [showAddMasterClass, setShowAddMasterClass] = useState(true);
   const firebase = useFirebase();
 
   console.log(topInstructors)
@@ -88,6 +90,25 @@ export const AdminDashboard = () => {
                 closable={true}
               >
                 <AddInstructorForm />
+              </ModalPage>
+            )}
+
+            {showAddMasterClass && (
+              <ModalPage
+                icon={
+                  <Button
+                    variant="outline"
+                    className="!text-black"
+                    size="lg"
+                    leftIcon={<UserPlus size={16} />}
+                    onClick={() => setShowAddMasterClass(true)}
+                  >
+                    Add MasterClass
+                  </Button>
+                }
+                closable={true}
+              >
+                <AddMasterClassForm />
               </ModalPage>
             )}
             <Button leftIcon={<BookOpen size={16} />}>Add Categories</Button>

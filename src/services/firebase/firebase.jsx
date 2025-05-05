@@ -142,6 +142,17 @@ export const FirebaseProvider = ({ children }) => {
       handleError(error.message);
     }
   };
+
+  const addMasterClass = async (data) => {
+    try{
+      console.log(data);
+
+      await addDocument(db,"MasterClass",data);
+      handleSuccess("MasterClass added to Firebase successfully");
+    }catch(error){
+      handleError(error.message);
+    }
+  }
   return (
     <firebaseContext.Provider
       value={{
@@ -156,6 +167,7 @@ export const FirebaseProvider = ({ children }) => {
         readUserFromFirestore,
         UpdateUser,
         addInstructor,
+        addMasterClass,
         readData,
       }}
     >
