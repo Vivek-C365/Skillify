@@ -3,20 +3,100 @@ import TagSingle from "../../../components/common/TagSingle";
 import CardWithImage from "../../../components/common/CardWithImage";
 import { Button } from "../../../components/common/button";
 import LaptopOutlined from "@ant-design/icons/LaptopOutlined";
+import { useEffect, useState } from "react";
+import { useFirebase } from "../../../hooks/useFirebase";
+import { Skeleton } from "../../../components/common/Skeleton";
 
 export default function CourseSection2() {
+  const [isLoading, setIsLoading] = useState(true); // Start with true since we're loading initially
+  const [masterclass, setMasterClass] = useState(null); // Initialize as null
+  const firebase = useFirebase();
+
+  useEffect(() => {
+    const fetchMasterClassData = async () => {
+      try {
+        setIsLoading(true);
+        const masterclassData = await firebase.readData("MasterClass");
+        setMasterClass(masterclassData);
+      } catch (error) {
+        console.error(`Error loading masterclass data: ${error}`);
+        setMasterClass(null); // Explicitly set to null on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchMasterClassData();
+  }, [firebase]);
+
+  // Handle loading state
+  if (isLoading) {
+    return <Skeleton />;
+  }
+
+  // Handle case where data couldn't be loaded
+  if (!masterclass || masterclass.length === 0) {
+    return <div>No masterclass data available</div>;
+  }
+
+  // Safely extract data
+  const currentMasterclass = masterclass[0]?.data || {};
+  console.log(currentMasterclass);
+  const { day, date, name,masterclassTitle, time, url, personExperience } = currentMasterclass;
+
+  // Safely handle date
+  function getMonthName(monthNumber) {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+  
+    return date.toLocaleString('en-US', {
+      month: 'long',
+    });
+  }
+
+
+  let dateDisplay = '';
+  if (date) {
+    try {
+      const dateParts = date.split('-');
+      const monthString = getMonthName(dateParts[1]);
+      if (dateParts.length >= 3) {
+        dateDisplay = `${dateParts[2]} ${monthString}`;
+      }
+    } catch (e) {
+      console.error('Error parsing date:', e);
+    }
+  }
+
+  let timeDisplay='';
+  if(time){
+    try{
+      const timeParts = time.split(':');
+      if(timeParts[0]>=12){
+        let timeHours=timeParts[0]-12;
+        timeDisplay=`${timeHours<9 ?'0': ''}${timeHours}:${timeParts[1]}`
+        timeDisplay+=' PM';
+      }
+      else{
+        timeDisplay=`${timeParts[0]<9? '0' : ''}${timeParts[0]}:${timeParts[1]}`
+        timeDisplay+=' AM';
+      }
+    }catch(e){
+      console.error('Error in time pparsing:',e);
+    }
+  }
+    
   const MasterClass = () => {
     return (
+      
       <div className="flex flex-col gap-3 p-2">
         <div>
           <h3 className="font-semibold text-[var(--color-dark-lavender)]">
-            Tuesday, Apr 29 at 10:00 AM
+          {day || 'Day not specified'}, {dateDisplay || 'Date not specified'} at { timeDisplay }
           </h3>
         </div>
         <div>
           <p className="text-[var(--color-charcol-black)] font-semibold text-[1.2rem]">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit,
-            facere?
+           {masterclassTitle || 'Title is not specified for masterclass'}
           </p>
         </div>
         <div className="flex justify-between gap-2">
@@ -25,12 +105,12 @@ export default function CourseSection2() {
               <LaptopOutlined />
             </span>
             <div>
-              <h1>By Dr. John Doe</h1>
-              <p>Professor And Dean | IIIT Bangalore</p>
+              <h1>By Dr. {masterclass[0]?.data?.name} </h1>
+              <p>{`${personExperience} Years`} | IIIT Bangalore</p>
             </div>
           </div>
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTdMfGt8m2fOLQt3OZb5AgoKzHbWwjTCditg&s"
+            src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTdMfGt8m2fOLQt3OZb5AgoKzHbWwjTCditg&s"}
             alt="IIT"
             className=" h-[2rem] w-[2rem]"
           />
