@@ -1,51 +1,56 @@
-import { useRef } from "react";
-import Navbar from "../components/navbar/index";
-import ContentSection from "../components/common/ContentSection";
-import Cards from "../components/common/card";
-import { responsiveFlex } from "../styles/responsiveFlex";
-import { Suspense, lazy } from "react";
-const CourseSection2 = lazy(() => import("../features/courses/pages/CourseSection2"));
-const CoursesDisplay = lazy(() => import("../features/courses/pages/coursesDisplay"));
-const Testimonials = lazy(() => import("../components/common/Testimonials"));
-import Footer from "../components/common/Footer";
+import { useRef } from 'react'
+import Navbar from '../components/navbar/index'
+import ContentSection from '../components/common/ContentSection'
+import Cards from '../components/common/card'
+import { responsiveFlex } from '../styles/responsiveFlex'
+import { Suspense, lazy } from 'react'
+const CourseSection2 = lazy(() =>
+  import('../features/courses/pages/CourseSection2')
+)
+const CoursesDisplay = lazy(() =>
+  import('../features/courses/pages/coursesDisplay')
+)
+const Testimonials = lazy(() => import('../components/common/Testimonials'))
+import Footer from '../components/common/Footer'
 
 import {
   responsiveTextH6,
   responsiveTextBodyLarge,
   responsiveTextH1,
-} from "../styles/responsiveText";
-import ProgressBar from "../components/common/ProgressBar";
-import { AvatarGroup } from "../components/common/AvatarGroup";
-import CountingNumber from "../components/common/CountingNumber";
+} from '../styles/responsiveText'
+import ProgressBar from '../components/common/ProgressBar'
+import { AvatarGroup } from '../components/common/AvatarGroup'
+import CountingNumber from '../components/common/CountingNumber'
 
 const Home = () => {
-  const sectionRef = useRef(null); // 1. Create a reference
+  const sectionRef = useRef(null) // 1. Create a reference
+
   const handleScroll = () => {
-    sectionRef.current?.scrollIntoView({ behavior: "smooth" }); // 2. Scroll into view
-  };
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth' }) // 2. Scroll into view
+  }
 
   const sections = [
     {
       leftContent:
-        "Personalized recommendations for each student, based on their learning style and preferences.",
-      biggerText: "Simple",
+        'Personalized recommendations for each student, based on their learning style and preferences.',
+      biggerText: 'Simple',
       tags: [
-        { icon: true, text: "advantage", item: "#" },
-        { icon: true, bgColor: "transparent", item: "#" },
+        { icon: true, text: 'advantage', item: '#' },
+        { icon: true, bgColor: 'transparent', item: '#' },
         {
           icon: true,
-          item: "#",
-          bgColor: "transparent",
-          iconColor: "border border-white primary-text",
+          item: '#',
+          bgColor: 'transparent',
+          iconColor: 'border border-white primary-text',
         },
       ],
     },
     {
       reverse: true,
-      biggerText: "Powerful",
+      biggerText: 'Powerful',
       rightContent: (
         <Cards className="hidden sm:block">
-          {" "}
+          {' '}
           <div>
             <div>
               <h3 className="text-black text-2xl mx-auto text-start max-w-[40rem] mb-5">
@@ -56,20 +61,20 @@ const Home = () => {
             <div className="absolute top-12  right-[-7rem]">
               <AvatarGroup />
             </div>
-          </div>{" "}
+          </div>{' '}
         </Cards>
       ),
     },
     {
       leftContent:
-        "we offer the highest quality educational resources to make learning accessible",
-      biggerText: "EdTech",
+        'we offer the highest quality educational resources to make learning accessible',
+      biggerText: 'EdTech',
       tags: [
-        { text: "Get started", onClick: handleScroll },
+        { text: 'Get started', onClick: handleScroll },
         {
           icon: true,
-          bgColor: "transparent",
-          rotate: "rotate-90",
+          bgColor: 'transparent',
+          rotate: 'rotate-90',
           item: <>&#8599;</>,
         },
       ],
@@ -77,10 +82,10 @@ const Home = () => {
     {
       reverse: true,
       leftContent: <Cards />,
-      biggerText: "Solutions",
+      biggerText: 'Solutions',
       actionText: <>&#8618;</>,
     },
-  ];
+  ]
 
   const smallAboutus = [
     {
@@ -89,43 +94,43 @@ const Home = () => {
           +<CountingNumber maxnumber={80} timer={20} />
         </div>
       ),
-      description: "Online Courses",
+      description: 'Online Courses',
     },
     {
       text: <CountingNumber maxnumber={10} timer={100} />,
-      description: "Years Experience",
+      description: 'Years Experience',
     },
     {
       text: <CountingNumber maxnumber={77} timer={20} />,
-      description: "Top Mentors",
+      description: 'Top Mentors',
     },
-  ];
+  ]
   const achieveData = [
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/e13888bfb8ff08a67b95eba8721ce071e86065d8c550324be1f8e29697d2a586?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
-      title: "Learn latest skills",
+      icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/e13888bfb8ff08a67b95eba8721ce071e86065d8c550324be1f8e29697d2a586?apiKey=c0bca91966db4095b1e1b5a08f720e3b&',
+      title: 'Learn latest skills',
       description:
-        "Learn new skills like Project management, AWS, Security or anything that matters to you in your industry. New skills translate to new opportunities.",
+        'Learn new skills like Project management, AWS, Security or anything that matters to you in your industry. New skills translate to new opportunities.',
     },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/dadc5fed5ab197a2a006bfe7ff4adff495f7aa0fa76bc36478d2b47884aa3ace?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
-      title: "Upgrade your skills",
+      icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/dadc5fed5ab197a2a006bfe7ff4adff495f7aa0fa76bc36478d2b47884aa3ace?apiKey=c0bca91966db4095b1e1b5a08f720e3b&',
+      title: 'Upgrade your skills',
       description:
-        "Upskill your current skillsets to the latest trends, developments or new versions. Stay at fore-front, current and relevant in the ever changing world of skills.",
+        'Upskill your current skillsets to the latest trends, developments or new versions. Stay at fore-front, current and relevant in the ever changing world of skills.',
     },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/54ecde977ac2e1733aa3a7c80783b77c22b9fa098996ce3882be83159defd4a7?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
-      title: "Further your career",
+      icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/54ecde977ac2e1733aa3a7c80783b77c22b9fa098996ce3882be83159defd4a7?apiKey=c0bca91966db4095b1e1b5a08f720e3b&',
+      title: 'Further your career',
       description:
         "Don't let your previous skills become the bottleneck of your career growth in today's fast-changing skill demands. Upgrade your skills today.",
     },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/d998ce4a1565c48cb9d7f2c33948f0574978643c665ed8c55d69172b6177fbec?apiKey=c0bca91966db4095b1e1b5a08f720e3b&",
-      title: "Upskill your team",
+      icon: 'https://cdn.builder.io/api/v1/image/assets/TEMP/d998ce4a1565c48cb9d7f2c33948f0574978643c665ed8c55d69172b6177fbec?apiKey=c0bca91966db4095b1e1b5a08f720e3b&',
+      title: 'Upskill your team',
       description:
-        "With our tailored training approaches, give your team the latest skillsets needed for the optimum productivity; stay ahead of the competition.",
+        'With our tailored training approaches, give your team the latest skillsets needed for the optimum productivity; stay ahead of the competition.',
     },
-  ];
+  ]
 
   return (
     <div>
@@ -148,7 +153,6 @@ const Home = () => {
         </div>
         {/* Lazy loaded components */}
       </div>
-  
 
       {/* About Us */}
 
@@ -195,10 +199,10 @@ const Home = () => {
           <div className="title_wrapper">
             <h2 className="title flex gap-2 ">
               <span className="title-primary text-3xl sm:text-5xl text-[var(--color-primary-blue);]">
-                Achieve with{" "}
+                Achieve with{' '}
               </span>
               <span className="title-secondary text-3xl sm:text-5xl text-[var(--color-dark-lavender)]">
-                {" "}
+                {' '}
                 Skillify
               </span>
             </h2>
@@ -223,21 +227,21 @@ const Home = () => {
 
       <div className="divider"></div>
 
-    
+      <CourseSection2 />
+
       <Suspense fallback={<div>Loading courses...</div>}>
-          <CourseSection2 />
-            <div className="CourseDisplay" ref={sectionRef}>
+        <div className="CourseDisplay" ref={sectionRef}>
+          <CoursesDisplay />
+        </div>
 
-        <CoursesDisplay />
-      </div>
 
-          <Testimonials />
-        </Suspense>
+        <Testimonials />
+      </Suspense>
 
       {/* Add Footer */}
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
