@@ -122,7 +122,7 @@ const StudentsTable = () => {
           <div>
             <div className="font-medium">{text}</div>
             <div className="text-xs text-gray-500">
-              {record.data?.email || "test"}
+              {record.data?.data?.email || "test"}
             </div>
           </div>
         </div>

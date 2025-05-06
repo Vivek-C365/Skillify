@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import firebaseConfig from "./firebaseConfig";
-// eslint-disable-next-line no-unused-vars
 import firebaseContext from "../../context/AuthContext";
 import { initializeApp } from "firebase/app";
 import {
@@ -13,7 +12,7 @@ import {
   onAuthStateChanged,
   signInWithPhoneNumber,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 import {
   addDocument,
@@ -46,25 +45,83 @@ export const FirebaseProvider = ({ children }) => {
 
   const signupWithEmailAndPassword = async (email, password) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      return userCredential.user;
     } catch (error) {
       handleError(error.message);
+      throw error;
     }
   };
 
   const UserSignInwithEmailAndPassword = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Fetch or create user data from Firestore
+      const userData = await readOrCreateDocument(db, "users", "data.data.email", email);
+      console.log(userData);
+      if (userData && userData.length > 0) {
+        return {
+          ...user,
+          ...userData[0].data
+        };
+      }
+      
+      // If no user data exists, create it
+      const newUserData = await addUserToFirestore({
+        email: user.email,
+        role: "student",
+        displayName: user.displayName || user.email.split("@")[0],
+        photoURL: user.photoURL
+      });
+      
+      return {
+        ...user,
+        ...newUserData
+      };
     } catch (error) {
       handleError(error.message);
+      throw error;
     }
   };
 
   const signupWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // Check if user already exists in Firestore
+      const colRef = collection(db, "users");
+      const q = query(colRef, where("data.data.email", "==", user.email));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        // User exists, return existing data
+        const existingUser = querySnapshot.docs[0];
+        const existingData = existingUser.data().data;
+        return {
+          ...user,
+          ...existingData
+        };
+      }
+      
+      // User doesn't exist, create new user data
+      const userData = await addUserToFirestore({
+        email: user.email,
+        role: "student",
+        displayName: user.displayName || user.email.split("@")[0],
+        photoURL: user.photoURL,
+        createdAt: new Date().toISOString()
+      });
+      
+      return {
+        ...user,
+        ...userData
+      };
     } catch (error) {
-      return error;
+      handleError(error.message);
+      throw error;
     }
   };
 
@@ -75,39 +132,68 @@ export const FirebaseProvider = ({ children }) => {
       return error;
     }
   };
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      handleSuccess("Logged out successfully");
+      return true;
     } catch (error) {
       console.error("Logout error:", error.message);
+      handleError("Failed to logout");
+      return false;
     }
   };
 
-  const addUserToFirestore = async (user) => {
+  const addUserToFirestore = async (userData) => {
     try {
-      const userData = {
-        email: user.email,
+      const userDoc = {
+        email: userData.email,
+        role: userData.role || "student",
+        displayName: userData.displayName || userData.email.split("@")[0],
+        photoURL: userData.photoURL || null,
+        about: userData.about || "",
+        skills: userData.skills || [],
+        certificates: userData.certificates || [],
+        github: userData.github || "",
+        medium: userData.medium || "",
+        twitter: userData.twitter || "",
+        createdAt: userData.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
-      await addDocument(db, "users", userData);
-      console.log("User added to Firestore:", userData);
-      handleSuccess("User added to Firestore successfully!");
+
+      const colRef = collection(db, "users");
+      const q = query(colRef, where("data.data.email", "==", userData.email));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        // Update existing user data if needed
+        const existingUser = querySnapshot.docs[0];
+        const existingData = existingUser.data().data;
+        
+        // Only update if there are new fields or changes
+        const updatedData = {
+          ...existingData,
+          ...userDoc,
+          updatedAt: new Date().toISOString()
+        };
+        
+        await updateDocument(db, "users", existingUser.id, { data: updatedData });
+        return updatedData;
+      }
+  
+      // Create new user if doesn't exist
+      await addDocument(db, "users", { data: userDoc });
+      return userDoc;
     } catch (error) {
       handleError(error.message);
+      throw error;
     }
   };
 
-  const readUserFromFirestore = async (
-    collectionname,
-    fieldname,
-    fieldvalue
-  ) => {
+  const readUserFromFirestore = async (collectionname, fieldname, fieldvalue) => {
     try {
-      const data = await readOrCreateDocument(
-        db,
-        collectionname,
-        fieldname,
-        fieldvalue
-      );
+      const data = await readOrCreateDocument(db, collectionname, fieldname, fieldvalue);
       return data;
     } catch (error) {
       console.log(error.message);
@@ -126,22 +212,22 @@ export const FirebaseProvider = ({ children }) => {
   const readData = async (collectionname) => {
     try {
       const dataRead = await readDocuments(db, collectionname);
-
       return dataRead;
     } catch (error) {
       console.log(error.message);
     }
   };
+
   const addInstructor = async (data) => {
     try {
       console.log(data);
-
       await addDocument(db, "Instructor", data);
       handleSuccess("User added to Firestore successfully!");
     } catch (error) {
       handleError(error.message);
     }
   };
+
   return (
     <firebaseContext.Provider
       value={{

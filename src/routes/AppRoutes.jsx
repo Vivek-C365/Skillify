@@ -17,11 +17,14 @@ import CoursesTable from "../components/dasboard/admin/CoursesTable";
 import InstructorsTable from "../components/dasboard/admin/InstructorsTable";
 import StudentsTable from "../components/dasboard/admin/StudentsTable";
 import { useSelector } from "react-redux";
+import StudentDashboard from "../components/dasboard/student/StudentDashboard";
+import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
 
 function AppRoutes() {
   const user = useSelector((state) => state.user);
   const userDetails = user?.userDetails;
   const isAdmin = userDetails?.role === "admin";
+  const student = userDetails?.role === "student";
 
   return (
     <Routes>
@@ -35,10 +38,17 @@ function AppRoutes() {
           <Route path="/signup" element={<SignupPage />} />
         </>
       )}
+      {/* <Route path="/courses" element={<Courses />} /> */}
 
       <Route element={<ProtectdRoute />}>
         <Route path="/profile" element={<UserProfileDetail />} />
-        {/* <Route path="/courses" element={<Courses />} /> */}
+        {student && (
+          <>
+            <Route path="/student-dashboard" element={<StudentDashboard />} />
+          </>
+        )}
+
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
       </Route>
 
       <Route element={<AdminRoute />}>
@@ -79,7 +89,7 @@ function AppRoutes() {
 
       {isAdmin && (
         <>
-          <Route 
+          <Route
             path="/"
             element={<Navigate to="/admin-dashboard" replace />}
           />

@@ -58,7 +58,7 @@ const SignUp = ({
           role: "admin",
           username: "Stebin Ben",
         })
-      ); // store that this is admin
+      ); 
       handleSuccess("Admin login successful");
       navigate("/admin-dashboard");
       return;
@@ -80,20 +80,43 @@ const SignUp = ({
     try {
       if (type === "signup") {
         await firebase.signupWithEmailAndPassword(email, password);
-        handleSuccess("User successfully created");
-      } else {
-        const userlogged = await firebase.UserSignInwithEmailAndPassword(
+        const userData = await firebase.addUserToFirestore({ 
           email,
-          password
-        );
-        await firebase.addUserToFirestore({ email });
-        if (userlogged) {
+          role: "student",
+          displayName: email.split("@")[0],
+          createdAt: new Date().toISOString()
+        });
+        dispatch(setUserData({
+          email: userData.email,
+          isAdmin: userData.role === "admin",
+          role: userData.role,
+          username: userData.displayName,
+          photoURL: userData.photoURL,
+          about: userData.about || "",
+          skills: userData.skills || [],
+          certificates: userData.certificates || [],
+          github: userData.github || "",
+          medium: userData.medium || "",
+          twitter: userData.twitter || "",
+        }));
+        handleSuccess("User successfully created");
+        navigate("/");
+      } else {
+        const userData = await firebase.UserSignInwithEmailAndPassword(email, password);
+        if (userData) {
           dispatch(
             setUserData({
-              email,
-              isAdmin: false,
-              role: "user",
-              username: userlogged.displayName || email.split("@")[0],
+              email: userData.email,
+              isAdmin: userData.role === "admin",
+              role: userData.role || "student",
+              username: userData.displayName || email.split("@")[0],
+              photoURL: userData.photoURL,
+              about: userData.about || "",
+              skills: userData.skills || [],
+              certificates: userData.certificates || [],
+              github: userData.github || "",
+              medium: userData.medium || "",
+              twitter: userData.twitter || "",
             })
           );
           handleSuccess("Login successful");
@@ -105,6 +128,33 @@ const SignUp = ({
       handleError(error.message);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const userData = await firebase.signupWithGoogle();
+      if (userData) {
+        dispatch(
+          setUserData({
+            email: userData.email,
+            isAdmin: userData.role === "admin",
+            role: userData.role || "student",
+            username: userData.displayName || userData.email.split("@")[0],
+            photoURL: userData.photoURL,
+            about: userData.about || "",
+            skills: userData.skills || [],
+            certificates: userData.certificates || [],
+            github: userData.github || "",
+            medium: userData.medium || "",
+            twitter: userData.twitter || "",
+          })
+        );
+        handleSuccess("Login successful");
+        navigate("/");
+      }
+    } catch (error) {
+      handleError(error.message);
     }
   };
 
@@ -127,7 +177,7 @@ const SignUp = ({
           {showSocialLogin && (
             <>
               <button
-                onClick={() => firebase.signupWithGoogle()}
+                onClick={handleGoogleSignIn}
                 className="mt-8 flex items-center justify-center rounded-md border px-4 py-1 transition hover:bg-black hover:text-white"
               >
                 <img
