@@ -19,7 +19,9 @@ import {
   addDocument,
   readOrCreateDocument,
   updateDocument,
+
   readDocuments,
+
 } from "../firebase/cloudFirestore";
 import { handleError, handleSuccess } from "../../utils/tostify";
 
@@ -37,6 +39,11 @@ export const FirebaseProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setLoggedInUser(user || null);
       setLoading(false);
+
+      if (user) {
+        dispatch(setUserData(user.providerData[0]));
+      }
+
     });
 
     return () => unsubscribe();
@@ -123,6 +130,7 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
+
   const readData = async (collectionname) => {
     try {
       const dataRead = await readDocuments(db, collectionname);
@@ -153,6 +161,7 @@ export const FirebaseProvider = ({ children }) => {
       handleError(error.message);
     }
   }
+
   return (
     <firebaseContext.Provider
       value={{
@@ -165,10 +174,12 @@ export const FirebaseProvider = ({ children }) => {
         loading,
         addUserToFirestore,
         readUserFromFirestore,
+
         UpdateUser,
         addInstructor,
         addMasterClass,
         readData,
+
       }}
     >
       {children}

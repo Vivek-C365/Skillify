@@ -226,12 +226,14 @@ const Home = () => {
       </section>
 
       <div className="divider"></div>
+
       <CourseSection2 />
 
       <Suspense fallback={<div>Loading courses...</div>}>
         <div className="CourseDisplay" ref={sectionRef}>
           <CoursesDisplay />
         </div>
+
 
         <Testimonials />
       </Suspense>
