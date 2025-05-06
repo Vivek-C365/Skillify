@@ -10,6 +10,7 @@ import SignupPage from "../auth/pages/SignUpPage";
 import AddCourseDetailForm from "../features/courses/pages/addCourseDetailForm";
 import { AdminDashboard } from "../components/dasboard/admin/AdminDasboard";
 import ProtectdRoute from "./ProtectdRoute";
+
 import Courses from "../pages/Courses";
 import AdminRoute from "./PrivateRoute";
 import DashboardLayout from "../components/dasboard/layout/Dashboard";
@@ -19,6 +20,7 @@ import StudentsTable from "../components/dasboard/admin/StudentsTable";
 import { useSelector } from "react-redux";
 import StudentDashboard from "../components/dasboard/student/StudentDashboard";
 import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
+
 
 function AppRoutes() {
   const user = useSelector((state) => state.user);
@@ -104,8 +106,10 @@ function AppRoutes() {
         </>
       )}
 
+
       <Route path="*" element={<Page404 />} />
     </Routes>
+
   );
 }
 

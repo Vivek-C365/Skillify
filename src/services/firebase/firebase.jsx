@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import firebaseConfig from "./firebaseConfig";
 import firebaseContext from "../../context/AuthContext";
@@ -18,7 +19,9 @@ import {
   addDocument,
   readOrCreateDocument,
   updateDocument,
+
   readDocuments,
+
 } from "../firebase/cloudFirestore";
 import { handleError, handleSuccess } from "../../utils/tostify";
 
@@ -36,6 +39,11 @@ export const FirebaseProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setLoggedInUser(user || null);
       setLoading(false);
+
+      // if (user) {
+      //   dispatch(setUserData(user.providerData[0]));
+      // }
+
     });
 
     return () => unsubscribe();
@@ -209,6 +217,7 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
+
   const readData = async (collectionname) => {
     try {
       const dataRead = await readDocuments(db, collectionname);
@@ -228,6 +237,17 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
+  const addMasterClass = async (data) => {
+    try{
+      console.log(data);
+
+      await addDocument(db,"MasterClass",data);
+      handleSuccess("MasterClass added to Firebase successfully");
+    }catch(error){
+      handleError(error.message);
+    }
+  }
+
   return (
     <firebaseContext.Provider
       value={{
@@ -240,9 +260,12 @@ export const FirebaseProvider = ({ children }) => {
         loading,
         addUserToFirestore,
         readUserFromFirestore,
+
         UpdateUser,
         addInstructor,
+        addMasterClass,
         readData,
+
       }}
     >
       {children}

@@ -5,12 +5,15 @@ import { Spin } from "antd";
 
 import { AvatarWithText } from "../../../components/common/AvatarGroup";
 import Navbar from "../../../components/navbar/index";
+
 import { useFirebase } from "../../../hooks/useFirebase";
 import EditProfileModal from "./EditProfileModal";
 import { handleError, handleSuccess } from "../../../utils/tostify";
 
 const UserProfileDetail = () => {
+
   const reduxUser = useSelector((state) => state.user?.userDetails);
+
   const firebase = useFirebase();
 
   const [userData, setUserData] = useState({
@@ -80,6 +83,8 @@ const UserProfileDetail = () => {
     fetchUserData();
   }, [reduxUser, firebase]);
 
+  
+
   const handleProfileUpdate = async (values) => {
     setIsUpdating(true);
     try {
@@ -134,6 +139,7 @@ const UserProfileDetail = () => {
       setIsModalOpen(false);
     }
   };
+
 
   const userProfilePic = userData.photoURL ? (
     <img
@@ -207,6 +213,7 @@ const UserProfileDetail = () => {
     { name: "Medium", url: userData.medium },
   ];
 
+
   const SocialButtonDisplay = () => {
     return (
       <>
@@ -273,7 +280,9 @@ const UserProfileDetail = () => {
                   <EditOutlined />
                 </button>
               </div>
+
               <SocialButtonDisplay />
+
             </div>
           </div>
         </div>

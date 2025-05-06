@@ -1,3 +1,4 @@
+
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Loading from "../components/common/Loading";
@@ -19,6 +20,7 @@ function AdminRoute() {
     return <Navigate to="/" replace />;
   }
   return <Outlet />;
+
 }
 
 export default AdminRoute;

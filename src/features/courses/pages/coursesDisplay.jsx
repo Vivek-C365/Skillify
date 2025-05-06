@@ -20,7 +20,6 @@ const CoursesDisplay = () => {
     return item;
   });
 
-
   const FilterCourse = (menuItems) => {
     if (!courseSelect || courseSelect === "All") return menuItems;
     return menuItems.filter((item) => {

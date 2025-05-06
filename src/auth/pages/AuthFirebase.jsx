@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "../../features/user/pages/userProfileSlice";
 
 import Analytics from "../../assets/images/svg/13246824_5191077.svg";
-
 const SignUp = ({
   title,
   subtitle,
@@ -43,12 +42,14 @@ const SignUp = ({
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
+
     const { email, password } = user;
 
     if (!email || !password) {
       handleError("Please fill in all fields.");
       return;
     }
+
 
     if (email === adminEmail && password === adminPassword) {
       dispatch(
@@ -76,7 +77,9 @@ const SignUp = ({
       handleError("Invalid Email");
       return;
     }
+
     setIsSubmitting(true);
+
     try {
       if (type === "signup") {
         await firebase.signupWithEmailAndPassword(email, password);

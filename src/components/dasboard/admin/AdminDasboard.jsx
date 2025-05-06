@@ -14,6 +14,7 @@ import { AddInstructorForm } from "../../../features/teachers/pages/AddInstructo
 import ModalPage from "../../common/Modal";
 import { useFirebase } from "../../../hooks/useFirebase";
 import CountingNumber from "../../common/CountingNumber";
+import AddMasterClassForm from "../../../features/teachers/pages/AddMasterClassForm";
 import { useDispatch } from "react-redux";
 import { setCoursesData } from "../../../features/admin/admindashboadSlice";
 import { StatCardSkeleton, CourseCardSkeleton, InstructorCardSkeleton } from "../../common/Skeleton";
@@ -23,7 +24,9 @@ export const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [topInstructors, setTopInstructors] = useState([]);
+  
   const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
+  const [showAddMasterClassModal, setShowAddMasterClassModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const firebase = useFirebase();
 
@@ -53,8 +56,14 @@ export const AdminDashboard = () => {
     setShowAddInstructorModal(true);
   };
 
+  const handleAddMasterClass = () => {
+    setShowAddMasterClassModal(true);
+  };
+
   const handleCloseModal = () => {
     setShowAddInstructorModal(false);
+    setShowAddMasterClassModal(false);
+    // Refresh data after modal is closed
     fetchDashboardData();
   };
 
@@ -94,6 +103,15 @@ export const AdminDashboard = () => {
           >
             Add Instructor
           </Button>
+          <Button
+            variant="outline"
+            className="!text-black"
+            size="lg"
+            leftIcon={<UserPlus size={16} />}
+            onClick={handleAddMasterClass}
+          >
+            Add MasterClass
+          </Button>
           <Button leftIcon={<BookOpen size={16} />}>Add Categories</Button>
         </div>
       </div>
@@ -105,6 +123,15 @@ export const AdminDashboard = () => {
           onCancel={handleCloseModal}
         >
           <AddInstructorForm onClose={handleCloseModal} />
+        </ModalPage>
+      )}
+
+      {showAddMasterClassModal && (
+        <ModalPage
+           open={showAddMasterClassModal}
+           onCancel={handleCloseModal}
+        >
+          <AddMasterClassForm onClose={handleCloseModal} />
         </ModalPage>
       )}
 
