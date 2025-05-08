@@ -61,17 +61,16 @@ export const readOrCreateDocument = async (
       return results;
     }
 
-    console.log("No documents. Creating a new ");
+    console.log("No documents. Creating a new one");
 
     const newDocRef = doc(colRef);
-    const [outerKey, innerKey] = fieldName.split(".");
     const documentData = {
-      [outerKey]: {
-        [innerKey]: fieldValue,
+      data: {
+        [fieldName.split(".")[1]]: fieldValue,
       },
     };
 
-    console.log(documentData);
+    console.log("Creating document with data:", documentData);
 
     await setDoc(newDocRef, documentData);
 

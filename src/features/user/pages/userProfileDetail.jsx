@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-
-
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, LoadingOutlined } from "@ant-design/icons";
+import { Spin } from "antd";
 
 import { AvatarWithText } from "../../../components/common/AvatarGroup";
 import Navbar from "../../../components/navbar/index";
 
 import { useFirebase } from "../../../hooks/useFirebase";
 import EditProfileModal from "./EditProfileModal";
+import { handleError, handleSuccess } from "../../../utils/tostify";
 
 const UserProfileDetail = () => {
-
   const reduxUser = useSelector((state) => state.user?.userDetails);
 
   const firebase = useFirebase();
 
   const [userData, setUserData] = useState({
-    name: reduxUser?.displayName || "Guest User",
+    name: reduxUser?.username || "Guest User",
     email: reduxUser?.email || "guest@example.com",
     photoURL: reduxUser?.photoURL || null,
     about: "",
@@ -30,83 +29,112 @@ const UserProfileDetail = () => {
 
   const [userDocId, setUserDocId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!userData.email) return;
       try {
-        const [userDoc] = await firebase.readUserFromFirestore(
-          "users",
-          "data.email",
-          userData.email
-        );
-        if (userDoc) {
-          setUserDocId(userDoc.id);
-          const userDetail = userDoc?.data;
-          if (userDetail) {
-            setUserData((prev) => ({
-              ...prev,
-              name: userDetail.displayName || prev.name,
-              photoURL: userDetail.photoURL || prev.photoURL,
-              about: userDetail.about || "",
-              skills: userDetail.skills || [],
-              certificates: userDetail.certificates || [],
-              github: userDetail.github || "",
-              medium: userDetail.medium || "",
-              twitter: userDetail.twitter || "",
-            }));
-          }
+        setIsLoading(true);
+        if (!reduxUser?.email) {
+          handleError("User not authenticated");
+          return;
         }
+
+        const userData = await firebase.readUserFromFirestore(
+          "users",
+          "data.data.email",
+          reduxUser.email
+        );
+        if (userData && userData.length > 0) {
+          const userDoc = userData[0];
+          setUserDocId(userDoc.id);
+          setUserData({
+            name: userDoc.data.data.displayName || reduxUser.username,
+            email: reduxUser.email,
+            photoURL: userDoc.data.data.photoURL || reduxUser.photoURL,
+            about: userDoc.data.data.about || "",
+            skills: userDoc.data.data.skills || [],
+            certificates: userDoc.data.data.certificates || [],
+            github: userDoc.data.data.github || "",
+            medium: userDoc.data.data.medium || "",
+            twitter: userDoc.data.data.twitter || "",
+          });
+        } 
       } catch (error) {
-        console.error("Error fetching user data from Firestore:", error);
+        console.error("Error fetching user data:", error);
+        handleError("Failed to fetch user data");
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchUserData();
-  }, [userData.email, firebase]);
-
-
-  const [isUpdating, setIsUpdating] = useState(false);
+  }, [reduxUser, firebase]);
 
   const handleProfileUpdate = async (values) => {
     setIsUpdating(true);
     try {
-      if (userDocId) {
-        await firebase.UpdateUser("users", userDocId, {
-          "data.displayName": values.name,
-          "data.email": values.email,
-          "data.about": values.about,
-          "data.skills": values.skills,
-          "data.certificates": values.certificates,
-          "data.github": values.github,
-          "data.medium": values.medium,
-          "data.twitter": values.twitter,
-        });
-
-        setUserData({
-          ...userData,
-          name: values.name,
-          email: values.email,
-          about: values.about,
-          skills: values.skills,
-          certificates: values.certificates,
-          github: values.github,
-          medium: values.medium,
-          twitter: values.twitter,
-        });
+      if (!userDocId) {
+        throw new Error("User document not found");
       }
+
+      // Validate URLs
+      const validateUrl = (url) => {
+        if (!url) return true;
+        try {
+          new URL(url);
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
+      if (
+        !validateUrl(values.github) ||
+        !validateUrl(values.medium) ||
+        !validateUrl(values.twitter)
+      ) {
+        throw new Error("Invalid URL format");
+      }
+
+      await firebase.UpdateUser("users", userDocId, {
+        "data.data.displayName": values.name,
+        "data.data.email": values.email,
+        "data.data.about": values.about,
+        "data.data.skills": values.skills,
+        "data.data.certificates": values.certificates,
+        "data.data.github": values.github,
+        "data.data.medium": values.medium,
+        "data.data.twitter": values.twitter,
+        "data.data.updatedAt": new Date().toISOString(),
+      });
+
+      setUserData({
+        ...userData,
+        name: values.name,
+        email: values.email,
+        about: values.about,
+        skills: values.skills,
+        certificates: values.certificates,
+        github: values.github,
+        medium: values.medium,
+        twitter: values.twitter,
+      });
+      handleSuccess("Profile updated successfully");
     } catch (error) {
       console.error("Error updating user profile:", error);
+      handleError(error.message || "Failed to update profile");
     } finally {
       setIsUpdating(false);
       setIsModalOpen(false);
     }
   };
 
-
   const userProfilePic = userData.photoURL ? (
     <img
       src={userData.photoURL}
-      alt="User avatar"
+      alt={userData.name}
       className="w-12 h-12 rounded-lg object-cover"
     />
   ) : (
@@ -175,7 +203,6 @@ const UserProfileDetail = () => {
     { name: "Medium", url: userData.medium },
   ];
 
-
   const SocialButtonDisplay = () => {
     return (
       <>
@@ -187,7 +214,7 @@ const UserProfileDetail = () => {
               onClick={() => {
                 if (url) window.open(url, "_blank", "noopener noreferrer");
               }}
-              className={`flex   gap-2 p-2 text-xs font-bold uppercase border rounded-lg transition ${
+              className={`flex gap-2 p-2 text-xs font-bold uppercase border rounded-lg transition ${
                 url
                   ? "hover:bg-gray-50 text-gray-700 cursor-pointer"
                   : "bg-gray-200 text-gray-400 hidden cursor-not-allowed"
@@ -201,12 +228,19 @@ const UserProfileDetail = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen">
       <Navbar />
       <section className="container mx-auto px-4 pb-4 ">
-        <div className="relative flex flex-col bg-white  rounded-2xl shadow-lg overflow-hidden">
+        <div className="relative flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="relative md:h-60 w-full overflow-hidden">
             <img
               src="https://static.vecteezy.com/system/resources/previews/039/920/245/non_2x/artificial-intelligence-technology-facebook-cover-free-editor_template.jpeg"
@@ -230,13 +264,13 @@ const UserProfileDetail = () => {
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="text-gray-500 hover:text-gray-700 transition ml-2"
+                  disabled={isUpdating}
                 >
                   <EditOutlined />
                 </button>
               </div>
 
               <SocialButtonDisplay />
-
             </div>
           </div>
         </div>

@@ -133,11 +133,11 @@ const Home = () => {
   ]
 
   return (
-    <div>
+    <div >
       <div className="lavender-background">
         <Navbar />
 
-        {/* Main Top Content */}
+
         <div className="p-4 md:p-8 ">
           {sections.map((section, index) => (
             <ContentSection
@@ -154,7 +154,11 @@ const Home = () => {
         {/* Lazy loaded components */}
       </div>
 
-      {/* About Us */}
+
+
+
+
+
 
       <div
         className={` ${responsiveFlex}  bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
@@ -238,7 +242,6 @@ const Home = () => {
         <Testimonials />
       </Suspense>
 
-      {/* Add Footer */}
       <Footer />
     </div>
   )

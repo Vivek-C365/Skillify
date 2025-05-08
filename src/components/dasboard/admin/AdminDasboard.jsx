@@ -137,14 +137,14 @@ export const AdminDashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {isLoading ? (
-          // Show skeleton loading for stats
+         
           <>
             <StatCardSkeleton />
             <StatCardSkeleton />
             <StatCardSkeleton />
           </>
         ) : (
-          // Show actual stats
+          
           stats.map((stat, index) => {
             const card = (
               <StatCard
@@ -229,7 +229,7 @@ export const AdminDashboard = () => {
           </CardFooter>
         </Card>
 
-        {/* Top Instructors */}
+     
         <Card>
           <CardHeader className="border-b">
             <h2 className="text-xl font-semibold">Top Instructors</h2>
@@ -237,7 +237,7 @@ export const AdminDashboard = () => {
           <CardContent className="p-0">
             <div className="divide-y">
               {isLoading ? (
-                // Show skeleton loading for instructors
+             
                 <>
                   <InstructorCardSkeleton />
                   <InstructorCardSkeleton />
@@ -246,7 +246,7 @@ export const AdminDashboard = () => {
                   <InstructorCardSkeleton />
                 </>
               ) : (
-                // Show actual instructors
+               
                 topInstructors.slice(0, 5).map((instructor, index) => (
                   <div key={index} className="flex items-center p-4">
                     <div className="font-bold text-gray-500 mr-4 w-6 text-center">

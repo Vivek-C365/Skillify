@@ -8,6 +8,8 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
   const reduxUser = useSelector((state) => state.user?.userDetails);
   const role = reduxUser.role;
 
+  
+
   const getHeaderTitle = () => {
     switch (role) {
       case "student":

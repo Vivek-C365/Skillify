@@ -30,7 +30,7 @@ const DashboardLayout = ({ children }) => {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Header onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
 
-        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50 to-slate-50">
+        <main className="flex-1 bg-gradient-to-br from-gray-50 to-slate-50 hide-scrollbar">
           <div className="container mx-auto px-4 py-6 max-w-7xl">
             <div className="grid gap-6">{children}</div>
           </div>
