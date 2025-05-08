@@ -101,7 +101,7 @@ const SignUp = ({
           // Login based on role Teacher
           const instructorData = await firebase.readUserFromFirestore(
             "Instructor",
-            "data.data.email",
+            "data.email",
             email
           );
           if (!instructorData || instructorData.length === 0) {

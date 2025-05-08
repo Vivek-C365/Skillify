@@ -6,8 +6,8 @@ import Dropdown from "../common/DropDown";
 import Eduaide_cube from "../../assets/images/eduaide_cube.png";
 import { AvatarWithText } from "../common/AvatarGroup";
 import ActiveLink from "../common/ActiveLink";
-import { useDispatch } from "react-redux";
-import { clearUserData } from "../../features/user/pages/userProfileSlice";
+
+import { useLogout } from "../../auth/pages/Logout";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
@@ -19,19 +19,12 @@ const NAV_ITEMS = [
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   const boxRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
   const user = Firebase.userLoggedIn;
-
-  const handleLogout = async () => {
-    const success = await Firebase.handleLogout();
-    if (success) {
-      dispatch(clearUserData());
-      navigate("/");
-    }
-  };
+  const handleLogout = useLogout();
 
   useEffect(() => {
     if (boxRef.current) {

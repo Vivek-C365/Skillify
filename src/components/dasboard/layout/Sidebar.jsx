@@ -12,16 +12,13 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { clearUserData } from "../../../features/user/pages/userProfileSlice";
+import { useLogout } from "../../../auth/pages/Logout";
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user?.userDetails);
-
   const role = reduxUser.role;
-
   const location = useLocation();
+  const handleLogout = useLogout();
 
   const navItems = [
     {
@@ -110,11 +107,6 @@ const Sidebar = () => {
     }
   };
 
-  const logout = () => {
-    dispatch(clearUserData());
-    console.log("Logged out");
-  };
-
   return (
     <div className={`h-full ${getRoleColor()} text-white flex flex-col`}>
       <div className="flex items-center justify-center h-16 px-4">
@@ -149,7 +141,7 @@ const Sidebar = () => {
 
       <div className="p-4 border-t border-white/10">
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white rounded-lg transition-colors duration-150"
         >
           <LogOut size={20} className="mr-3" />
