@@ -65,8 +65,13 @@ const SignUp = ({
     if (!emailValidate.test(email)) return handleError("Invalid Email");
 
     // Admin Login
-    if (email === adminCredentials.email && password === adminCredentials.password) {
-      dispatch(setUserData({ ...adminCredentials, isAdmin: true, role: "admin" }));
+    if (
+      email === adminCredentials.email &&
+      password === adminCredentials.password
+    ) {
+      dispatch(
+        setUserData({ ...adminCredentials, isAdmin: true, role: "admin" })
+      );
       handleSuccess("Admin login successful");
       return navigate("/admin-dashboard");
     }
@@ -74,7 +79,8 @@ const SignUp = ({
     try {
       setIsSubmitting(true);
       let userData;
-      
+
+      // if type is signup then it goes on Signup Login else go for Login Logic
       if (type === "signup") {
         await firebase.signupWithEmailAndPassword(email, password);
         userData = await firebase.addUserToFirestore({
@@ -85,16 +91,26 @@ const SignUp = ({
         });
         handleSuccess("User successfully created");
       } else {
-        // For login, check the appropriate collection based on active tab
+        // Login based On user or Teacher ( by default user is selected in useState)
         if (activeTab === "user") {
-          userData = await firebase.UserSignInwithEmailAndPassword(email, password);
+          userData = await firebase.UserSignInwithEmailAndPassword(
+            email,
+            password
+          );
         } else {
-          // Check instructor collection for teacher login
-          const instructorData = await firebase.readUserFromFirestore("Instructor", "data.data.email", email);
+          // Login based on role Teacher
+          const instructorData = await firebase.readUserFromFirestore(
+            "Instructor",
+            "data.data.email",
+            email
+          );
           if (!instructorData || instructorData.length === 0) {
             throw new Error("No instructor account found with this email");
           }
-          userData = await firebase.UserSignInwithEmailAndPassword(email, password);
+          userData = await firebase.UserSignInwithEmailAndPassword(
+            email,
+            password
+          );
           if (userData) {
             userData = { ...userData, role: "teacher" };
           }
@@ -102,6 +118,7 @@ const SignUp = ({
         handleSuccess("Login successful");
       }
 
+      // If data found add to redux Store
       if (userData) {
         dispatch(setUserData(formatUserData(userData, email)));
         navigate("/");
@@ -131,7 +148,10 @@ const SignUp = ({
     <div className="flex flex-wrap bg-white signup_texture_backdrop">
       <div className="flex w-full flex-col md:w-1/2">
         <div className="flex justify-center pt-12 md:justify-start md:pl-12">
-          <Link to="/" className="border-b-gray-700 border-b-4 pb-2 text-2xl font-bold text-gray-900">
+          <Link
+            to="/"
+            className="border-b-gray-700 border-b-4 pb-2 text-2xl font-bold text-gray-900"
+          >
             Skillify
           </Link>
         </div>
@@ -140,7 +160,7 @@ const SignUp = ({
           <p className="text-center text-3xl font-bold">{title}</p>
           <p className="mt-2 text-center text-gray-500">{subtitle}</p>
 
-          {/* Only show tabs during login */}
+          {/*  if Types is sign up then don't show the user and teacher tab  else show  */}
           {type !== "signup" && (
             <div className="mt-6 flex justify-center space-x-4">
               <button
@@ -212,7 +232,11 @@ const SignUp = ({
               disabled={isSubmitting}
               className="mt-8 w-full rounded-lg bg-gray-900 px-4 py-2 text-center font-semibold text-white disabled:opacity-50"
             >
-              {isSubmitting ? "Processing..." : type === "signup" ? "Create Account" : "Login"}
+              {isSubmitting
+                ? "Processing..."
+                : type === "signup"
+                ? "Create Account"
+                : "Login"}
             </button>
           </form>
 
