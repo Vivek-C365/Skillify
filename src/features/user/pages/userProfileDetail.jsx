@@ -11,7 +11,6 @@ import EditProfileModal from "./EditProfileModal";
 import { handleError, handleSuccess } from "../../../utils/tostify";
 
 const UserProfileDetail = () => {
-
   const reduxUser = useSelector((state) => state.user?.userDetails);
 
   const firebase = useFirebase();
@@ -33,7 +32,6 @@ const UserProfileDetail = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch user data when component mounts
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -43,35 +41,26 @@ const UserProfileDetail = () => {
           return;
         }
 
-        const userData = await firebase.readUserFromFirestore("users", "data.data.email", reduxUser.email);
+        const userData = await firebase.readUserFromFirestore(
+          "users",
+          "data.data.email",
+          reduxUser.email
+        );
         if (userData && userData.length > 0) {
           const userDoc = userData[0];
           setUserDocId(userDoc.id);
           setUserData({
-            name: userDoc.data.displayName || reduxUser.username,
-            email: userDoc.data.email || reduxUser.email,
-            photoURL: userDoc.data.photoURL || reduxUser.photoURL,
-            about: userDoc.data.about || "",
-            skills: userDoc.data.skills || [],
-            certificates: userDoc.data.certificates || [],
-            github: userDoc.data.github || "",
-            medium: userDoc.data.medium || "",
-            twitter: userDoc.data.twitter || "",
-          });
-        } else {
-          // Create user document if it doesn't exist
-          const newUserData = await firebase.addUserToFirestore({
+            name: userDoc.data.data.displayName || reduxUser.username,
             email: reduxUser.email,
-            role: reduxUser.role || "student",
-            displayName: reduxUser.username || reduxUser.email.split("@")[0],
-            photoURL: reduxUser.photoURL,
-            createdAt: new Date().toISOString()
+            photoURL: userDoc.data.data.photoURL || reduxUser.photoURL,
+            about: userDoc.data.data.about || "",
+            skills: userDoc.data.data.skills || [],
+            certificates: userDoc.data.data.certificates || [],
+            github: userDoc.data.data.github || "",
+            medium: userDoc.data.data.medium || "",
+            twitter: userDoc.data.data.twitter || "",
           });
-          setUserData(prev => ({
-            ...prev,
-            ...newUserData
-          }));
-        }
+        } 
       } catch (error) {
         console.error("Error fetching user data:", error);
         handleError("Failed to fetch user data");
@@ -82,8 +71,6 @@ const UserProfileDetail = () => {
 
     fetchUserData();
   }, [reduxUser, firebase]);
-
-  
 
   const handleProfileUpdate = async (values) => {
     setIsUpdating(true);
@@ -103,7 +90,11 @@ const UserProfileDetail = () => {
         }
       };
 
-      if (!validateUrl(values.github) || !validateUrl(values.medium) || !validateUrl(values.twitter)) {
+      if (
+        !validateUrl(values.github) ||
+        !validateUrl(values.medium) ||
+        !validateUrl(values.twitter)
+      ) {
         throw new Error("Invalid URL format");
       }
 
@@ -116,7 +107,7 @@ const UserProfileDetail = () => {
         "data.data.github": values.github,
         "data.data.medium": values.medium,
         "data.data.twitter": values.twitter,
-        "data.data.updatedAt": new Date().toISOString()
+        "data.data.updatedAt": new Date().toISOString(),
       });
 
       setUserData({
@@ -139,7 +130,6 @@ const UserProfileDetail = () => {
       setIsModalOpen(false);
     }
   };
-
 
   const userProfilePic = userData.photoURL ? (
     <img
@@ -213,7 +203,6 @@ const UserProfileDetail = () => {
     { name: "Medium", url: userData.medium },
   ];
 
-
   const SocialButtonDisplay = () => {
     return (
       <>
@@ -282,7 +271,6 @@ const UserProfileDetail = () => {
               </div>
 
               <SocialButtonDisplay />
-
             </div>
           </div>
         </div>
