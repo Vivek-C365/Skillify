@@ -82,37 +82,64 @@ const SignUp = ({
 
       // if type is signup then it goes on Signup Login else go for Login Logic
       if (type === "signup") {
-        await firebase.signupWithEmailAndPassword(email, password);
-        userData = await firebase.addUserToFirestore({
-          email,
-          role: "student",
-          displayName: email.split("@")[0],
-          createdAt: new Date().toISOString(),
-        });
-        handleSuccess("User successfully created");
+        try {
+          // Create authentication account
+          const authUser = await firebase.signupWithEmailAndPassword(email, password);
+          
+          if (!authUser) {
+            throw new Error("Failed to create user account");
+          }
+
+          // Add user data to Firestore
+          userData = await firebase.addUserToFirestore({
+            email,
+            role: "student",
+            displayName: email.split("@")[0],
+            createdAt: new Date().toISOString(),
+            uid: authUser.uid // Add the UID from authentication
+          });
+
+          handleSuccess("User successfully created");
+        } catch (error) {
+          handleError(error.message);
+          return; // Exit early if there's an error
+        }
       } else {
         // Login based On user or Teacher ( by default user is selected in useState)
         if (activeTab === "user") {
-          userData = await firebase.UserSignInwithEmailAndPassword(
-            email,
-            password
-          );
+          try {
+            console.log("Attempting user login for:", email);
+            userData = await firebase.UserSignInwithEmailAndPassword(
+              email,
+              password
+            );
+            console.log("User login result:", userData);
+            // Verify that the user is not a teacher
+            if (userData.role === "teacher") {
+              throw new Error("Please use the Teacher tab to login");
+            }
+          } catch (error) {
+            console.error("User login error:", error);
+            handleError(error.message);
+            return;
+          }
         } else {
           // Login based on role Teacher
-          const instructorData = await firebase.readUserFromFirestore(
-            "Instructor",
-            "data.email",
-            email
-          );
-          if (!instructorData || instructorData.length === 0) {
-            throw new Error("No instructor account found with this email");
-          }
-          userData = await firebase.UserSignInwithEmailAndPassword(
-            email,
-            password
-          );
-          if (userData) {
-            userData = { ...userData, role: "teacher" };
+          try {
+            console.log("Attempting teacher login for:", email);
+            userData = await firebase.UserSignInwithEmailAndPassword(
+              email,
+              password
+            );
+            console.log("Teacher login result:", userData);
+            // Verify that the user is a teacher
+            if (userData.role !== "teacher") {
+              throw new Error("Please use the User tab to login");
+            }
+          } catch (error) {
+            console.error("Teacher login error:", error);
+            handleError(error.message);
+            return;
           }
         }
         handleSuccess("Login successful");

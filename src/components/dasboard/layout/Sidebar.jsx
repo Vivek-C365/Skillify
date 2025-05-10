@@ -79,6 +79,12 @@ const Sidebar = () => {
       roles: ["admin"],
     },
     {
+      title: "Masterclasses",
+      icon: < GraduationCap size={20} />,
+      path: "/masterclasses",
+      roles: ["admin"],
+    },
+    {
       title: "Instructors",
       icon: <Users size={20} />,
       path: "/instructors",

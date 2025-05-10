@@ -24,6 +24,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
   const user = Firebase.userLoggedIn;
+  console.log(user)
   const handleLogout = useLogout();
 
   useEffect(() => {
@@ -53,7 +54,13 @@ const Navbar = () => {
             key: "Dashboard",
             label: "Dashboard",
             onClick: () => {
-              navigate("/student-dashboard");
+              if (user.role === "teacher") {
+                navigate("/teacher-dashboard");
+              } else if (user.role === "admin") {
+                navigate("/admin-dashboard");
+              } else {
+                navigate("/student-dashboard");
+              }
             },
           },
           {

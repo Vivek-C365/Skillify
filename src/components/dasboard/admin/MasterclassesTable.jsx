@@ -4,40 +4,40 @@ import { useFirebase } from "../../../hooks/useFirebase";
 import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
 
-const CoursesTable = () => {
-  const [courses, setCourses] = useState([]);
+const MasterclassesTable = () => {
+  const [masterclasses, setMasterclasses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const firebase = useFirebase();
 
-  const fetchCourses = async () => {
+  const fetchMasterclasses = async () => {
     try {
       setIsLoading(true);
-      const coursesData = await firebase.readData("Courses");
-      setCourses(coursesData || []);
+      const masterclassesData = await firebase.readData("MasterClass");
+      setMasterclasses(masterclassesData || []);
     } catch (error) {
-      console.error("Failed to fetch courses:", error);
-      handleError("Failed to load courses");
+      console.error("Failed to fetch masterclasses:", error);
+      handleError("Failed to load masterclasses");
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCourses();
+    fetchMasterclasses();
   }, [firebase]);
 
   const handleEdit = async (record) => {
-    console.log("Edit course:", record);
+    console.log("Edit masterclass:", record);
   };
 
   const handleDelete = async (record) => {
     try {
-      await firebase.deleteData("Courses", record.id);
-      handleSuccess("Course deleted successfully");
-      fetchCourses();
+      await firebase.deleteData("MasterClass", record.id);
+      handleSuccess("Masterclass deleted successfully");
+      fetchMasterclasses();
     } catch (error) {
       if (error) {
-        handleError("Failed to delete course");
+        handleError("Failed to delete masterclass");
       }
     }
   };
@@ -45,13 +45,13 @@ const CoursesTable = () => {
   const columns = [
     {
       title: "Title",
-      dataIndex: ["data", "courseTitle"],
+      dataIndex: ["data", "masterclassTitle"],
       key: "title",
       render: (text) => <a className="font-medium">{text}</a>,
     },
     {
       title: "Instructor",
-      dataIndex: ["data", "instructorName"],
+      dataIndex: ["data", "name"],
       key: "instructor",
       render: (text) => <span>{text}</span>,
     },
@@ -81,10 +81,10 @@ const CoursesTable = () => {
 
   return (
     <AdminTable
-      title="Courses"
-      description="Manage all courses in the platform"
+      title="Masterclasses"
+      description="Manage all masterclasses in the platform"
       columns={columns}
-      data={courses}
+      data={masterclasses}
       isLoading={isLoading}
       onEdit={handleEdit}
       onDelete={handleDelete}
@@ -92,4 +92,4 @@ const CoursesTable = () => {
   );
 };
 
-export default CoursesTable;
+export default MasterclassesTable;

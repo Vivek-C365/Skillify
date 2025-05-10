@@ -16,6 +16,7 @@ import DashboardLayout from "../components/dasboard/layout/Dashboard";
 import CoursesTable from "../components/dasboard/admin/CoursesTable";
 import InstructorsTable from "../components/dasboard/admin/InstructorsTable";
 import StudentsTable from "../components/dasboard/admin/StudentsTable";
+import MasterclassesTable from "../components/dasboard/admin/MasterclassesTable";
 import { useSelector } from "react-redux";
 import StudentDashboard from "../components/dasboard/student/StudentDashboard";
 import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
@@ -76,6 +77,14 @@ function AppRoutes() {
           element={
             <DashboardLayout>
               <CoursesTable />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/masterclasses"
+          element={
+            <DashboardLayout>
+              <MasterclassesTable />
             </DashboardLayout>
           }
         />
