@@ -7,6 +7,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 export const addDocument = async (db, collectionName, data) => {
@@ -19,7 +20,6 @@ export const addDocument = async (db, collectionName, data) => {
     throw error;
   }
 };
-
 
 export const readDocuments = async (db, collectionName) => {
   try {
@@ -37,10 +37,6 @@ export const readDocuments = async (db, collectionName) => {
     console.log(error);
   }
 };
-
-
-
-
 
 export const readOrCreateDocument = async (
   db,
@@ -96,6 +92,18 @@ export const updateDocument = async (
     return true;
   } catch (error) {
     console.error("Error updating document:", error);
+    throw error;
+  }
+};
+
+export const deleteDocument = async (db, collectionName, docId) => {
+  try {
+    const docRef = doc(db, collectionName, docId);
+    await deleteDoc(docRef);
+    console.log("Document deleted successfully:", docId);
+    return true;
+  } catch (error) {
+    console.error("Error deleting document:", error);
     throw error;
   }
 };

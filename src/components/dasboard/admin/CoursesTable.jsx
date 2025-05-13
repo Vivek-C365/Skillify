@@ -1,30 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Tag } from "antd";
 import { useFirebase } from "../../../hooks/useFirebase";
 import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteCourse } from "../../../features/admin/admindashboadSlice";
 
 const CoursesTable = () => {
-  const [courses, setCourses] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { courses, loading } = useSelector((state) => state.dashboard);
+  const dispatch = useDispatch();
   const firebase = useFirebase();
-
-  const fetchCourses = async () => {
-    try {
-      setIsLoading(true);
-      const coursesData = await firebase.readData("Courses");
-      setCourses(coursesData || []);
-    } catch (error) {
-      console.error("Failed to fetch courses:", error);
-      handleError("Failed to load courses");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCourses();
-  }, [firebase]);
 
   const handleEdit = async (record) => {
     console.log("Edit course:", record);
@@ -32,26 +17,31 @@ const CoursesTable = () => {
 
   const handleDelete = async (record) => {
     try {
-      await firebase.deleteData("Courses", record.id);
+      await firebase.deleteData("CourseDetails", record.id);
+      dispatch(deleteCourse(record.id));
       handleSuccess("Course deleted successfully");
-      fetchCourses();
     } catch (error) {
-      if (error) {
-        handleError("Failed to delete course");
-      }
+      console.error("Delete error:", error);
+      handleError(
+        "Failed to delete course: " + (error.message || "Unknown error")
+      );
     }
   };
 
   const columns = [
     {
       title: "Title",
-      dataIndex: ["data", "courseTitle"],
+      dataIndex: ["data", "description"],
       key: "title",
-      render: (text) => <a className="font-medium">{text}</a>,
+      render: (text) => (
+        <a className="font-medium">
+          {text.length > 50 ? `${text.slice(0, 35)}...` : text}
+        </a>
+      ),
     },
     {
       title: "Instructor",
-      dataIndex: ["data", "instructorName"],
+      dataIndex: ["data", "name"],
       key: "instructor",
       render: (text) => <span>{text}</span>,
     },
@@ -67,15 +57,9 @@ const CoursesTable = () => {
     },
     {
       title: "Price",
-      dataIndex: ["data", "price"],
+      dataIndex: ["data", "hourly_rate"],
       key: "price",
-      render: (price) => `$${price}`,
-    },
-    {
-      title: "Duration",
-      dataIndex: ["data", "duration"],
-      key: "duration",
-      render: (duration) => `${duration} hours`,
+      render: (price) => `$${price} hours`,
     },
   ];
 
@@ -85,7 +69,7 @@ const CoursesTable = () => {
       description="Manage all courses in the platform"
       columns={columns}
       data={courses}
-      isLoading={isLoading}
+      isLoading={loading}
       onEdit={handleEdit}
       onDelete={handleDelete}
     />

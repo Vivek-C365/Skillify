@@ -1,30 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Tag } from "antd";
 import { useFirebase } from "../../../hooks/useFirebase";
 import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteMasterclass } from "../../../features/admin/admindashboadSlice";
 
 const MasterclassesTable = () => {
-  const [masterclasses, setMasterclasses] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { masterclasses, loading } = useSelector((state) => state.dashboard);
+  const dispatch = useDispatch();
   const firebase = useFirebase();
-
-  const fetchMasterclasses = async () => {
-    try {
-      setIsLoading(true);
-      const masterclassesData = await firebase.readData("MasterClass");
-      setMasterclasses(masterclassesData || []);
-    } catch (error) {
-      console.error("Failed to fetch masterclasses:", error);
-      handleError("Failed to load masterclasses");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMasterclasses();
-  }, [firebase]);
 
   const handleEdit = async (record) => {
     console.log("Edit masterclass:", record);
@@ -33,12 +18,13 @@ const MasterclassesTable = () => {
   const handleDelete = async (record) => {
     try {
       await firebase.deleteData("MasterClass", record.id);
+      dispatch(deleteMasterclass(record.id));
       handleSuccess("Masterclass deleted successfully");
-      fetchMasterclasses();
     } catch (error) {
-      if (error) {
-        handleError("Failed to delete masterclass");
-      }
+      console.error("Delete error:", error);
+      handleError(
+        "Failed to delete masterclass: " + (error.message || "Unknown error")
+      );
     }
   };
 
@@ -69,7 +55,7 @@ const MasterclassesTable = () => {
       title: "Price",
       dataIndex: ["data", "price"],
       key: "price",
-      render: (price) => `$${price}`,
+      render: (price) => <span>{price ? price : "Free"}</span>,
     },
     {
       title: "Duration",
@@ -85,7 +71,7 @@ const MasterclassesTable = () => {
       description="Manage all masterclasses in the platform"
       columns={columns}
       data={masterclasses}
-      isLoading={isLoading}
+      isLoading={loading}
       onEdit={handleEdit}
       onDelete={handleDelete}
     />

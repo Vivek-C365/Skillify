@@ -24,7 +24,6 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
   const user = Firebase.userLoggedIn;
-  console.log(user)
   const handleLogout = useLogout();
 
   useEffect(() => {
@@ -195,7 +194,7 @@ const DesktopLogin = () => (
 
 const MobileDrawer = ({ isOpen, closeMenu, show }) => (
   <div
-    className={`fixed z-50 inset-y-0 right-0 z-10 w-full max-w-sm bg-black shadow-xl transition-transform duration-300 ease-in-out transform ${
+    className={`fixed z-50 inset-y-0 right-0  w-full max-w-sm bg-black shadow-xl transition-transform duration-300 ease-in-out transform ${
       isOpen ? "translate-x-0" : "translate-x-full"
     }`}
   >

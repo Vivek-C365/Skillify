@@ -1,30 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Tag, Avatar } from "antd";
 import { useFirebase } from "../../../hooks/useFirebase";
 import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteInstructor } from "../../../features/admin/admindashboadSlice";
 
 const InstructorsTable = () => {
-  const [instructors, setInstructors] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { instructors, loading } = useSelector((state) => state.dashboard);
+  const dispatch = useDispatch();
   const firebase = useFirebase();
-
-  const fetchInstructors = async () => {
-    try {
-      setIsLoading(true);
-      const instructorsData = await firebase.readData("Instructors");
-      setInstructors(instructorsData || []);
-    } catch (error) {
-      console.error("Failed to fetch instructors:", error);
-      handleError("Failed to load instructors");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchInstructors();
-  }, [firebase]);
 
   const handleEdit = async (record) => {
     console.log("Edit instructor:", record);
@@ -32,13 +17,15 @@ const InstructorsTable = () => {
 
   const handleDelete = async (record) => {
     try {
-      await firebase.deleteData("Instructors", record.id);
+      await firebase.deleteData("Instructor", record.id);
+
+      dispatch(deleteInstructor(record.id));
       handleSuccess("Instructor deleted successfully");
-      fetchInstructors();
     } catch (error) {
-      if (error) {
-        handleError("Failed to delete instructor");
-      }
+      console.error("Delete error:", error);
+      handleError(
+        "Failed to delete instructor: " + (error.message || "Unknown error")
+      );
     }
   };
 
@@ -61,7 +48,7 @@ const InstructorsTable = () => {
     },
     {
       title: "Specialization",
-      dataIndex: ["data", "specialization"],
+      dataIndex: ["data", "expertise"],
       key: "specialization",
       render: (specialization) => (
         <Tag color="blue" key={specialization}>
@@ -70,10 +57,10 @@ const InstructorsTable = () => {
       ),
     },
     {
-      title: "Experience",
-      dataIndex: ["data", "experience"],
-      key: "experience",
-      render: (experience) => `${experience} years`,
+      title: "Phone",
+      dataIndex: ["data", "phone"],
+      key: "phone",
+      render: (phone) => `${phone}`,
     },
     {
       title: "Rating",
@@ -89,7 +76,7 @@ const InstructorsTable = () => {
       description="Manage all instructors in the platform"
       columns={columns}
       data={instructors}
-      isLoading={isLoading}
+      isLoading={loading}
       onEdit={handleEdit}
       onDelete={handleDelete}
     />

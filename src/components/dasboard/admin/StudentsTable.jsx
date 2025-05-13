@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Tag, Avatar } from "antd";
 import { useFirebase } from "../../../hooks/useFirebase";
 import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteUser } from "../../../features/admin/admindashboadSlice";
 
 const StudentsTable = () => {
-  const [students, setStudents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { users, loading } = useSelector((state) => state.dashboard);
+  const dispatch = useDispatch();
   const firebase = useFirebase();
 
-  const fetchStudents = async () => {
-    try {
-      setIsLoading(true);
-      const studentsData = await firebase.readData("Students");
-      setStudents(studentsData || []);
-    } catch (error) {
-      console.error("Failed to fetch students:", error);
-      handleError("Failed to load students");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // student data is in nested object so we need to extract it
+  const students =
+    users?.map((u) => ({
+      ...u.data?.data,
+      id: u.id,
+    })) || [];
 
-  useEffect(() => {
-    fetchStudents();
-  }, [firebase]);
+  console.log(students);
 
   const handleEdit = async (record) => {
     console.log("Edit student:", record);
@@ -32,32 +26,43 @@ const StudentsTable = () => {
 
   const handleDelete = async (record) => {
     try {
-      await firebase.deleteData("Students", record.id);
+      await firebase.deleteData("users", record.id);
+
+      dispatch(deleteUser(record.id));
       handleSuccess("Student deleted successfully");
-      fetchStudents();
     } catch (error) {
-      if (error) {
-        handleError("Failed to delete student");
-      }
+      console.error("Delete error:", error);
+      handleError(
+        "Failed to delete student: " + (error.message || "Unknown error")
+      );
     }
   };
 
   const columns = [
     {
       title: "Name",
-      dataIndex: ["data", "name"],
+      dataIndex: "displayName",
       key: "name",
-      render: (text, record) => (
-        <div className="flex items-center gap-2">
-          <Avatar src={record.data?.photoURL} />
-          <span>{text}</span>
-        </div>
-      ),
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Email",
-      dataIndex: ["data", "email"],
+      dataIndex: "email",
       key: "email",
+    },
+    {
+      title: "Skills",
+      dataIndex: "skills",
+      key: "skills",
+      render: (skills) => <Tag color="blue">{skills?.length || 0} Skills</Tag>,
+    },
+    {
+      title: "Certificates",
+      dataIndex: "certificates",
+      key: "certificates",
+      render: (certificates) => (
+        <Tag color="purple">{certificates?.length || 0} Certificates</Tag>
+      ),
     },
     {
       title: "Enrolled Courses",
@@ -93,7 +98,7 @@ const StudentsTable = () => {
       description="Manage all students in the platform"
       columns={columns}
       data={students}
-      isLoading={isLoading}
+      isLoading={loading}
       onEdit={handleEdit}
       onDelete={handleDelete}
     />

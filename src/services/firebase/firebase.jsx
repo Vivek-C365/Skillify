@@ -26,6 +26,7 @@ import {
   readOrCreateDocument,
   updateDocument,
   readDocuments,
+  deleteDocument,
 } from "../firebase/cloudFirestore";
 import { handleError, handleSuccess } from "../../utils/tostify";
 
@@ -79,13 +80,16 @@ export const FirebaseProvider = ({ children }) => {
 
       // First check if user is an instructor
       const instructorRef = collection(db, "Instructor");
-      const instructorQuery = query(instructorRef, where("data.email", "==", email));
+      const instructorQuery = query(
+        instructorRef,
+        where("data.email", "==", email)
+      );
       const instructorSnapshot = await getDocs(instructorQuery);
 
       console.log("Instructor check:", {
         email,
         found: !instructorSnapshot.empty,
-        data: instructorSnapshot.docs.map(doc => doc.data())
+        data: instructorSnapshot.docs.map((doc) => doc.data()),
       });
 
       if (!instructorSnapshot.empty) {
@@ -106,7 +110,7 @@ export const FirebaseProvider = ({ children }) => {
       console.log("User check:", {
         email,
         found: !userSnapshot.empty,
-        data: userSnapshot.docs.map(doc => doc.data())
+        data: userSnapshot.docs.map((doc) => doc.data()),
       });
 
       if (!userSnapshot.empty) {
@@ -316,6 +320,16 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
+  const deleteData = async (collectionName, docId) => {
+    try {
+      await deleteDocument(db, collectionName, docId);
+      // Success notification handled by the calling component
+    } catch (error) {
+      handleError(error.message);
+      throw error;
+    }
+  };
+
   return (
     <firebaseContext.Provider
       value={{
@@ -333,6 +347,7 @@ export const FirebaseProvider = ({ children }) => {
         addInstructor,
         addMasterClass,
         readData,
+        deleteData,
       }}
     >
       {children}

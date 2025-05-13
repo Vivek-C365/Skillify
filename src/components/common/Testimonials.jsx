@@ -111,7 +111,7 @@ const Testimonials = () => {
     <section className="py-16 bg-gray-50" aria-labelledby="testimonials-heading">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 id="testimonials-heading" className="text-4xl font-bold mb-4">
+          <h2 id="testimonials-heading" className="text-4xl max-sm:text-2xl font-bold mb-4">
             <span className="text-[var(--color-primary-blue)]">Student </span>
             <span className="text-[var(--color-dark-lavender)]">Testimonials</span>
           </h2>

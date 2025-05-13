@@ -18,7 +18,6 @@ const AdminTable = ({
     showTotal: (total) => `Total ${total} items`,
   },
 }) => {
-  // Add default action column if not provided
   const tableColumns = columns || [];
   if (!columns.find(col => col.key === "actions")) {
     tableColumns.push({

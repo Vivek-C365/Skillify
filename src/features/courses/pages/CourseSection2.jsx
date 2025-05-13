@@ -6,6 +6,7 @@ import LaptopOutlined from "@ant-design/icons/LaptopOutlined";
 import { useEffect, useState } from "react";
 import { useFirebase } from "../../../hooks/useFirebase";
 import { Skeleton } from "../../../components/common/Skeleton";
+import { Link } from "react-router-dom";
 
 export default function CourseSection2() {
   const [isLoading, setIsLoading] = useState(true); // Start with true since we're loading initially
@@ -41,62 +42,63 @@ export default function CourseSection2() {
   // Safely extract data
   const currentMasterclass = masterclass[0]?.data || {};
   console.log(currentMasterclass);
-  const { day, date, name,masterclassTitle, time, url, personExperience } = currentMasterclass;
+  const { day, date, name, masterclassTitle, time, url, personExperience } =
+    currentMasterclass;
 
   // Safely handle date
   function getMonthName(monthNumber) {
     const date = new Date();
     date.setMonth(monthNumber - 1);
-  
-    return date.toLocaleString('en-US', {
-      month: 'long',
+
+    return date.toLocaleString("en-US", {
+      month: "long",
     });
   }
 
-
-  let dateDisplay = '';
+  let dateDisplay = "";
   if (date) {
     try {
-      const dateParts = date.split('-');
+      const dateParts = date.split("-");
       const monthString = getMonthName(dateParts[1]);
       if (dateParts.length >= 3) {
         dateDisplay = `${dateParts[2]} ${monthString}`;
       }
     } catch (e) {
-      console.error('Error parsing date:', e);
+      console.error("Error parsing date:", e);
     }
   }
 
-  let timeDisplay='';
-  if(time){
-    try{
-      const timeParts = time.split(':');
-      if(timeParts[0]>=12){
-        let timeHours=timeParts[0]-12;
-        timeDisplay=`${timeHours<9 ?'0': ''}${timeHours}:${timeParts[1]}`
-        timeDisplay+=' PM';
+  let timeDisplay = "";
+  if (time) {
+    try {
+      const timeParts = time.split(":");
+      if (timeParts[0] >= 12) {
+        let timeHours = timeParts[0] - 12;
+        timeDisplay = `${timeHours < 9 ? "0" : ""}${timeHours}:${timeParts[1]}`;
+        timeDisplay += " PM";
+      } else {
+        timeDisplay = `${timeParts[0] < 9 ? "0" : ""}${timeParts[0]}:${
+          timeParts[1]
+        }`;
+        timeDisplay += " AM";
       }
-      else{
-        timeDisplay=`${timeParts[0]<9? '0' : ''}${timeParts[0]}:${timeParts[1]}`
-        timeDisplay+=' AM';
-      }
-    }catch(e){
-      console.error('Error in time pparsing:',e);
+    } catch (e) {
+      console.error("Error in time pparsing:", e);
     }
   }
-    
+
   const MasterClass = () => {
     return (
-      
       <div className="flex flex-col gap-3 p-2">
         <div>
           <h3 className="font-semibold text-[var(--color-dark-lavender)]">
-          {day || 'Day not specified'}, {dateDisplay || 'Date not specified'} at { timeDisplay }
+            {day || "Day not specified"}, {dateDisplay || "Date not specified"}{" "}
+            at {timeDisplay}
           </h3>
         </div>
         <div>
           <p className="text-[var(--color-charcol-black)] font-semibold text-[1.2rem]">
-           {masterclassTitle || 'Title is not specified for masterclass'}
+            {masterclassTitle || "Title is not specified for masterclass"}
           </p>
         </div>
         <div className="flex justify-between gap-2">
@@ -110,7 +112,9 @@ export default function CourseSection2() {
             </div>
           </div>
           <img
-            src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTdMfGt8m2fOLQt3OZb5AgoKzHbWwjTCditg&s"}
+            src={
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTdMfGt8m2fOLQt3OZb5AgoKzHbWwjTCditg&s"
+            }
             alt="IIT"
             className=" h-[2rem] w-[2rem]"
           />
@@ -119,6 +123,7 @@ export default function CourseSection2() {
           <Button className=" w-full bg-transparent !text-black border-1 text-[12px]">
             View Masterclass
           </Button>
+
           <Button className="w-full !bg-black text-[12px]">Register Now</Button>
         </div>
       </div>
@@ -128,8 +133,8 @@ export default function CourseSection2() {
     <>
       {/* Platform Section */}
       <div className="flex flex-wrap md:flex-nowrap gap-7 items-center justify-evenly mx-auto">
-        <div className="left-section max-w-[30rem] m-5 p-3 ">
-          <HeadingDescription className="!text-[var(--color-primary-blue);] text-center xl:w-max sm:text-left font-semibold ">
+        <div className="left-section max-w-[30rem] m-5 p-3  ">
+          <HeadingDescription className="!text-[var(--color-primary-blue);]  text-center xl:w-max sm:text-left font-semibold ">
             Attend{" "}
             <span className="text-[var(--color-dark-lavender)]">
               free masterclasses
@@ -141,7 +146,9 @@ export default function CourseSection2() {
             approach to each student and modern technologies to make learning
             accessible & effective
           </h6>
-          <TagSingle textContent={"View All Masterclass"} />
+          <Link to="/masterclasses">
+            <TagSingle textContent={"View All Masterclass"} />
+          </Link>
         </div>
         <div className="flex flex-wrap max-w-[25rem] gap-1 justify-center items-center  m-5 ">
           <CardWithImage

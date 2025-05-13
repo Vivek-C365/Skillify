@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Users, BookOpen, UserPlus, GraduationCap } from "lucide-react";
-
 import {
   Card,
   CardContent,
@@ -15,8 +14,12 @@ import ModalPage from "../../common/Modal";
 import { useFirebase } from "../../../hooks/useFirebase";
 import CountingNumber from "../../common/CountingNumber";
 import AddMasterClassForm from "../../../features/teachers/pages/AddMasterClassForm";
-import { useDispatch } from "react-redux";
-import { setCoursesData } from "../../../features/admin/admindashboadSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDashboardData,
+  setLoading,
+  setError,
+} from "../../../features/admin/admindashboadSlice";
 import {
   StatCardSkeleton,
   CourseCardSkeleton,
@@ -26,91 +29,85 @@ import { handleError } from "../../../utils/tostify";
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const [users, setUsers] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [masterclasses, setMasterclasses] = useState([]);
-  const [topInstructors, setTopInstructors] = useState([]);
-  const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
-  const [showAddMasterClassModal, setShowAddMasterClassModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { users, courses, instructors, masterclasses, loading } = useSelector(
+    (state) => state.dashboard
+  );
+  const [showAddInstructorModal, setShowAddInstructorModal] =
+    React.useState(false);
+  const [showAddMasterClassModal, setShowAddMasterClassModal] =
+    React.useState(false);
   const firebase = useFirebase();
 
   const fetchDashboardData = useCallback(async () => {
     try {
-      setIsLoading(true);
+      dispatch(setLoading(true));
       const [usersData, coursesData, instructorsData, masterclassesData] =
         await Promise.all([
           firebase.readData("users"),
-          firebase.readData("CouseDetails"),
+          firebase.readData("CourseDetails"),
           firebase.readData("Instructor"),
           firebase.readData("MasterClass"),
         ]);
 
-      dispatch(setCoursesData(coursesData));
-      setUsers(usersData || []);
-      setCourses(coursesData || []);
-      setTopInstructors(instructorsData || []);
-      setMasterclasses(masterclassesData || []);
+      dispatch(
+        setDashboardData({
+          users: usersData || [],
+          courses: coursesData || [],
+          instructors: instructorsData || [],
+          masterclasses: masterclassesData || [],
+        })
+      );
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
+      dispatch(setError(error.message));
       handleError("Failed to load dashboard data");
-    } finally {
-      setIsLoading(false);
     }
   }, [firebase, dispatch]);
 
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
-
-  const handleAddInstructor = useCallback(() => {
-    setShowAddInstructorModal(true);
-  }, []);
-
-  const handleAddMasterClass = useCallback(() => {
-    setShowAddMasterClassModal(true);
-  }, []);
-
-  const handleCloseModal = useCallback(() => {
+  const handleCloseModal = () => {
     setShowAddInstructorModal(false);
     setShowAddMasterClassModal(false);
+  };
+
+  const handleSuccess = () => {
+    handleCloseModal();
     fetchDashboardData();
-  }, [fetchDashboardData]);
+  };
 
-  const stats = useMemo(
-    () => [
-      {
-        title: "Total Students",
-        value: users.length,
-        icon: <Users size={24} />,
-        variant: "primary",
-      },
-      {
-        title: "Total Instructors",
-        value: topInstructors.length,
-        icon: <Users size={24} />,
-        variant: "success",
-      },
-      {
-        title: "Active Courses",
-        value: courses.length,
-        icon: <BookOpen size={24} />,
-        variant: "info",
-        link: "/Allcourses",
-      },
-      {
-        title: "Active Masterclasses",
-        value: masterclasses.length,
-        icon: <GraduationCap size={24} />,
-        variant: "info",
-        link: "/masterclasses",
-      },
-    ],
-    [users.length, topInstructors.length, courses.length, masterclasses.length]
-  );
+  const stats = [
+    {
+      title: "Total Students",
+      value: users?.length || 0,
+      icon: <Users size={24} />,
+      variant: "primary",
+    },
+    {
+      title: "Total Instructors",
+      value: instructors?.length || 0,
+      icon: <Users size={24} />,
+      variant: "success",
+    },
+    {
+      title: "Active Courses",
+      value: courses?.length || 0,
+      icon: <BookOpen size={24} />,
+      variant: "info",
+      link: "/Allcourses",
+    },
+    {
+      title: "Active Masterclasses",
+      value: masterclasses?.length || 0,
+      icon: <GraduationCap size={24} />,
+      variant: "info",
+      link: "/masterclasses",
+    },
+  ];
 
-  const renderTopCourses = useCallback(() => {
-    if (isLoading) {
+  const renderTopCourses = () => {
+    if (loading) {
       return (
         <>
           <CourseCardSkeleton />
@@ -122,7 +119,7 @@ export const AdminDashboard = () => {
       );
     }
 
-    return courses.slice(0, 5).map((course, index) => (
+    return courses?.slice(0, 5).map((course, index) => (
       <div key={course.id || index} className="flex items-center p-4">
         <div className="font-bold text-gray-500 mr-4 w-6 text-center">
           {index + 1}
@@ -138,19 +135,19 @@ export const AdminDashboard = () => {
         <div className="flex-1">
           <p className="font-medium">{course?.data?.category || "N/A"}</p>
           <p className="text-sm text-gray-600">
-            {course?.data?.name || "Unnamed Course"}
+            {course?.data?.courseTitle || "Unnamed Course"}
           </p>
         </div>
         <div className="text-right">
-          <p className="font-medium">${course?.data?.hourly_rate || 0}</p>
-          <div className="text-sm text-gray-600">Hourly rate</div>
+          <p className="font-medium">${course?.data?.price || 0}</p>
+          <div className="text-sm text-gray-600">Course Price</div>
         </div>
       </div>
     ));
-  }, [courses, isLoading]);
+  };
 
-  const renderTopInstructors = useCallback(() => {
-    if (isLoading) {
+  const renderTopInstructors = () => {
+    if (loading) {
       return (
         <>
           <InstructorCardSkeleton />
@@ -162,7 +159,7 @@ export const AdminDashboard = () => {
       );
     }
 
-    return topInstructors.slice(0, 5).map((instructor, index) => (
+    return instructors?.slice(0, 5).map((instructor, index) => (
       <div key={instructor.id || index} className="flex items-center p-4">
         <div className="font-bold text-gray-500 mr-4 w-6 text-center">
           {index + 1}
@@ -177,19 +174,31 @@ export const AdminDashboard = () => {
         <div className="flex-1">
           <p className="font-medium">{instructor?.data?.name || "N/A"}</p>
           <p className="text-sm text-gray-600">
-            {instructor?.data?.expertise || "No expertise"}
+            {instructor?.data?.specialization || "No specialization"}
           </p>
         </div>
         <div className="text-right">
-          <p className="font-medium">{instructor?.totalCourses || 0} Courses</p>
+          <p className="font-medium">
+            {instructor?.data?.rating?.toFixed(1) || "N/A"} ★
+          </p>
           <div className="flex items-center text-sm text-gray-600">
             <Users size={14} className="mr-1" />
-            {instructor?.students || 0} Students
+            {instructor?.data?.experience || 0} Years
           </div>
         </div>
       </div>
     ));
-  }, [topInstructors, isLoading]);
+  };
+
+  if (loading && !users.length && !courses.length && !instructors.length) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((i) => (
+          <StatCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -201,7 +210,7 @@ export const AdminDashboard = () => {
             className="!text-black"
             size="lg"
             leftIcon={<UserPlus size={16} />}
-            onClick={handleAddInstructor}
+            onClick={() => setShowAddInstructorModal(true)}
           >
             Add Instructor
           </Button>
@@ -209,58 +218,40 @@ export const AdminDashboard = () => {
             variant="outline"
             className="!text-black"
             size="lg"
-            leftIcon={<UserPlus size={16} />}
-            onClick={handleAddMasterClass}
+            leftIcon={<GraduationCap size={16} />}
+            onClick={() => setShowAddMasterClassModal(true)}
           >
             Add MasterClass
           </Button>
-          <Button leftIcon={<BookOpen size={16} />}>Add Categories</Button>
         </div>
       </div>
 
-      {showAddInstructorModal && (
-        <ModalPage open={showAddInstructorModal} onCancel={handleCloseModal}>
-          <AddInstructorForm onClose={handleCloseModal} />
-        </ModalPage>
-      )}
-
-      {showAddMasterClassModal && (
-        <ModalPage open={showAddMasterClassModal} onCancel={handleCloseModal}>
-          <AddMasterClassForm onClose={handleCloseModal} />
-        </ModalPage>
-      )}
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {isLoading ? (
-          <>
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-          </>
-        ) : (
-          stats.map((stat, index) => {
-            const card = (
-              <StatCard
-                key={index}
-                title={stat.title}
-                value={
-                  stat.value > 0 ? <CountingNumber maxnumber={stat.value} /> : 0
-                }
-                icon={stat.icon}
-                variant={stat.variant}
-              />
-            );
+        {stats.map((stat, index) => {
+          const card = (
+            <StatCard
+              key={index}
+              title={stat.title}
+              value={
+                stat.value > 0 ? (
+                  <CountingNumber maxnumber={stat.value} timer={20} />
+                ) : (
+                  0
+                )
+              }
+              icon={stat.icon}
+              variant={stat.variant}
+            />
+          );
 
-            return stat.link ? (
-              <Link key={index} to={stat.link}>
-                {card}
-              </Link>
-            ) : (
-              <div key={index}>{card}</div>
-            );
-          })
-        )}
+          return stat.link ? (
+            <Link key={index} to={stat.link}>
+              {card}
+            </Link>
+          ) : (
+            <div key={index}>{card}</div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -273,7 +264,7 @@ export const AdminDashboard = () => {
           </CardContent>
           <CardFooter className="border-t">
             <Link
-              to="/Allcourses"
+              to="/admin-dashboard/courses"
               className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
             >
               View all courses
@@ -290,7 +281,7 @@ export const AdminDashboard = () => {
           </CardContent>
           <CardFooter className="border-t">
             <Link
-              to="/instructors"
+              to="/admin-dashboard/instructors"
               className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
             >
               View all instructors
@@ -298,6 +289,34 @@ export const AdminDashboard = () => {
           </CardFooter>
         </Card>
       </div>
+
+      {showAddInstructorModal && (
+        <ModalPage
+          title="Add New Instructor"
+          open={showAddInstructorModal}
+          onClose={handleCloseModal}
+          onCancel={handleCloseModal}
+        >
+          <AddInstructorForm
+            onSuccess={handleSuccess}
+            onClose={handleCloseModal}
+          />
+        </ModalPage>
+      )}
+
+      {showAddMasterClassModal && (
+        <ModalPage
+          title="Add New Masterclass"
+          open={showAddMasterClassModal}
+          onClose={handleCloseModal}
+          onCancel={handleCloseModal}
+        >
+          <AddMasterClassForm
+            onSuccess={handleSuccess}
+            onClose={handleCloseModal}
+          />
+        </ModalPage>
+      )}
     </div>
   );
 };
