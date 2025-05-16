@@ -1,8 +1,19 @@
-import React from "react";
-import { Tag } from "antd";
+import React, { useState } from "react";
+import { Tag, Button, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import AdminTable from "../../common/AdminTable";
 import { useSelector } from "react-redux";
 import { useOperations } from "../../../hooks/useOperations";
+import ModalPage from "../../common/Modal";
+import DynamicForm from "../../common/DynamicForm";
+import EditAction from "../../common/EditAction";
+
+const courseFields = [
+  { name: "description", label: "Title", type: "text", placeholder: "Course title" },
+  { name: "name", label: "Instructor", type: "text", placeholder: "Instructor name" },
+  { name: "category", label: "Category", type: "text", placeholder: "Category" },
+  { name: "hourly_rate", label: "Price", type: "text", placeholder: "Price" },
+];
 
 const CoursesTable = () => {
   const { courses, loading } = useSelector((state) => state.dashboard);
@@ -10,6 +21,7 @@ const CoursesTable = () => {
     "courses",
     "CouseDetails"
   );
+  const [editCourse, setEditCourse] = useState(null);
 
   const columns = [
     {
@@ -44,18 +56,49 @@ const CoursesTable = () => {
       key: "price",
       render: (price) => `$${price} hours`,
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <EditAction onClick={() => setEditCourse(record.data)} />
+      ),
+    },
   ];
 
   return (
-    <AdminTable
-      title="Courses"
-      description="Manage all courses in the platform"
-      columns={columns}
-      data={courses}
-      isLoading={loading}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    />
+    <>
+      <AdminTable
+        title="Courses"
+        description="Manage all courses in the platform"
+        columns={columns}
+        data={courses}
+        isLoading={loading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      {editCourse && (
+        <ModalPage
+          title="Edit Course"
+          open={!!editCourse}
+          onClose={() => setEditCourse(null)}
+          onCancel={() => setEditCourse(null)}
+        >
+          <DynamicForm
+            fields={courseFields}
+            initialValues={editCourse}
+            onSave={(updated) => {
+              // handle save logic here
+              setEditCourse(null);
+            }}
+            onDelete={() => {
+              // handle delete logic here
+              setEditCourse(null);
+            }}
+            onCancel={() => setEditCourse(null)}
+          />
+        </ModalPage>
+      )}
+    </>
   );
 };
 

@@ -16,11 +16,7 @@ const AddCourseDetailForm = () => {
   const onFinish = async (values) => {
     console.log("Form Data:", values);
     try {
-      await Firebase.addDocumentToFirestore(
-        "CouseDetails",
-        values,
-        "Added Course Successfully"
-      );
+      await Firebase.addCourse("CouseDetails", values);
     } catch (error) {
       console.error("Error adding document:", error.message);
       return false;

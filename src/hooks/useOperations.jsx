@@ -32,7 +32,7 @@ export const useOperations = (stateKey, collectionName) => {
     try {
       await firebase.updateData(collectionName, id, updatedData);
       await fetchData(); // Refresh data after edit
-      handleError(`${stateKey} updated successfully`, "success");
+      handleSuccess(`${stateKey} updated successfully`, "success");
     } catch (error) {
       console.error("Edit error:", error);
       handleError(`Failed to update ${stateKey}: ${error.message || "Unknown error"}`);
@@ -43,6 +43,7 @@ export const useOperations = (stateKey, collectionName) => {
     if (!data || data.length === 0) {
       dispatch(setLoading(true));
       fetchData();
+      
     }
   }, []);
 

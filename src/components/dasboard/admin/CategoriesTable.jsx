@@ -1,22 +1,46 @@
 import React, { useState } from "react";
-import { Tag } from "antd";
+import { Tag, Tooltip, Button } from "antd";
 import AdminTable from "../../common/AdminTable";
 import { useSelector } from "react-redux";
-import { Button } from "../../common/button";
 import { Plus } from "lucide-react";
 import ModalPage from "../../common/Modal";
 import { AddCategoryForm } from "../../../features/teachers/pages/AddCategoryForm";
 import { useOperations } from "../../../hooks/useOperations";
+import DynamicForm from "../../common/DynamicForm";
+import { EditOutlined } from "@ant-design/icons";
+import EditAction from "../../common/EditAction";
 
 const CategoriesTable = () => {
   const { categories, loading } = useSelector((state) => state.dashboard);
   const [showAddModal, setShowAddModal] = useState(false);
-  const { fetchData, handleDelete, handleEdit } = useOperations("categories", "Categories");
+  const { fetchData, handleDelete, handleEdit } = useOperations(
+    "categories",
+    "Categories"
+  );
+  const [editCategory, setEditCategory] = useState(null);
+  // console.log(editCategory);
 
   const handleSuccess = () => {
     setShowAddModal(false);
     fetchData();
   };
+
+  const categoryFields = [
+    {
+      name: "name",
+      label: "Category Name",
+      type: "text",
+      placeholder: "Category name",
+    },
+    { name: "slug", label: "Slug", type: "text", placeholder: "Slug" },
+    {
+      name: "description",
+      label: "Description",
+      type: "text",
+      placeholder: "Description",
+    },
+    { name: "imageUrl", label: "Image", type: "image" },
+  ];
 
   const columns = [
     {
@@ -45,6 +69,14 @@ const CategoriesTable = () => {
       dataIndex: ["data", "description"],
       key: "description",
       render: (text) => <div className="max-w-md truncate">{text}</div>,
+    },
+
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <EditAction onClick={() => setEditCategory(record.data)} />
+      ),
     },
   ];
 
@@ -84,6 +116,28 @@ const CategoriesTable = () => {
           <AddCategoryForm
             onSuccess={handleSuccess}
             onClose={() => setShowAddModal(false)}
+          />
+        </ModalPage>
+      )}
+      {editCategory && (
+        <ModalPage
+          title="Edit Category"
+          open={!!editCategory}
+          onClose={() => setEditCategory(null)}
+          onCancel={() => setEditCategory(null)}
+        >
+          <DynamicForm
+            fields={categoryFields}
+            initialValues={editCategory}
+            onSave={(updated) => {
+              handleEdit(editCategory.id, { data: updated });
+              setEditCategory(null);
+            }}
+            onDelete={() => {
+              handleDelete(editCategory.id);
+              setEditCategory(null);
+            }}
+            onCancel={() => setEditCategory(null)}
           />
         </ModalPage>
       )}
