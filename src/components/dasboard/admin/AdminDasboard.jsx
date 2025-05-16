@@ -177,15 +177,15 @@ export const AdminDashboard = () => {
         />
         <div className="flex-1">
           <p className="font-medium text-gray-900 group-hover:text-[#4F46E5] transition-colors">
-            {course?.data?.category || "N/A"}
+            {course?.data?.courseTitle || "N/A"}
           </p>
           <p className="text-sm text-gray-600">
-            {course?.data?.courseTitle || "Unnamed Course"}
+            {course?.data?.category  || "Unnamed Course"}
           </p>
         </div>
         <div className="text-right">
           <p className="font-medium text-gray-900">
-            ${course?.data?.price || 0}
+            ${course?.data?.hourly_rate || 0}
           </p>
           <div className="text-sm text-gray-600">Course Price</div>
         </div>
@@ -231,7 +231,7 @@ export const AdminDashboard = () => {
         </div>
         <div className="text-right">
           <p className="font-medium text-gray-900">
-            {instructor?.data?.rating?.toFixed(1) || "N/A"} ★
+            {instructor?.data?.rating || "N/A"} ★
           </p>
           <div className="flex items-center text-sm text-gray-600">
             <Users size={14} className="mr-1" />

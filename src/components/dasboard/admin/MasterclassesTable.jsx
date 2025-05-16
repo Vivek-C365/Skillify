@@ -23,6 +23,8 @@ const MasterclassesTable = () => {
     "MasterClass"
   );
   const [editMasterclass, setEditMasterclass] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
@@ -63,7 +65,7 @@ const MasterclassesTable = () => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <EditAction onClick={() => setEditMasterclass(record.data)} />
+        <EditAction onClick={() => setEditMasterclass(record)} />
       ),
     },
   ];
@@ -88,13 +90,19 @@ const MasterclassesTable = () => {
         >
           <DynamicForm
             fields={masterclassFields}
-            initialValues={editMasterclass}
-            onSave={(updated) => {
-              // handle save logic here
+            initialValues={editMasterclass.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editMasterclass.id, { data: updated });
+              setSubmittingSave(false);
               setEditMasterclass(null);
             }}
-            onDelete={() => {
-              // handle delete logic here
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editMasterclass.id);
+              setSubmittingDelete(false);
               setEditMasterclass(null);
             }}
             onCancel={() => setEditMasterclass(null)}

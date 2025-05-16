@@ -22,6 +22,8 @@ const CoursesTable = () => {
     "CouseDetails"
   );
   const [editCourse, setEditCourse] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
@@ -60,7 +62,7 @@ const CoursesTable = () => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <EditAction onClick={() => setEditCourse(record.data)} />
+        <EditAction onClick={() => setEditCourse(record)} />
       ),
     },
   ];
@@ -85,13 +87,19 @@ const CoursesTable = () => {
         >
           <DynamicForm
             fields={courseFields}
-            initialValues={editCourse}
-            onSave={(updated) => {
-              // handle save logic here
+            initialValues={editCourse.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editCourse.id, { data: updated });
+              setSubmittingSave(false);
               setEditCourse(null);
             }}
-            onDelete={() => {
-              // handle delete logic here
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editCourse.id);
+              setSubmittingDelete(false);
               setEditCourse(null);
             }}
             onCancel={() => setEditCourse(null)}

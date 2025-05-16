@@ -21,6 +21,8 @@ const InstructorsTable = () => {
   const { instructors, loading } = useSelector((state) => state.dashboard);
   const { handleDelete, handleEdit } = useOperations("instructors", "Instructor");
   const [editInstructor, setEditInstructor] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
@@ -59,13 +61,13 @@ const InstructorsTable = () => {
       title: "Rating",
       dataIndex: ["data", "rating"],
       key: "rating",
-      render: (rating) => rating?.toFixed(1) || "N/A",
+      render: (rating) => rating || "N/A",
     },
     {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <EditAction onClick={() => setEditInstructor(record.data)} />
+        <EditAction onClick={() => setEditInstructor(record)} />
       ),
     },
   ];
@@ -90,13 +92,19 @@ const InstructorsTable = () => {
         >
           <DynamicForm
             fields={instructorFields}
-            initialValues={editInstructor}
-            onSave={(updated) => {
-              // handle save logic here
+            initialValues={editInstructor.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editInstructor.id, { data: updated });
+              setSubmittingSave(false);
               setEditInstructor(null);
             }}
-            onDelete={() => {
-              // handle delete logic here
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editInstructor.id);
+              setSubmittingDelete(false);
               setEditInstructor(null);
             }}
             onCancel={() => setEditInstructor(null)}

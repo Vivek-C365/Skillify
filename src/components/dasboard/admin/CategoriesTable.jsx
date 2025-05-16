@@ -7,7 +7,6 @@ import ModalPage from "../../common/Modal";
 import { AddCategoryForm } from "../../../features/teachers/pages/AddCategoryForm";
 import { useOperations } from "../../../hooks/useOperations";
 import DynamicForm from "../../common/DynamicForm";
-import { EditOutlined } from "@ant-design/icons";
 import EditAction from "../../common/EditAction";
 
 const CategoriesTable = () => {
@@ -18,6 +17,8 @@ const CategoriesTable = () => {
     "Categories"
   );
   const [editCategory, setEditCategory] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
   // console.log(editCategory);
 
   const handleSuccess = () => {
@@ -75,7 +76,7 @@ const CategoriesTable = () => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <EditAction onClick={() => setEditCategory(record.data)} />
+        <EditAction onClick={() => setEditCategory(record)} />
       ),
     },
   ];
@@ -91,7 +92,7 @@ const CategoriesTable = () => {
           variant="outline"
           className="!text-black"
           size="lg"
-          leftIcon={<Plus size={16} />}
+          lefticon={<Plus size={16} />}
           onClick={() => setShowAddModal(true)}
         >
           Add Category
@@ -128,14 +129,22 @@ const CategoriesTable = () => {
         >
           <DynamicForm
             fields={categoryFields}
-            initialValues={editCategory}
-            onSave={(updated) => {
-              handleEdit(editCategory.id, { data: updated });
+            initialValues={editCategory.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editCategory.id, { data: updated });
+              setSubmittingSave(false);
               setEditCategory(null);
+              fetchData();
             }}
-            onDelete={() => {
-              handleDelete(editCategory.id);
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editCategory.id);
+              setSubmittingDelete(false);
               setEditCategory(null);
+              fetchData();
             }}
             onCancel={() => setEditCategory(null)}
           />
