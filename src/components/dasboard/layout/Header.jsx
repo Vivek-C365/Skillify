@@ -1,14 +1,15 @@
 import React from "react";
-import { X, AlignLeft } from "lucide-react";
-import { Badge } from "../../common/Badge";
+import { User, X, AlignLeft, Settings, LogOut } from "lucide-react";
 import { Button } from "../../common/button";
+import { Badge } from "../../common/Badge";
 import { useSelector } from "react-redux";
+import { useFirebase } from "../../../hooks/useFirebase";
+import DropDown from "../../common/DropDown";
 
 const Header = ({ onToggleSidebar, sidebarOpen }) => {
   const reduxUser = useSelector((state) => state.user?.userDetails);
-  const role = reduxUser.role;
-
-  
+  const role = reduxUser?.role || "user";
+  const firebase = useFirebase();
 
   const getHeaderTitle = () => {
     switch (role) {
@@ -36,43 +37,98 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
     }
   };
 
-  return (
-    <header className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden !text-black"
-              onClick={onToggleSidebar}
-              aria-label="Toggle menu"
-            >
-              {sidebarOpen ? <X size={20} /> : <AlignLeft size={20} />}
-            </Button>
-            <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">
-              {getHeaderTitle()}
-            </h1>
-          </div>
+  const handleLogout = async () => {
+    try {
+      await firebase.logout();
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
-          <div className="flex items-center space-x-4">
-            <div className="relative inline-block text-left">
-              <div className="flex items-center">
-                <div className="ml-3  md:block">
-                  <p className="text-sm font-medium text-gray-700">
-                    {" "}
-                    {reduxUser?.username}{" "}
-                  </p>
-                  <div className="flex items-center">
-                    <Badge variant={getRoleBadgeVariant()}>
-                      {role.charAt(0).toUpperCase() + role.slice(1)}
-                    </Badge>
-                  </div>
+  const dropdownItems = [
+    {
+      key: "profile",
+      label: "Profile",
+      icon: <User className="w-4 h-4 mr-2" />,
+    },
+    {
+      key: "settings",
+      label: "Settings",
+      icon: <Settings className="w-4 h-4 mr-2" />,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "logout",
+      label: "Logout",
+      icon: <LogOut className="w-4 h-4 mr-2" />,
+      danger: true,
+    },
+  ];
+
+  const handleDropdownSelect = (key) => {
+    switch (key) {
+      case "profile":
+        // Add profile navigation logic
+        break;
+      case "settings":
+        // Add settings navigation logic
+        break;
+      case "logout":
+        handleLogout();
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <header className="h-16 bg-white border-b border-gray-200 shadow-sm px-6 flex items-center justify-between sticky top-0 z-50">
+      {/* Left Section */}
+      <div className="flex items-center space-x-4">
+        {/* Mobile Menu Button */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="lg:hidden !text-gray-700 rounded-lg hover:bg-gray-100 border-gray-200"
+          onClick={onToggleSidebar}
+          aria-label="Toggle menu"
+        >
+          {sidebarOpen ? <X size={20} /> : <AlignLeft size={20} />}
+        </Button>
+
+        {/* Title */}
+        <div className="hidden sm:block">
+          <h1 className="text-xl font-semibold text-gray-900">
+            {getHeaderTitle()}
+          </h1>
+          <p className="text-sm text-gray-500">Welcome back, {reduxUser?.username || "User"}</p>
+        </div>
+      </div>
+
+      {/* Right Section */}
+      <div className="flex items-center space-x-4">
+        {/* User Profile Dropdown */}
+        <DropDown
+          items={dropdownItems}
+          onSelect={handleDropdownSelect}
+          triggerContent={
+            <div className="flex items-center space-x-3 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 transition-all duration-150 border border-gray-200 shadow-sm">
+              <div className="text-right hidden md:block">
+                <div className="flex items-center justify-end">
+                  <Badge variant={getRoleBadgeVariant()}>
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </Badge>
                 </div>
               </div>
+              <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500">
+                <User className="w-5 h-5" />
+              </div>
             </div>
-          </div>
-        </div>
+          }
+        />
       </div>
     </header>
   );

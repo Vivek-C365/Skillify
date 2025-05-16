@@ -6,12 +6,12 @@ import Dropdown from "../common/DropDown";
 import Eduaide_cube from "../../assets/images/eduaide_cube.png";
 import { AvatarWithText } from "../common/AvatarGroup";
 import ActiveLink from "../common/ActiveLink";
-import { useDispatch } from "react-redux";
-import { clearUserData } from "../../features/user/pages/userProfileSlice";
+
+import { useLogout } from "../../auth/pages/Logout";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
-  { text: "Quick Quiz", link: "/QuickQuiz" },
+  { text: "Categories", link: "/categories" },
   { text: "Blog", link: "/blog" },
   { text: "Contact", link: "/contact" },
   { text: "About", link: "/about" },
@@ -19,19 +19,12 @@ const NAV_ITEMS = [
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   const boxRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
   const user = Firebase.userLoggedIn;
-
-  const handleLogout = async () => {
-    const success = await Firebase.handleLogout();
-    if (success) {
-      dispatch(clearUserData());
-      navigate("/");
-    }
-  };
+  const handleLogout = useLogout();
 
   useEffect(() => {
     if (boxRef.current) {
@@ -60,7 +53,13 @@ const Navbar = () => {
             key: "Dashboard",
             label: "Dashboard",
             onClick: () => {
-              navigate("/student-dashboard");
+              if (user.role === "teacher") {
+                navigate("/teacher-dashboard");
+              } else if (user.role === "admin") {
+                navigate("/admin-dashboard");
+              } else {
+                navigate("/student-dashboard");
+              }
             },
           },
           {
@@ -195,7 +194,7 @@ const DesktopLogin = () => (
 
 const MobileDrawer = ({ isOpen, closeMenu, show }) => (
   <div
-    className={`fixed z-50 inset-y-0 right-0 z-10 w-full max-w-sm bg-black shadow-xl transition-transform duration-300 ease-in-out transform ${
+    className={`fixed z-50 inset-y-0 right-0  w-full max-w-sm bg-black shadow-xl transition-transform duration-300 ease-in-out transform ${
       isOpen ? "translate-x-0" : "translate-x-full"
     }`}
   >

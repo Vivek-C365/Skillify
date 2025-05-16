@@ -4,26 +4,26 @@ import { useFirebase } from "../../../hooks/useFirebase";
 import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCourse } from "../../../features/admin/admindashboadSlice";
+import { deleteMasterclass } from "../../../features/admin/admindashboadSlice";
 
-const CoursesTable = () => {
-  const { courses, loading } = useSelector((state) => state.dashboard);
+const MasterclassesTable = () => {
+  const { masterclasses, loading } = useSelector((state) => state.dashboard);
   const dispatch = useDispatch();
   const firebase = useFirebase();
 
   const handleEdit = async (record) => {
-    console.log("Edit course:", record);
+    console.log("Edit masterclass:", record);
   };
 
   const handleDelete = async (record) => {
     try {
-      await firebase.deleteData("CourseDetails", record.id);
-      dispatch(deleteCourse(record.id));
-      handleSuccess("Course deleted successfully");
+      await firebase.deleteData("MasterClass", record.id);
+      dispatch(deleteMasterclass(record.id));
+      handleSuccess("Masterclass deleted successfully");
     } catch (error) {
       console.error("Delete error:", error);
       handleError(
-        "Failed to delete course: " + (error.message || "Unknown error")
+        "Failed to delete masterclass: " + (error.message || "Unknown error")
       );
     }
   };
@@ -31,13 +31,9 @@ const CoursesTable = () => {
   const columns = [
     {
       title: "Title",
-      dataIndex: ["data", "description"],
+      dataIndex: ["data", "masterclassTitle"],
       key: "title",
-      render: (text) => (
-        <a className="font-medium">
-          {text.length > 50 ? `${text.slice(0, 35)}...` : text}
-        </a>
-      ),
+      render: (text) => <a className="font-medium">{text}</a>,
     },
     {
       title: "Instructor",
@@ -57,18 +53,24 @@ const CoursesTable = () => {
     },
     {
       title: "Price",
-      dataIndex: ["data", "hourly_rate"],
+      dataIndex: ["data", "price"],
       key: "price",
-      render: (price) => `$${price} hours`,
+      render: (price) => <span>{price ? price : "Free"}</span>,
+    },
+    {
+      title: "Duration",
+      dataIndex: ["data", "duration"],
+      key: "duration",
+      render: (duration) => `${duration} hours`,
     },
   ];
 
   return (
     <AdminTable
-      title="Courses"
-      description="Manage all courses in the platform"
+      title="Masterclasses"
+      description="Manage all masterclasses in the platform"
       columns={columns}
-      data={courses}
+      data={masterclasses}
       isLoading={loading}
       onEdit={handleEdit}
       onDelete={handleDelete}
@@ -76,4 +78,4 @@ const CoursesTable = () => {
   );
 };
 
-export default CoursesTable;
+export default MasterclassesTable;

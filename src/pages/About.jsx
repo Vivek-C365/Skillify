@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../components/navbar/index';
-import Footer from '../components/common/Footer';
+import Footer from '../components/footer/Footer';
 import { Users, Award, BookOpen, Globe, ArrowRight, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

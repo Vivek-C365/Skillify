@@ -5,17 +5,19 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'luc
 const Footer = () => {
   const quickLinks = [
     { name: 'About Us', path: '/about' },
-    { name: 'Courses', path: '/courses' },
+    { name: 'Categories', path: '/Categories' },
     { name: 'Contact', path: '/contact' },
     { name: 'Blog', path: '/blog' },
   ];
 
-  const courses = [
-    { name: 'Web Development', path: '/courses/web-development' },
-    { name: 'Data Science', path: '/courses/data-science' },
-    { name: 'UI/UX Design', path: '/courses/ui-ux-design' },
-    { name: 'Mobile Development', path: '/courses/mobile-development' },
+  const categories = [
+    { name: 'Web Development', path: '/category/web-development' },
+    { name: 'Data Science', path: '/category/data-science' },
+    { name: 'UI/UX Design', path: '/category/ui-ux-design' },
+    { name: 'Mobile Development', path: '/category/mobile-development' },
   ];
+
+
 
   const contact = [
     { icon: <Mail size={16} />, text: 'info@skillify.com', type: 'email' },
@@ -77,7 +79,7 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Popular Courses</h4>
             <ul className="space-y-2" role="list">
-              {courses.map((course, index) => (
+              {categories.map((course, index) => (
                 <li key={index}>
                   <Link
                     to={course.path}

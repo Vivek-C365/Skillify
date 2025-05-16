@@ -1,10 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { handleSuccess, handleError } from "../../utils/tostify";
 import { useFirebase } from "../../hooks/useFirebase";
 import { emailValidate } from "../../utils/regexValidation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../features/user/pages/userProfileSlice";
 import Analytics from "../../assets/images/svg/13246824_5191077.svg";
 
@@ -31,7 +30,7 @@ const formatUserData = (userData, fallbackEmail = "") => ({
 const SignUp = ({
   title,
   subtitle,
-  onSuccessPath,
+  // onSuccessPath,
   type,
   footerText,
   footerLinkPath,
@@ -45,86 +44,132 @@ const SignUp = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState("user");
 
+  const userDetails = useSelector((state) => state.user.userDetails);
+
   useEffect(() => {
-    if (firebase.userLoggedIn) {
-      navigate(onSuccessPath);
-      handleSuccess("User successfully logged in");
+    if (userDetails) {
+      // Redirect based on role
+      if (userDetails.role === "admin") navigate("/admin-dashboard");
+      else if (userDetails.role === "teacher") navigate("/teacher-dashboard");
+      else navigate("/");
     }
-  }, [firebase.userLoggedIn, navigate, onSuccessPath]);
+  }, [userDetails, navigate]);
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    const { email, password } = user;
-
-    if (!email || !password) return handleError("Please fill in all fields.");
-    if (!emailValidate.test(email)) return handleError("Invalid Email");
-
-    // Admin Login
+  const handleAdminLogin = () => {
     if (
-      email === adminCredentials.email &&
-      password === adminCredentials.password
+      user.email === adminCredentials.email &&
+      user.password === adminCredentials.password
     ) {
       dispatch(
         setUserData({ ...adminCredentials, isAdmin: true, role: "admin" })
       );
-      handleSuccess("Admin login successful");
-      return navigate("/admin-dashboard");
+      return true;
+    }
+    return false;
+  };
+
+  const handleSignup = async (email, password) => {
+    const authUser = await firebase.signupWithEmailAndPassword(email, password);
+    if (!authUser) {
+      throw new Error("Failed to create user account");
+    }
+
+    const userData = await firebase.addUserToFirestore({
+      email,
+      role: "student",
+      displayName: email.split("@")[0],
+      createdAt: new Date().toISOString(),
+      uid: authUser.uid,
+    });
+
+    handleSuccess("User successfully created");
+    return userData;
+  };
+
+  const handleUserLogin = async (email, password) => {
+    const userData = await firebase.UserSignInwithEmailAndPassword(
+      email,
+      password
+    );
+
+    // Validate user role and permissions
+    if (!userData || !userData.role) {
+      throw new Error("Invalid user data");
+    }
+
+    // Only allow student role to login through user tab
+    if (userData.role !== "student") {
+      throw new Error("Not Authorized");
+    }
+
+    return userData;
+  };
+
+  const handleTeacherLogin = async (email, password) => {
+    const userData = await firebase.UserSignInwithEmailAndPassword(
+      email,
+      password
+    );
+
+    // Validate user role and permissions
+    if (!userData || !userData.role) {
+      throw new Error("Invalid user data");
+    }
+
+    // Only allow teacher role to login through teacher tab
+    if (userData.role !== "teacher") {
+      throw new Error("Please use the appropriate login tab for your role");
+    }
+
+    return userData;
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    const { email, password } = user;
+
+    // Input validation
+    if (!email || !password) {
+      return handleError("Please fill in all fields.");
+    }
+    if (!emailValidate.test(email)) {
+      return handleError("Invalid Email");
     }
 
     try {
       setIsSubmitting(true);
+
+      // Handle admin login
+      if (handleAdminLogin()) {
+        return;
+      }
+
       let userData;
 
-      // if type is signup then it goes on Signup Login else go for Login Logic
       if (type === "signup") {
-        await firebase.signupWithEmailAndPassword(email, password);
-        userData = await firebase.addUserToFirestore({
-          email,
-          role: "student",
-          displayName: email.split("@")[0],
-          createdAt: new Date().toISOString(),
-        });
-        handleSuccess("User successfully created");
+        userData = await handleSignup(email, password);
       } else {
-        // Login based On user or Teacher ( by default user is selected in useState)
+        // Handle regular login based on role
         if (activeTab === "user") {
-          userData = await firebase.UserSignInwithEmailAndPassword(
-            email,
-            password
-          );
+          userData = await handleUserLogin(email, password);
         } else {
-          // Login based on role Teacher
-          const instructorData = await firebase.readUserFromFirestore(
-            "Instructor",
-            "data.data.email",
-            email
-          );
-          if (!instructorData || instructorData.length === 0) {
-            throw new Error("No instructor account found with this email");
-          }
-          userData = await firebase.UserSignInwithEmailAndPassword(
-            email,
-            password
-          );
-          if (userData) {
-            userData = { ...userData, role: "teacher" };
-          }
+          userData = await handleTeacherLogin(email, password);
         }
         handleSuccess("Login successful");
       }
 
-      // If data found add to redux Store
+      // Update Redux store and reset form
       if (userData) {
         dispatch(setUserData(formatUserData(userData, email)));
-        navigate("/");
         setUser({ email: "", password: "" });
       }
     } catch (error) {
+      console.error(`${type === "signup" ? "Signup" : "Login"} error:`, error);
       handleError(error.message);
     } finally {
       setIsSubmitting(false);
@@ -171,7 +216,7 @@ const SignUp = ({
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                User
+                Student
               </button>
               <button
                 onClick={() => setActiveTab("teacher")}
@@ -264,8 +309,6 @@ const SignUp = ({
           />
         </div>
       )}
-
-      <ToastContainer />
     </div>
   );
 };

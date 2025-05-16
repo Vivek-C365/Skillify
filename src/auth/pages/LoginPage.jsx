@@ -7,7 +7,7 @@ function LoginPage() {
       title="Welcome Back"
       credentials="Please enter your credentials"
       subtitle="Please enter your credentials."
-      onSuccessPath="/"
+      // onSuccessPath="/"
       type="Login"
       footerText="Don't have an account?"
       footerLinkText="Sign up"

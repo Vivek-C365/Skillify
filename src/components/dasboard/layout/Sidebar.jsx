@@ -9,19 +9,19 @@ import {
   GraduationCap,
   User,
   Bookmark,
+  Tag,
+  ChevronRight,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { clearUserData } from "../../../features/user/pages/userProfileSlice";
+import { useLogout } from "../../../auth/pages/Logout";
+import Logo from "../../../assets/images/eduaide_cube.png"
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
   const reduxUser = useSelector((state) => state.user?.userDetails);
-
   const role = reduxUser.role;
-
   const location = useLocation();
+  const handleLogout = useLogout();
 
   const navItems = [
     {
@@ -54,7 +54,6 @@ const Sidebar = () => {
       path: "/profile",
       roles: ["student", "teacher"],
     },
-
     {
       title: "My Courses",
       icon: <BookMarked size={20} />,
@@ -67,18 +66,22 @@ const Sidebar = () => {
       path: "/students",
       roles: ["teacher"],
     },
-
     {
       title: "Dashboard",
       icon: <Home size={20} />,
       path: "/admin-dashboard",
-      roles: [ "admin"],
+      roles: ["admin"],
     },
-
     {
       title: "All Courses",
       icon: <BookOpen size={20} />,
       path: "/Allcourses",
+      roles: ["admin"],
+    },
+    {
+      title: "Masterclasses",
+      icon: <GraduationCap size={20} />,
+      path: "/Allmasterclasses",
       roles: ["admin"],
     },
     {
@@ -93,36 +96,44 @@ const Sidebar = () => {
       path: "/students",
       roles: ["admin"],
     },
+    {
+      title: "Categories",
+      icon: <Tag size={20} />,
+      path: "/categories",
+      roles: ["admin"],
+    },
   ];
 
   const filteredNavItems = navItems.filter((item) => item.roles.includes(role));
 
-  const getRoleColor = () => {
-    switch (role) {
-      case "student":
-        return "bg-indigo-700 from-indigo-700 to-indigo-800";
-      case "teacher":
-        return "bg-teal-700 from-teal-700 to-teal-800";
-      case "admin":
-        return "bg-amber-700 from-amber-700 to-amber-800";
-      default:
-        return "bg-gray-800 from-gray-800 to-gray-900";
-    }
-  };
-
-  const logout = () => {
-    dispatch(clearUserData());
-    console.log("Logged out");
-  };
-
   return (
-    <div className={`h-full ${getRoleColor()} text-white flex flex-col`}>
-      <div className="flex items-center justify-center h-16 px-4">
-        <span className="ml-2 text-xl font-bold">Skillify</span>
+    <aside className="h-full w-64 bg-white border-r border-gray-200 shadow-md flex flex-col">
+      {/* Logo Section */}
+      <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+            <img src={Logo} alt="Logo" className="w-6 h-6" />
+          </div>
+          <span className="text-xl font-bold text-gray-900">Skillify</span>
+        </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto">
-        <ul className="px-2 py-4 space-y-1">
+      {/* User Info Section */}
+      <div className="px-4 py-3 border-b border-gray-200">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+            <User className="w-6 h-6 text-gray-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-900">{reduxUser?.username || "User"}</p>
+            <p className="text-xs text-gray-500 capitalize">{role}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Section */}
+      <nav className="flex-1 overflow-y-auto px-3 py-4">
+        <ul className="space-y-1">
           {filteredNavItems.map((item, index) => {
             const isActive = location.pathname === item.path;
             return (
@@ -130,16 +141,25 @@ const Sidebar = () => {
                 <Link
                   to={item.path}
                   className={`
-                    flex items-center px-4 py-3 rounded-lg transition-colors duration-150
+                    group flex items-center justify-between px-4 py-2 rounded-lg transition-all duration-150
                     ${
                       isActive
-                        ? "bg-white/20 text-white"
-                        : "text-white/80 hover:bg-white/10 hover:text-white"
+                        ? "bg-gray-100 text-gray-900 font-semibold border-l-4 border-black shadow-sm"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-black"
                     }
                   `}
                 >
-                  <span className="mr-3">{item.icon}</span>
-                  <span>{item.title}</span>
+                  <div className="flex items-center space-x-3">
+                    <span className={`${isActive ? "text-black" : "text-gray-400 group-hover:text-black"}`}>
+                      {item.icon}
+                    </span>
+                    <span>{item.title}</span>
+                  </div>
+                  <ChevronRight
+                    className={`w-4 h-4 transition-transform duration-150 ${
+                      isActive ? "text-black rotate-90" : "text-gray-300 group-hover:text-black"
+                    }`}
+                  />
                 </Link>
               </li>
             );
@@ -147,16 +167,17 @@ const Sidebar = () => {
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-white/10">
+      {/* Logout Section */}
+      <div className="p-4 border-t border-gray-200">
         <button
-          onClick={logout}
-          className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/10 hover:text-white rounded-lg transition-colors duration-150"
+          onClick={handleLogout}
+          className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-black rounded-lg transition-all duration-150 group border border-gray-200 shadow-sm"
         >
-          <LogOut size={20} className="mr-3" />
-          <span>Logout</span>
+          <LogOut size={20} className="mr-3 text-gray-400 group-hover:text-black" />
+          <span className="font-medium">Logout</span>
         </button>
       </div>
-    </div>
+    </aside>
   );
 };
 

@@ -41,7 +41,7 @@ export const AddMasterClassForm = ({ onClose }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-auto">
+    <div className="rounded-2xl  w-full max-w-md mx-auto">
       <div className="mb-6 text-center">
         <h2 className="text-2xl font-bold text-gray-800">Add New MasterClass</h2>
         <p className="text-sm text-gray-500 mt-2">Fill in the details carefully</p>

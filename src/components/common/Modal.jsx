@@ -5,11 +5,11 @@ const ModalPage = ({  children, open, onCancel, onOk }) => {
   return (
     <>
       <Modal
-        title="Add Instructor"
         open={open}
         onOk={onOk}
+        
         onCancel={onCancel}
-        footer={null} // Assuming the form has its own buttons
+        footer={null} 
       >
         {children}
       </Modal>
