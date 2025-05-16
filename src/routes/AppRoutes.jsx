@@ -23,7 +23,7 @@ import MasterclassesTable from "../components/dasboard/admin/MasterclassesTable"
 import { useSelector } from "react-redux";
 import StudentDashboard from "../components/dasboard/student/StudentDashboard";
 import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
-
+import CategoriesTable from "../components/dasboard/admin/CategoriesTable";
 function AppRoutes() {
   const user = useSelector((state) => state.user);
   const userDetails = user?.userDetails;
@@ -47,13 +47,12 @@ function AppRoutes() {
         )}
 
         <Route element={<ProtectdRoute />}>
-          <Route path="/profile" element={<UserProfileDetail />} />
-          
           {/* Student Routes */}
           {isStudent && (
             <>
               <Route path="/student-dashboard" element={<StudentDashboard />} />
               <Route path="/courses" element={<Courses />} />
+              <Route path="/profile" element={<UserProfileDetail />} />
             </>
           )}
 
@@ -86,7 +85,7 @@ function AppRoutes() {
             }
           />
           <Route
-            path="/masterclasses"
+            path="/Allmasterclasses"
             element={
               <DashboardLayout>
                 <MasterclassesTable />
@@ -109,29 +108,61 @@ function AppRoutes() {
               </DashboardLayout>
             }
           />
+          <Route
+            path="/categories"
+            element={
+              <DashboardLayout>
+                <CategoriesTable />
+              </DashboardLayout>
+            }
+          />
         </Route>
 
         {/* Role-based redirects */}
         {isAdmin && (
           <>
-            <Route path="/" element={<Navigate to="/admin-dashboard" replace />} />
-            <Route path="/login" element={<Navigate to="/admin-dashboard" replace />} />
-            <Route path="/signup" element={<Navigate to="/admin-dashboard" replace />} />
+            <Route
+              path="/"
+              element={<Navigate to="/admin-dashboard" replace />}
+            />
+            <Route
+              path="/login"
+              element={<Navigate to="/admin-dashboard" replace />}
+            />
+            <Route
+              path="/signup"
+              element={<Navigate to="/admin-dashboard" replace />}
+            />
           </>
         )}
 
         {isTeacher && (
           <>
-            <Route path="/" element={<Navigate to="/teacher-dashboard" replace />} />
-            <Route path="/login" element={<Navigate to="/teacher-dashboard" replace />} />
-            <Route path="/signup" element={<Navigate to="/teacher-dashboard" replace />} />
+            <Route
+              path="/"
+              element={<Navigate to="/teacher-dashboard" replace />}
+            />
+            <Route
+              path="/login"
+              element={<Navigate to="/teacher-dashboard" replace />}
+            />
+            <Route
+              path="/signup"
+              element={<Navigate to="/teacher-dashboard" replace />}
+            />
           </>
         )}
 
         {isStudent && (
           <>
-            <Route path="/login" element={<Navigate to="/student-dashboard" replace />} />
-            <Route path="/signup" element={<Navigate to="/student-dashboard" replace />} />
+            <Route
+              path="/login"
+              element={<Navigate to="/student-dashboard" replace />}
+            />
+            <Route
+              path="/signup"
+              element={<Navigate to="/student-dashboard" replace />}
+            />
           </>
         )}
 

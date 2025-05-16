@@ -41,6 +41,10 @@ const AdminTable = ({
     });
   }
 
+  
+  console.log(data)
+  
+
   const renderMobileCard = (record) => {
     const mainColumns = columns.filter(col => col.key !== "actions");
     const mainColumn = mainColumns[0]; // First column is usually the main identifier

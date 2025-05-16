@@ -11,7 +11,7 @@ import { useLogout } from "../../auth/pages/Logout";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
-  { text: "Quick Quiz", link: "/QuickQuiz" },
+  { text: "Categories", link: "/categories" },
   { text: "Blog", link: "/blog" },
   { text: "Contact", link: "/contact" },
   { text: "About", link: "/about" },

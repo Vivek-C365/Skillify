@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFirebase } from "../hooks/useFirebase";
 import Navbar from "../components/navbar";
-import Footer from "../components/common/Footer";
+import Footer from "../components/footer/Footer";
 import { Button } from "../components/common/button";
 import { Skeleton } from "../components/common/Skeleton";
 import { HeadingDescription } from "../components/common/HeadingDescriptionText";

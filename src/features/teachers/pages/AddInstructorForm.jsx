@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useFirebase } from "../../../hooks/useFirebase";
-import { handleError, handleSuccess } from "../../../utils/tostify";
+import { handleError } from "../../../utils/tostify";
+import { useSelector } from "react-redux";
 
-export const AddInstructorForm = () => {
+export const AddInstructorForm = ({ onSuccess, onClose }) => {
   const firebase = useFirebase();
   const [isChecking, setIsChecking] = useState(false);
+  const { categories } = useSelector((state) => state.dashboard);
 
   const initialValues = {
     name: "",
@@ -24,10 +26,6 @@ export const AddInstructorForm = () => {
       .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
       .required("Phone number is required"),
     password: Yup.string()
-      // .min(8, "Password must be at least 8 characters")
-      // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-      // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-      // .matches(/[0-9]/, "Password must contain at least one number")
       .required("Password is required"),
     expertise: Yup.string().required("Expertise is required"),
   });
@@ -45,10 +43,9 @@ export const AddInstructorForm = () => {
         uid: userCredential.uid,
         createdAt: new Date().toISOString()
       });
-
-      handleSuccess("Instructor added successfully!");
       resetForm();
       setSubmitting(false);
+      onSuccess?.();
     } catch (error) {
       handleError(error.message);
       setSubmitting(false);
@@ -152,9 +149,11 @@ export const AddInstructorForm = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
               >
                 <option value="">Select expertise</option>
-                <option value="Mathematics">Mathematics</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Physics">Physics</option>
+                {categories?.map((category) => (
+                  <option key={category.id} value={category.data.name}>
+                    {category.data.name}
+                  </option>
+                ))}
               </Field>
               <ErrorMessage
                 name="expertise"
@@ -166,15 +165,39 @@ export const AddInstructorForm = () => {
             {/* Buttons */}
             <div className="flex justify-end gap-4 pt-4">
               <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400"
+                disabled={isSubmitting || isChecking}
+              >
+                Cancel
+              </button>
+              <button
                 type="submit"
-                className="px-6 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400 disabled:opacity-70 disabled:cursor-not-allowed"
                 disabled={isSubmitting || isChecking}
               >
                 {isSubmitting || isChecking ? (
-                  <div className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <div className="flex items-center justify-center">
+                    <svg
+                      className="animate-spin h-5 w-5 mr-2 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
                     </svg>
                     {isChecking ? "Checking..." : "Adding..."}
                   </div>

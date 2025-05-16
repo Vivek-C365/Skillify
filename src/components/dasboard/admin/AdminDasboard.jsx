@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Users, BookOpen, UserPlus, GraduationCap } from "lucide-react";
+import { Users, BookOpen, UserPlus, GraduationCap, Tag, Plus } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,27 +26,31 @@ import {
   InstructorCardSkeleton,
 } from "../../common/Skeleton";
 import { handleError } from "../../../utils/tostify";
+import { AddCategoryForm } from "../../../features/teachers/pages/AddCategoryForm";
 
 export const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { users, courses, instructors, masterclasses, loading } = useSelector(
-    (state) => state.dashboard
-  );
+  const { users, courses, instructors, masterclasses, categories, loading } =
+    useSelector((state) => state.dashboard);
   const [showAddInstructorModal, setShowAddInstructorModal] =
     React.useState(false);
   const [showAddMasterClassModal, setShowAddMasterClassModal] =
     React.useState(false);
+  const [showAddCategoryModal, setShowAddCategoryModal] =
+    React.useState(false);
+    
   const firebase = useFirebase();
 
   const fetchDashboardData = useCallback(async () => {
     try {
       dispatch(setLoading(true));
-      const [usersData, coursesData, instructorsData, masterclassesData] =
+      const [usersData, coursesData, instructorsData, masterclassesData, categoriesData] =
         await Promise.all([
           firebase.readData("users"),
           firebase.readData("CourseDetails"),
           firebase.readData("Instructor"),
           firebase.readData("MasterClass"),
+          firebase.readData("Categories"),
         ]);
 
       dispatch(
@@ -55,21 +59,26 @@ export const AdminDashboard = () => {
           courses: coursesData || [],
           instructors: instructorsData || [],
           masterclasses: masterclassesData || [],
+          categories: categoriesData || [],
         })
       );
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
       dispatch(setError(error.message));
       handleError("Failed to load dashboard data");
+    } finally {
+      dispatch(setLoading(false));
     }
   }, [firebase, dispatch]);
 
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
+
   const handleCloseModal = () => {
     setShowAddInstructorModal(false);
     setShowAddMasterClassModal(false);
+    setShowAddCategoryModal(false);
   };
 
   const handleSuccess = () => {
@@ -83,18 +92,27 @@ export const AdminDashboard = () => {
       value: users?.length || 0,
       icon: <Users size={24} />,
       variant: "primary",
+      gradient: "from-[#4F46E5] to-[#7C3AED]",
+      trend: "+12%",
+      trendUp: true,
     },
     {
       title: "Total Instructors",
       value: instructors?.length || 0,
       icon: <Users size={24} />,
       variant: "success",
+      gradient: "from-[#059669] to-[#10B981]",
+      trend: "+8%",
+      trendUp: true,
     },
     {
       title: "Active Courses",
       value: courses?.length || 0,
       icon: <BookOpen size={24} />,
       variant: "info",
+      gradient: "from-[#7C3AED] to-[#EC4899]",
+      trend: "+15%",
+      trendUp: true,
       link: "/Allcourses",
     },
     {
@@ -102,7 +120,20 @@ export const AdminDashboard = () => {
       value: masterclasses?.length || 0,
       icon: <GraduationCap size={24} />,
       variant: "info",
-      link: "/masterclasses",
+      gradient: "from-[#3B82F6] to-[#2DD4BF]",
+      trend: "+20%",
+      trendUp: true,
+      link: "/Allmasterclasses",
+    },
+    {
+      title: "Categories",
+      value: categories?.length || 0,
+      icon: <Tag size={24} />,
+      variant: "info",
+      gradient: "from-[#F59E0B] to-[#EF4444]",
+      trend: "+5%",
+      trendUp: true,
+      link: "/categories",
     },
   ];
 
@@ -120,8 +151,8 @@ export const AdminDashboard = () => {
     }
 
     return courses?.slice(0, 5).map((course, index) => (
-      <div key={course.id || index} className="flex items-center p-4">
-        <div className="font-bold text-gray-500 mr-4 w-6 text-center">
+      <div key={course.id || index} className="flex items-center p-4 hover:bg-gray-50/50 transition-colors duration-150 group">
+        <div className="font-bold text-gray-500 mr-4 w-6 text-center group-hover:text-[#4F46E5] transition-colors">
           {index + 1}
         </div>
         <img
@@ -130,16 +161,16 @@ export const AdminDashboard = () => {
             "https://www.anglofone.co.in/static/media/foundation%20course.7e6169c6cb93cdb42fb4.png"
           }
           alt="Course"
-          className="w-12 h-12 object-cover rounded mr-3"
+          className="w-12 h-12 object-cover rounded-lg mr-3 shadow-sm group-hover:shadow-md transition-shadow"
         />
         <div className="flex-1">
-          <p className="font-medium">{course?.data?.category || "N/A"}</p>
+          <p className="font-medium text-gray-900 group-hover:text-[#4F46E5] transition-colors">{course?.data?.category || "N/A"}</p>
           <p className="text-sm text-gray-600">
             {course?.data?.courseTitle || "Unnamed Course"}
           </p>
         </div>
         <div className="text-right">
-          <p className="font-medium">${course?.data?.price || 0}</p>
+          <p className="font-medium text-gray-900">${course?.data?.price || 0}</p>
           <div className="text-sm text-gray-600">Course Price</div>
         </div>
       </div>
@@ -160,8 +191,8 @@ export const AdminDashboard = () => {
     }
 
     return instructors?.slice(0, 5).map((instructor, index) => (
-      <div key={instructor.id || index} className="flex items-center p-4">
-        <div className="font-bold text-gray-500 mr-4 w-6 text-center">
+      <div key={instructor.id || index} className="flex items-center p-4 hover:bg-gray-50/50 transition-colors duration-150 group">
+        <div className="font-bold text-gray-500 mr-4 w-6 text-center group-hover:text-[#4F46E5] transition-colors">
           {index + 1}
         </div>
         <img
@@ -169,16 +200,16 @@ export const AdminDashboard = () => {
             instructor?.data?.name || "Instructor"
           )}&background=random`}
           alt={instructor?.data?.name}
-          className="w-12 h-12 rounded-full mr-3"
+          className="w-12 h-12 rounded-full mr-3 shadow-sm group-hover:shadow-md transition-shadow"
         />
         <div className="flex-1">
-          <p className="font-medium">{instructor?.data?.name || "N/A"}</p>
+          <p className="font-medium text-gray-900 group-hover:text-[#4F46E5] transition-colors">{instructor?.data?.name || "N/A"}</p>
           <p className="text-sm text-gray-600">
-            {instructor?.data?.specialization || "No specialization"}
+            {instructor?.data?.expertise || "No specialization"}
           </p>
         </div>
         <div className="text-right">
-          <p className="font-medium">
+          <p className="font-medium text-gray-900">
             {instructor?.data?.rating?.toFixed(1) || "N/A"} ★
           </p>
           <div className="flex items-center text-sm text-gray-600">
@@ -202,30 +233,46 @@ export const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Platform Overview</h1>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="!text-black"
-            size="lg"
-            leftIcon={<UserPlus size={16} />}
-            onClick={() => setShowAddInstructorModal(true)}
-          >
-            Add Instructor
-          </Button>
-          <Button
-            variant="outline"
-            className="!text-black"
-            size="lg"
-            leftIcon={<GraduationCap size={16} />}
-            onClick={() => setShowAddMasterClassModal(true)}
-          >
-            Add MasterClass
-          </Button>
+      {/* Modern Header Section */}
+      <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Platform Overview</h1>
+            <p className="text-gray-500">Welcome back! Here's what's happening with your platform.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setShowAddInstructorModal(true)}
+              className="!text-gray-700 hover:bg-gray-100 border-gray-200 rounded-lg transition-all duration-150 shadow-sm"
+            >
+              <UserPlus size={16} className="mr-2" />
+              Add Instructor
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setShowAddMasterClassModal(true)}
+              className="!text-gray-700 hover:bg-gray-100 border-gray-200 rounded-lg transition-all duration-150 shadow-sm"
+            >
+              <GraduationCap size={16} className="mr-2" />
+              Add MasterClass
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setShowAddCategoryModal(true)}
+              className="!text-gray-700 hover:bg-gray-100 border-gray-200 rounded-lg transition-all duration-150 shadow-sm"
+            >
+              <Tag size={16} className="mr-2" />
+              Add Categories
+            </Button>
+          </div>
         </div>
       </div>
 
+      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {stats.map((stat, index) => {
           const card = (
@@ -241,11 +288,17 @@ export const AdminDashboard = () => {
               }
               icon={stat.icon}
               variant={stat.variant}
+              gradient={stat.gradient}
+              trend={stat.trend}
+              trendUp={stat.trendUp}
+              className="bg-white border border-gray-200 shadow-sm rounded-xl p-4"
+              titleClassName="text-gray-500"
+              valueClassName="text-gray-900"
             />
           );
 
           return stat.link ? (
-            <Link key={index} to={stat.link}>
+            <Link key={index} to={stat.link} className="block">
               {card}
             </Link>
           ) : (
@@ -254,42 +307,46 @@ export const AdminDashboard = () => {
         })}
       </div>
 
+      {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader className="border-b">
-            <h2 className="text-xl font-semibold">Top Performing Courses</h2>
+        <Card className="overflow-hidden border border-gray-200 bg-white shadow-sm rounded-xl">
+          <CardHeader className="border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Top Performing Courses</h2>
+              <Link
+                to="/admin-dashboard/courses"
+                className="text-gray-700 hover:text-black text-sm font-medium flex items-center"
+              >
+                View all
+                <Plus size={16} className="ml-1" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y">{renderTopCourses()}</div>
+            <div className="divide-y divide-gray-100">{renderTopCourses()}</div>
           </CardContent>
-          <CardFooter className="border-t">
-            <Link
-              to="/admin-dashboard/courses"
-              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-            >
-              View all courses
-            </Link>
-          </CardFooter>
         </Card>
 
-        <Card>
-          <CardHeader className="border-b">
-            <h2 className="text-xl font-semibold">Top Instructors</h2>
+        <Card className="overflow-hidden border border-gray-200 bg-white shadow-sm rounded-xl">
+          <CardHeader className="border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Top Instructors</h2>
+              <Link
+                to="/admin-dashboard/instructors"
+                className="text-gray-700 hover:text-black text-sm font-medium flex items-center"
+              >
+                View all
+                <Plus size={16} className="ml-1" />
+              </Link>
+            </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y">{renderTopInstructors()}</div>
+            <div className="divide-y divide-gray-100">{renderTopInstructors()}</div>
           </CardContent>
-          <CardFooter className="border-t">
-            <Link
-              to="/admin-dashboard/instructors"
-              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-            >
-              View all instructors
-            </Link>
-          </CardFooter>
         </Card>
       </div>
 
+      {/* Modals */}
       {showAddInstructorModal && (
         <ModalPage
           title="Add New Instructor"
@@ -312,6 +369,20 @@ export const AdminDashboard = () => {
           onCancel={handleCloseModal}
         >
           <AddMasterClassForm
+            onSuccess={handleSuccess}
+            onClose={handleCloseModal}
+          />
+        </ModalPage>
+      )}
+
+      {showAddCategoryModal && (
+        <ModalPage
+          title="Add New Category"
+          open={showAddCategoryModal}
+          onClose={handleCloseModal}
+          onCancel={handleCloseModal}
+        >
+          <AddCategoryForm
             onSuccess={handleSuccess}
             onClose={handleCloseModal}
           />

@@ -18,6 +18,7 @@ export const adminDashboard = createSlice({
       state.courses = action.payload.courses || [];
       state.instructors = action.payload.instructors || [];
       state.masterclasses = action.payload.masterclasses || [];
+      state.categories = action.payload.categories || [];
       state.loading = false;
       state.error = null;
     },
@@ -33,6 +34,7 @@ export const adminDashboard = createSlice({
       state.courses = [];
       state.instructors = [];
       state.masterclasses = [];
+      state.categories = [];
       state.loading = false;
       state.error = null;
     },
@@ -48,6 +50,9 @@ export const adminDashboard = createSlice({
     },
     deleteMasterclass: (state, action) => {
       state.masterclasses = state.masterclasses.filter(masterclass => masterclass.id !== action.payload);
+    },
+    deleteCategory: (state, action) => {
+      state.categories = state.categories.filter(category => category.id !== action.payload);
     }
   },
 });
@@ -60,7 +65,8 @@ export const {
   deleteUser,
   deleteCourse,
   deleteInstructor,
-  deleteMasterclass
+  deleteMasterclass,
+  deleteCategory
 } = adminDashboard.actions;
 
 export default adminDashboard.reducer;

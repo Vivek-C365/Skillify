@@ -11,14 +11,13 @@ const CoursesDisplay = lazy(() =>
   import("../features/courses/pages/coursesDisplay")
 );
 const Testimonials = lazy(() => import("../components/common/Testimonials"));
-import Footer from "../components/common/Footer";
+import Footer from "../components/footer/Footer";
 
 import {
   responsiveTextH6,
   responsiveTextBodyLarge,
   responsiveTextH1,
 } from "../styles/responsiveText";
-import ProgressBar from "../components/common/ProgressBar";
 import { AvatarGroup } from "../components/common/AvatarGroup";
 import CountingNumber from "../components/common/CountingNumber";
 import { StatCardSkeleton } from "../components/common/Skeleton";

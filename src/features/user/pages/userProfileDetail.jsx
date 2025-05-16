@@ -43,22 +43,22 @@ const UserProfileDetail = () => {
 
         const userData = await firebase.readUserFromFirestore(
           "users",
-          "data.data.email",
+          "data.email",
           reduxUser.email
         );
         if (userData && userData.length > 0) {
           const userDoc = userData[0];
           setUserDocId(userDoc.id);
           setUserData({
-            name: userDoc.data.data.displayName || reduxUser.username,
+            name: userDoc.data.displayName || reduxUser.username,
             email: reduxUser.email,
-            photoURL: userDoc.data.data.photoURL || reduxUser.photoURL,
-            about: userDoc.data.data.about || "",
-            skills: userDoc.data.data.skills || [],
-            certificates: userDoc.data.data.certificates || [],
-            github: userDoc.data.data.github || "",
-            medium: userDoc.data.data.medium || "",
-            twitter: userDoc.data.data.twitter || "",
+            photoURL: userDoc.data.photoURL || reduxUser.photoURL,
+            about: userDoc.data.about || "",
+            skills: userDoc.data.skills || [],
+            certificates: userDoc.data.certificates || [],
+            github: userDoc.data.github || "",
+            medium: userDoc.data.medium || "",
+            twitter: userDoc.data.twitter || "",
           });
         } 
       } catch (error) {
@@ -99,15 +99,15 @@ const UserProfileDetail = () => {
       }
 
       await firebase.UpdateUser("users", userDocId, {
-        "data.data.displayName": values.name,
-        "data.data.email": values.email,
-        "data.data.about": values.about,
-        "data.data.skills": values.skills,
-        "data.data.certificates": values.certificates,
-        "data.data.github": values.github,
-        "data.data.medium": values.medium,
-        "data.data.twitter": values.twitter,
-        "data.data.updatedAt": new Date().toISOString(),
+        "data.displayName": values.name,
+        "data.email": values.email,
+        "data.about": values.about,
+        "data.skills": values.skills,
+        "data.certificates": values.certificates,
+        "data.github": values.github,
+        "data.medium": values.medium,
+        "data.twitter": values.twitter,
+        "data.updatedAt": new Date().toISOString(),
       });
 
       setUserData({

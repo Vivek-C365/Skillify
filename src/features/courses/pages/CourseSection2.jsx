@@ -36,7 +36,7 @@ export default function CourseSection2() {
 
   // Handle case where data couldn't be loaded
   if (!masterclass || masterclass.length === 0) {
-    return <div>No masterclass data available</div>;
+    return ;
   }
 
   // Safely extract data

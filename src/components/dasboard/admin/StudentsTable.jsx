@@ -11,15 +11,6 @@ const StudentsTable = () => {
   const dispatch = useDispatch();
   const firebase = useFirebase();
 
-  // student data is in nested object so we need to extract it
-  const students =
-    users?.map((u) => ({
-      ...u.data?.data,
-      id: u.id,
-    })) || [];
-
-  console.log(students);
-
   const handleEdit = async (record) => {
     console.log("Edit student:", record);
   };
@@ -27,42 +18,31 @@ const StudentsTable = () => {
   const handleDelete = async (record) => {
     try {
       await firebase.deleteData("users", record.id);
-
       dispatch(deleteUser(record.id));
       handleSuccess("Student deleted successfully");
     } catch (error) {
-      console.error("Delete error:", error);
-      handleError(
-        "Failed to delete student: " + (error.message || "Unknown error")
-      );
+      if (error) {
+        handleError("Failed to delete student");
+      }
     }
   };
 
   const columns = [
     {
       title: "Name",
-      dataIndex: "displayName",
+      dataIndex: ["data", "displayName"],
       key: "name",
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => (
+        <div className="flex items-center gap-2">
+          <Avatar src={record.data?.photoURL} />
+          <span>{text}</span>
+        </div>
+      ),
     },
     {
       title: "Email",
-      dataIndex: "email",
+      dataIndex: ["data", "email"],
       key: "email",
-    },
-    {
-      title: "Skills",
-      dataIndex: "skills",
-      key: "skills",
-      render: (skills) => <Tag color="blue">{skills?.length || 0} Skills</Tag>,
-    },
-    {
-      title: "Certificates",
-      dataIndex: "certificates",
-      key: "certificates",
-      render: (certificates) => (
-        <Tag color="purple">{certificates?.length || 0} Certificates</Tag>
-      ),
     },
     {
       title: "Enrolled Courses",
@@ -97,7 +77,7 @@ const StudentsTable = () => {
       title="Students"
       description="Manage all students in the platform"
       columns={columns}
-      data={students}
+      data={users}
       isLoading={loading}
       onEdit={handleEdit}
       onDelete={handleDelete}
