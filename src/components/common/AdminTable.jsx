@@ -19,7 +19,7 @@ const AdminTable = ({
   },
 }) => {
   const tableColumns = columns || [];
-  if (!columns.find(col => col.key === "actions")) {
+  if (!columns.find((col) => col.key === "actions")) {
     tableColumns.push({
       title: "Actions",
       key: "actions",
@@ -28,26 +28,21 @@ const AdminTable = ({
           <Button
             type="text"
             icon={<Edit size={16} />}
-            onClick={() => onEdit?.(record)}
+            onClick={() => onEdit?.(record[rowKey])}
           />
           <Button
             type="text"
             danger
             icon={<Trash2 size={16} />}
-            onClick={() => onDelete?.(record)}
+            onClick={() => onDelete?.(record[rowKey])}
           />
         </Space>
       ),
     });
   }
-
-  
-  console.log(data)
-  
-
   const renderMobileCard = (record) => {
-    const mainColumns = columns.filter(col => col.key !== "actions");
-    const mainColumn = mainColumns[0]; // First column is usually the main identifier
+    const mainColumns = columns.filter((col) => col.key !== "actions");
+    const mainColumn = mainColumns[0];
     const otherColumns = mainColumns.slice(1);
 
     return (
@@ -58,27 +53,30 @@ const AdminTable = ({
           <Button
             type="text"
             icon={<Edit size={16} />}
-            onClick={() => onEdit?.(record)}
+            onClick={() => onEdit?.(record[rowKey])}
             key="edit"
           />,
           <Button
             type="text"
             danger
             icon={<Trash2 size={16} />}
-            onClick={() => onDelete?.(record)}
+            onClick={() => onDelete?.(record[rowKey])}
             key="delete"
           />,
         ]}
       >
         <div className="space-y-4">
-          {/* Main content */}
           <div className="flex items-center justify-between">
-            {mainColumn?.render?.(record.data?.[mainColumn.dataIndex?.[1]], record) || (
-              <div className="font-medium">{record.data?.[mainColumn.dataIndex?.[1]]}</div>
+            {mainColumn?.render?.(
+              record.data?.[mainColumn.dataIndex?.[1]],
+              record
+            ) || (
+              <div className="font-medium">
+                {record.data?.[mainColumn.dataIndex?.[1]]}
+              </div>
             )}
           </div>
 
-          {/* Other columns */}
           <div className="grid grid-cols-2 gap-2">
             {otherColumns.map((col) => (
               <div key={col.key} className="space-y-1">
@@ -113,12 +111,8 @@ const AdminTable = ({
         <p className="text-gray-600">{description}</p>
       </div>
 
-      {/* Mobile View */}
-      <div className="lg:hidden space-y-4">
-        {data?.map(renderMobileCard)}
-      </div>
+      <div className="lg:hidden space-y-4">{data?.map(renderMobileCard)}</div>
 
-      {/* Desktop View */}
       <div className="hidden lg:block">
         <Table
           columns={tableColumns}
@@ -131,4 +125,4 @@ const AdminTable = ({
   );
 };
 
-export default AdminTable; 
+export default AdminTable;

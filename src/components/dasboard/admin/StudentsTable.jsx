@@ -1,31 +1,13 @@
 import React from "react";
 import { Tag, Avatar } from "antd";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteUser } from "../../../features/admin/admindashboadSlice";
+import {  useSelector } from "react-redux";
+import { useOperations } from "../../../hooks/useOperations";
 
 const StudentsTable = () => {
   const { users, loading } = useSelector((state) => state.dashboard);
-  const dispatch = useDispatch();
-  const firebase = useFirebase();
+  const {  handleDelete, handleEdit } = useOperations("users", "users");
 
-  const handleEdit = async (record) => {
-    console.log("Edit student:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("users", record.id);
-      dispatch(deleteUser(record.id));
-      handleSuccess("Student deleted successfully");
-    } catch (error) {
-      if (error) {
-        handleError("Failed to delete student");
-      }
-    }
-  };
 
   const columns = [
     {

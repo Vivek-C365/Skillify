@@ -1,38 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tag } from "antd";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteCategory } from "../../../features/admin/admindashboadSlice";
+import { useSelector } from "react-redux";
 import { Button } from "../../common/button";
 import { Plus } from "lucide-react";
 import ModalPage from "../../common/Modal";
 import { AddCategoryForm } from "../../../features/teachers/pages/AddCategoryForm";
+import { useOperations } from "../../../hooks/useOperations";
 
 const CategoriesTable = () => {
   const { categories, loading } = useSelector((state) => state.dashboard);
-  const dispatch = useDispatch();
-  const firebase = useFirebase();
-  const [showAddModal, setShowAddModal] = React.useState(false);
-
-  const handleEdit = async (record) => {
-    console.log("Edit category:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("Categories", record.id);
-      dispatch(deleteCategory(record.id));
-      handleError("Category deleted successfully", "success");
-    } catch (error) {
-      console.error("Delete error:", error);
-      handleError("Failed to delete category: " + (error.message || "Unknown error"));
-    }
-  };
+  const [showAddModal, setShowAddModal] = useState(false);
+  const { fetchData, handleDelete, handleEdit } = useOperations("categories", "Categories");
 
   const handleSuccess = () => {
     setShowAddModal(false);
+    fetchData();
   };
 
   const columns = [
@@ -61,9 +44,7 @@ const CategoriesTable = () => {
       title: "Description",
       dataIndex: ["data", "description"],
       key: "description",
-      render: (text) => (
-        <div className="max-w-md truncate">{text}</div>
-      ),
+      render: (text) => <div className="max-w-md truncate">{text}</div>,
     },
   ];
 

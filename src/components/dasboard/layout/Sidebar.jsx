@@ -15,7 +15,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useLogout } from "../../../auth/pages/Logout";
-import Logo from "../../../assets/images/eduaide_cube.png"
+import Logo from "../../../assets/images/eduaide_cube.png";
 
 const Sidebar = () => {
   const reduxUser = useSelector((state) => state.user?.userDetails);
@@ -118,20 +118,20 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* User Info Section */}
       <div className="px-4 py-3 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
             <User className="w-6 h-6 text-gray-400" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900">{reduxUser?.username || "User"}</p>
+            <p className="text-sm font-medium text-gray-900">
+              {reduxUser?.username || "User"}
+            </p>
             <p className="text-xs text-gray-500 capitalize">{role}</p>
           </div>
         </div>
       </div>
 
-      {/* Navigation Section */}
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
           {filteredNavItems.map((item, index) => {
@@ -150,14 +150,22 @@ const Sidebar = () => {
                   `}
                 >
                   <div className="flex items-center space-x-3">
-                    <span className={`${isActive ? "text-black" : "text-gray-400 group-hover:text-black"}`}>
+                    <span
+                      className={`${
+                        isActive
+                          ? "text-black"
+                          : "text-gray-400 group-hover:text-black"
+                      }`}
+                    >
                       {item.icon}
                     </span>
                     <span>{item.title}</span>
                   </div>
                   <ChevronRight
                     className={`w-4 h-4 transition-transform duration-150 ${
-                      isActive ? "text-black rotate-90" : "text-gray-300 group-hover:text-black"
+                      isActive
+                        ? "text-black rotate-90"
+                        : "text-gray-300 group-hover:text-black"
                     }`}
                   />
                 </Link>
@@ -167,13 +175,15 @@ const Sidebar = () => {
         </ul>
       </nav>
 
-      {/* Logout Section */}
       <div className="p-4 border-t border-gray-200">
         <button
           onClick={handleLogout}
           className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-black rounded-lg transition-all duration-150 group border border-gray-200 shadow-sm"
         >
-          <LogOut size={20} className="mr-3 text-gray-400 group-hover:text-black" />
+          <LogOut
+            size={20}
+            className="mr-3 text-gray-400 group-hover:text-black"
+          />
           <span className="font-medium">Logout</span>
         </button>
       </div>

@@ -227,7 +227,7 @@ const Home = () => {
       </div>
 
       <div
-        className={` ${responsiveFlex}  bg-[var(--color-charcol-black);] text-white p-6  md:p-8 gap-4 md:gap-8`}
+        className={` ${responsiveFlex}  bg-black text-white p-6  md:p-8 gap-4 md:gap-8`}
       >
         <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-8">
           <div>

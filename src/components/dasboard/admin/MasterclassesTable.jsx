@@ -1,32 +1,14 @@
 import React from "react";
 import { Tag } from "antd";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { handleSuccess, handleError } from "../../../utils/tostify";
 import AdminTable from "../../common/AdminTable";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteMasterclass } from "../../../features/admin/admindashboadSlice";
-
+import { useSelector } from "react-redux";
+import { useOperations } from "../../../hooks/useOperations";
 const MasterclassesTable = () => {
   const { masterclasses, loading } = useSelector((state) => state.dashboard);
-  const dispatch = useDispatch();
-  const firebase = useFirebase();
-
-  const handleEdit = async (record) => {
-    console.log("Edit masterclass:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("MasterClass", record.id);
-      dispatch(deleteMasterclass(record.id));
-      handleSuccess("Masterclass deleted successfully");
-    } catch (error) {
-      console.error("Delete error:", error);
-      handleError(
-        "Failed to delete masterclass: " + (error.message || "Unknown error")
-      );
-    }
-  };
+  const { handleDelete, handleEdit } = useOperations(
+    "masterclasses",
+    "MasterClass"
+  );
 
   const columns = [
     {

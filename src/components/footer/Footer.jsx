@@ -5,7 +5,6 @@ import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'luc
 const Footer = () => {
   const quickLinks = [
     { name: 'About Us', path: '/about' },
-    { name: 'Categories', path: '/Categories' },
     { name: 'Contact', path: '/contact' },
     { name: 'Blog', path: '/blog' },
   ];
