@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import StudentDashboard from "../components/dasboard/student/StudentDashboard";
 import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
 import CategoriesTable from "../components/dasboard/admin/CategoriesTable";
+-
 
 function AppRoutes() {
   const user = useSelector((state) => state.user);
