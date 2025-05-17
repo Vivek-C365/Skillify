@@ -5,8 +5,9 @@ const initialState = {
   courses: [],
   instructors: [],
   masterclasses: [],
+  categories: [],
   loading: false,
-  error: null
+  error: null,
 };
 
 export const adminDashboard = createSlice({
@@ -40,20 +41,28 @@ export const adminDashboard = createSlice({
     },
     // Optimistic updates for delete operations
     deleteUser: (state, action) => {
-      state.users = state.users.filter(user => user.id !== action.payload);
+      state.users = state.users.filter((user) => user.id !== action.payload);
     },
     deleteCourse: (state, action) => {
-      state.courses = state.courses.filter(course => course.id !== action.payload);
+      state.courses = state.courses.filter(
+        (course) => course.id !== action.payload
+      );
     },
     deleteInstructor: (state, action) => {
-      state.instructors = state.instructors.filter(instructor => instructor.id !== action.payload);
+      state.instructors = state.instructors.filter(
+        (instructor) => instructor.id !== action.payload
+      );
     },
     deleteMasterclass: (state, action) => {
-      state.masterclasses = state.masterclasses.filter(masterclass => masterclass.id !== action.payload);
+      state.masterclasses = state.masterclasses.filter(
+        (masterclass) => masterclass.id !== action.payload
+      );
     },
-    deleteCategory: (state, action) => {
-      state.categories = state.categories.filter(category => category.id !== action.payload);
-    }
+
+    deleteItem: (state, action) => {
+      const { key, id } = action.payload;
+      state[key] = state[key].filter((item) => item.id !== id);
+    },
   },
 });
 
@@ -66,7 +75,7 @@ export const {
   deleteCourse,
   deleteInstructor,
   deleteMasterclass,
-  deleteCategory
+  deleteItem,
 } = adminDashboard.actions;
 
 export default adminDashboard.reducer;

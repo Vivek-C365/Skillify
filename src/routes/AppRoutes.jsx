@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import StudentDashboard from "../components/dasboard/student/StudentDashboard";
 import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
 import CategoriesTable from "../components/dasboard/admin/CategoriesTable";
+
 function AppRoutes() {
   const user = useSelector((state) => state.user);
   const userDetails = user?.userDetails;
@@ -59,8 +60,22 @@ function AppRoutes() {
           {/* Teacher Routes */}
           {isTeacher && (
             <>
-              <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-              <Route path="/addCourse" element={<AddCourseDetailForm />} />
+              <Route
+                path="/teacher-dashboard"
+                element={
+                  <DashboardLayout>
+                    <TeacherDashboard />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/addCourse"
+                element={
+                  <DashboardLayout>
+                    <AddCourseDetailForm />
+                  </DashboardLayout>
+                }
+              />
             </>
           )}
         </Route>
@@ -122,15 +137,7 @@ function AppRoutes() {
         {isAdmin && (
           <>
             <Route
-              path="/"
-              element={<Navigate to="/admin-dashboard" replace />}
-            />
-            <Route
-              path="/login"
-              element={<Navigate to="/admin-dashboard" replace />}
-            />
-            <Route
-              path="/signup"
+              path="*"
               element={<Navigate to="/admin-dashboard" replace />}
             />
           </>
@@ -139,15 +146,7 @@ function AppRoutes() {
         {isTeacher && (
           <>
             <Route
-              path="/"
-              element={<Navigate to="/teacher-dashboard" replace />}
-            />
-            <Route
-              path="/login"
-              element={<Navigate to="/teacher-dashboard" replace />}
-            />
-            <Route
-              path="/signup"
+              path="*"
               element={<Navigate to="/teacher-dashboard" replace />}
             />
           </>

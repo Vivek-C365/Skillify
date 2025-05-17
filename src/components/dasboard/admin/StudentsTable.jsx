@@ -1,31 +1,30 @@
-import React from "react";
-import { Tag, Avatar } from "antd";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { handleSuccess, handleError } from "../../../utils/tostify";
+import React, { useState } from "react";
+import { Tag, Avatar, Button, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import AdminTable from "../../common/AdminTable";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteUser } from "../../../features/admin/admindashboadSlice";
+import { useSelector } from "react-redux";
+import { useOperations } from "../../../hooks/useOperations";
+import ModalPage from "../../common/Modal";
+import DynamicForm from "../../common/DynamicForm";
+import EditAction from "../../common/EditAction";
+
+const studentFields = [
+  {
+    name: "displayName",
+    label: "Name",
+    type: "text",
+    placeholder: "Full name",
+  },
+  { name: "email", label: "Email", type: "email", placeholder: "Email" },
+  { name: "photoURL", label: "Profile Photo", type: "image" },
+];
 
 const StudentsTable = () => {
   const { users, loading } = useSelector((state) => state.dashboard);
-  const dispatch = useDispatch();
-  const firebase = useFirebase();
-
-  const handleEdit = async (record) => {
-    console.log("Edit student:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("users", record.id);
-      dispatch(deleteUser(record.id));
-      handleSuccess("Student deleted successfully");
-    } catch (error) {
-      if (error) {
-        handleError("Failed to delete student");
-      }
-    }
-  };
+  const { handleDelete, handleEdit } = useOperations("users", "users");
+  const [editStudent, setEditStudent] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
@@ -70,18 +69,53 @@ const StudentsTable = () => {
         </Tag>
       ),
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <EditAction onClick={() => setEditStudent(record)} />
+      ),
+    },
   ];
 
   return (
-    <AdminTable
-      title="Students"
-      description="Manage all students in the platform"
-      columns={columns}
-      data={users}
-      isLoading={loading}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    />
+    <>
+      <AdminTable
+        title="Students"
+        description="Manage all students in the platform"
+        columns={columns}
+        data={users}
+        isLoading={loading}
+      />
+      {editStudent && (
+        <ModalPage
+          title="Edit Student"
+          open={!!editStudent}
+          onClose={() => setEditStudent(null)}
+          onCancel={() => setEditStudent(null)}
+        >
+          <DynamicForm
+            fields={studentFields}
+            initialValues={editStudent.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editStudent.id, { data: updated });
+              setSubmittingSave(false);
+              setEditStudent(null);
+            }}
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editStudent.id);
+              setSubmittingDelete(false);
+              setEditStudent(null);
+            }}
+            onCancel={() => setEditStudent(null)}
+          />
+        </ModalPage>
+      )}
+    </>
   );
 };
 

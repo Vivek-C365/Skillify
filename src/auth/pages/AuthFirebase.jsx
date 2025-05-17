@@ -16,7 +16,7 @@ const adminCredentials = {
 const formatUserData = (userData, fallbackEmail = "") => ({
   email: userData.email,
   isAdmin: userData.role === "admin",
-  role: userData.role || "student",
+  role: userData.role,
   username: userData.displayName || fallbackEmail.split("@")[0],
   photoURL: userData.photoURL,
   about: userData.about || "",
@@ -48,7 +48,6 @@ const SignUp = ({
 
   useEffect(() => {
     if (userDetails) {
-      // Redirect based on role
       if (userDetails.role === "admin") navigate("/admin-dashboard");
       else if (userDetails.role === "teacher") navigate("/teacher-dashboard");
       else navigate("/");
@@ -97,7 +96,6 @@ const SignUp = ({
       password
     );
 
-    // Validate user role and permissions
     if (!userData || !userData.role) {
       throw new Error("Invalid user data");
     }

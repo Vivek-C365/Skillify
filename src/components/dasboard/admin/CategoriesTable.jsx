@@ -1,39 +1,47 @@
-import React from "react";
-import { Tag } from "antd";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { handleError } from "../../../utils/tostify";
+import React, { useState } from "react";
+import { Tag, Tooltip, Button } from "antd";
 import AdminTable from "../../common/AdminTable";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteCategory } from "../../../features/admin/admindashboadSlice";
-import { Button } from "../../common/button";
+import { useSelector } from "react-redux";
 import { Plus } from "lucide-react";
 import ModalPage from "../../common/Modal";
 import { AddCategoryForm } from "../../../features/teachers/pages/AddCategoryForm";
+import { useOperations } from "../../../hooks/useOperations";
+import DynamicForm from "../../common/DynamicForm";
+import EditAction from "../../common/EditAction";
 
 const CategoriesTable = () => {
   const { categories, loading } = useSelector((state) => state.dashboard);
-  const dispatch = useDispatch();
-  const firebase = useFirebase();
-  const [showAddModal, setShowAddModal] = React.useState(false);
-
-  const handleEdit = async (record) => {
-    console.log("Edit category:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("Categories", record.id);
-      dispatch(deleteCategory(record.id));
-      handleError("Category deleted successfully", "success");
-    } catch (error) {
-      console.error("Delete error:", error);
-      handleError("Failed to delete category: " + (error.message || "Unknown error"));
-    }
-  };
+  const [showAddModal, setShowAddModal] = useState(false);
+  const { fetchData, handleDelete, handleEdit } = useOperations(
+    "categories",
+    "Categories"
+  );
+  const [editCategory, setEditCategory] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
+  // console.log(editCategory);
 
   const handleSuccess = () => {
     setShowAddModal(false);
+    fetchData();
   };
+
+  const categoryFields = [
+    {
+      name: "name",
+      label: "Category Name",
+      type: "text",
+      placeholder: "Category name",
+    },
+    { name: "slug", label: "Slug", type: "text", placeholder: "Slug" },
+    {
+      name: "description",
+      label: "Description",
+      type: "text",
+      placeholder: "Description",
+    },
+    { name: "imageUrl", label: "Image", type: "image" },
+  ];
 
   const columns = [
     {
@@ -61,8 +69,14 @@ const CategoriesTable = () => {
       title: "Description",
       dataIndex: ["data", "description"],
       key: "description",
-      render: (text) => (
-        <div className="max-w-md truncate">{text}</div>
+      render: (text) => <div className="max-w-md truncate">{text}</div>,
+    },
+
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <EditAction onClick={() => setEditCategory(record)} />
       ),
     },
   ];
@@ -78,7 +92,7 @@ const CategoriesTable = () => {
           variant="outline"
           className="!text-black"
           size="lg"
-          leftIcon={<Plus size={16} />}
+          lefticon={<Plus size={16} />}
           onClick={() => setShowAddModal(true)}
         >
           Add Category
@@ -103,6 +117,36 @@ const CategoriesTable = () => {
           <AddCategoryForm
             onSuccess={handleSuccess}
             onClose={() => setShowAddModal(false)}
+          />
+        </ModalPage>
+      )}
+      {editCategory && (
+        <ModalPage
+          title="Edit Category"
+          open={!!editCategory}
+          onClose={() => setEditCategory(null)}
+          onCancel={() => setEditCategory(null)}
+        >
+          <DynamicForm
+            fields={categoryFields}
+            initialValues={editCategory.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editCategory.id, { data: updated });
+              setSubmittingSave(false);
+              setEditCategory(null);
+              fetchData();
+            }}
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editCategory.id);
+              setSubmittingDelete(false);
+              setEditCategory(null);
+              fetchData();
+            }}
+            onCancel={() => setEditCategory(null)}
           />
         </ModalPage>
       )}

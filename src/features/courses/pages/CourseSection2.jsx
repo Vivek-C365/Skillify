@@ -34,18 +34,15 @@ export default function CourseSection2() {
     return <Skeleton />;
   }
 
-  // Handle case where data couldn't be loaded
   if (!masterclass || masterclass.length === 0) {
-    return ;
+    return;
   }
 
-  // Safely extract data
   const currentMasterclass = masterclass[0]?.data || {};
   console.log(currentMasterclass);
   const { day, date, name, masterclassTitle, time, url, personExperience } =
     currentMasterclass;
 
-  // Safely handle date
   function getMonthName(monthNumber) {
     const date = new Date();
     date.setMonth(monthNumber - 1);
@@ -107,7 +104,7 @@ export default function CourseSection2() {
               <LaptopOutlined />
             </span>
             <div>
-              <h1>By Dr. {masterclass[0]?.data?.name} </h1>
+              <h1>By {masterclass[0]?.data?.name} </h1>
               <p>{`${personExperience} Years`} | IIIT Bangalore</p>
             </div>
           </div>
@@ -120,7 +117,7 @@ export default function CourseSection2() {
           />
         </div>
         <div className="flex gap-2 justify-center items-center">
-          <Button className=" w-full bg-transparent !text-black border-1 text-[12px]">
+          <Button className=" w-full bg-transparent hover:!bg-[var(--color-lavender)] !text-black border-1 text-[12px]">
             View Masterclass
           </Button>
 

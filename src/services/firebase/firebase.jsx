@@ -353,6 +353,15 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
+  const addCourse = async (collectionName, data) => {
+    try {
+      await addDocument(db, collectionName, data);
+      handleSuccess("Course Added");
+    } catch (error) {
+      handleError(error.message);
+    }
+  };
+
   const addCategory = async (data) => {
     const colRef = collection(db, "Categories");
     const q = query(colRef, where("data.slug", "==", data.slug));
@@ -377,6 +386,16 @@ export const FirebaseProvider = ({ children }) => {
     }
   };
 
+  const updateData = async (collectionName, docId, updatedData) => {
+    try {
+      await updateDocument(db, collectionName, docId, updatedData);
+    } catch (error) {
+      handleError(error.message);
+    }
+  };
+
+
+
   return (
     <firebaseContext.Provider
       value={{
@@ -395,6 +414,8 @@ export const FirebaseProvider = ({ children }) => {
         addCategory,
         readData,
         deleteData,
+        updateData,
+        addCourse,
       }}
     >
       {children}

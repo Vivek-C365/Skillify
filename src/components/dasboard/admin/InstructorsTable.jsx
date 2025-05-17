@@ -1,33 +1,28 @@
-import React from "react";
-import { Tag, Avatar } from "antd";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { handleSuccess, handleError } from "../../../utils/tostify";
+import React, { useState } from "react";
+import { EditOutlined } from "@ant-design/icons";
+import { Tag, Avatar, Button, Tooltip } from "antd";
 import AdminTable from "../../common/AdminTable";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteInstructor } from "../../../features/admin/admindashboadSlice";
+import { useSelector } from "react-redux";
+import { useOperations } from "../../../hooks/useOperations";
+import ModalPage from "../../common/Modal";
+import DynamicForm from "../../common/DynamicForm";
+import EditAction from "../../common/EditAction";
+
+const instructorFields = [
+  { name: "name", label: "Name", type: "text", placeholder: "Full name" },
+  { name: "email", label: "Email", type: "email", placeholder: "Email" },
+  { name: "photoURL", label: "Profile Photo", type: "image" },
+  { name: "expertise", label: "Specialization", type: "text", placeholder: "Specialization" },
+  { name: "phone", label: "Phone", type: "text", placeholder: "Phone" },
+  { name: "rating", label: "Rating", type: "text", placeholder: "Rating" },
+];
 
 const InstructorsTable = () => {
   const { instructors, loading } = useSelector((state) => state.dashboard);
-  const dispatch = useDispatch();
-  const firebase = useFirebase();
-
-  const handleEdit = async (record) => {
-    console.log("Edit instructor:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("Instructor", record.id);
-
-      dispatch(deleteInstructor(record.id));
-      handleSuccess("Instructor deleted successfully");
-    } catch (error) {
-      console.error("Delete error:", error);
-      handleError(
-        "Failed to delete instructor: " + (error.message || "Unknown error")
-      );
-    }
-  };
+  const { handleDelete, handleEdit } = useOperations("instructors", "Instructor");
+  const [editInstructor, setEditInstructor] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
@@ -66,20 +61,57 @@ const InstructorsTable = () => {
       title: "Rating",
       dataIndex: ["data", "rating"],
       key: "rating",
-      render: (rating) => rating?.toFixed(1) || "N/A",
+      render: (rating) => rating || "N/A",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <EditAction onClick={() => setEditInstructor(record)} />
+      ),
     },
   ];
 
   return (
-    <AdminTable
-      title="Instructors"
-      description="Manage all instructors in the platform"
-      columns={columns}
-      data={instructors}
-      isLoading={loading}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    />
+    <>
+      <AdminTable
+        title="Instructors"
+        description="Manage all instructors in the platform"
+        columns={columns}
+        data={instructors}
+        isLoading={loading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      {editInstructor && (
+        <ModalPage
+          title="Edit Instructor"
+          open={!!editInstructor}
+          onClose={() => setEditInstructor(null)}
+          onCancel={() => setEditInstructor(null)}
+        >
+          <DynamicForm
+            fields={instructorFields}
+            initialValues={editInstructor.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editInstructor.id, { data: updated });
+              setSubmittingSave(false);
+              setEditInstructor(null);
+            }}
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editInstructor.id);
+              setSubmittingDelete(false);
+              setEditInstructor(null);
+            }}
+            onCancel={() => setEditInstructor(null)}
+          />
+        </ModalPage>
+      )}
+    </>
   );
 };
 

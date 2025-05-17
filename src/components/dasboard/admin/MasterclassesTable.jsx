@@ -1,32 +1,30 @@
-import React from "react";
-import { Tag } from "antd";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { handleSuccess, handleError } from "../../../utils/tostify";
+import React, { useState } from "react";
+import { Tag, Button, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import AdminTable from "../../common/AdminTable";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteMasterclass } from "../../../features/admin/admindashboadSlice";
+import { useSelector } from "react-redux";
+import { useOperations } from "../../../hooks/useOperations";
+import ModalPage from "../../common/Modal";
+import DynamicForm from "../../common/DynamicForm";
+import EditAction from "../../common/EditAction";
+
+const masterclassFields = [
+  { name: "masterclassTitle", label: "Title", type: "text", placeholder: "Masterclass title" },
+  { name: "name", label: "Instructor", type: "text", placeholder: "Instructor name" },
+  { name: "category", label: "Category", type: "text", placeholder: "Category" },
+  { name: "price", label: "Price", type: "text", placeholder: "Price" },
+  { name: "duration", label: "Duration", type: "text", placeholder: "Duration (hours)" },
+];
 
 const MasterclassesTable = () => {
   const { masterclasses, loading } = useSelector((state) => state.dashboard);
-  const dispatch = useDispatch();
-  const firebase = useFirebase();
-
-  const handleEdit = async (record) => {
-    console.log("Edit masterclass:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("MasterClass", record.id);
-      dispatch(deleteMasterclass(record.id));
-      handleSuccess("Masterclass deleted successfully");
-    } catch (error) {
-      console.error("Delete error:", error);
-      handleError(
-        "Failed to delete masterclass: " + (error.message || "Unknown error")
-      );
-    }
-  };
+  const { handleDelete, handleEdit } = useOperations(
+    "masterclasses",
+    "MasterClass"
+  );
+  const [editMasterclass, setEditMasterclass] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
@@ -63,18 +61,55 @@ const MasterclassesTable = () => {
       key: "duration",
       render: (duration) => `${duration} hours`,
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <EditAction onClick={() => setEditMasterclass(record)} />
+      ),
+    },
   ];
 
   return (
-    <AdminTable
-      title="Masterclasses"
-      description="Manage all masterclasses in the platform"
-      columns={columns}
-      data={masterclasses}
-      isLoading={loading}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    />
+    <>
+      <AdminTable
+        title="Masterclasses"
+        description="Manage all masterclasses in the platform"
+        columns={columns}
+        data={masterclasses}
+        isLoading={loading}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+      {editMasterclass && (
+        <ModalPage
+          title="Edit Masterclass"
+          open={!!editMasterclass}
+          onClose={() => setEditMasterclass(null)}
+          onCancel={() => setEditMasterclass(null)}
+        >
+          <DynamicForm
+            fields={masterclassFields}
+            initialValues={editMasterclass.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editMasterclass.id, { data: updated });
+              setSubmittingSave(false);
+              setEditMasterclass(null);
+            }}
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editMasterclass.id);
+              setSubmittingDelete(false);
+              setEditMasterclass(null);
+            }}
+            onCancel={() => setEditMasterclass(null)}
+          />
+        </ModalPage>
+      )}
+    </>
   );
 };
 
