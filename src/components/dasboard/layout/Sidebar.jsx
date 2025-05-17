@@ -11,6 +11,7 @@ import {
   Bookmark,
   Tag,
   ChevronRight,
+  Plus,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -28,7 +29,7 @@ const Sidebar = () => {
       title: "Dashboard",
       icon: <Home size={20} />,
       path: "/",
-      roles: ["student", "teacher"],
+      roles: ["student"],
     },
     {
       title: "My Courses",
@@ -52,12 +53,24 @@ const Sidebar = () => {
       title: "My Profile",
       icon: <User size={20} />,
       path: "/profile",
-      roles: ["student", "teacher"],
+      roles: ["student"],
+    },
+    {
+      title: "Dashboard",
+      icon: <Home size={20} />,
+      path: "/teacher-dashboard",
+      roles: ["teacher"],
     },
     {
       title: "My Courses",
       icon: <BookMarked size={20} />,
       path: "/manage-courses",
+      roles: ["teacher"],
+    },
+    {
+      title: "Create Course",
+      icon: <Plus size={20} />,
+      path: "/addCourse",
       roles: ["teacher"],
     },
     {

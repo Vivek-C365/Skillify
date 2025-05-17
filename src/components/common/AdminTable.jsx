@@ -1,6 +1,5 @@
 import React from "react";
-import { Space, Table, Tag, Button, Card } from "antd";
-import { Edit, Trash2 } from "lucide-react";
+import { Table, Card } from "antd";
 import { StatCardSkeleton } from "./Skeleton";
 
 const AdminTable = ({
@@ -9,8 +8,6 @@ const AdminTable = ({
   columns,
   data,
   isLoading,
-  onEdit,
-  onDelete,
   rowKey = "id",
   pagination = {
     pageSize: 10,
@@ -18,30 +15,8 @@ const AdminTable = ({
     showTotal: (total) => `Total ${total} items`,
   },
 }) => {
-  const tableColumns = columns || [];
-  if (!columns.find((col) => col.key === "actions")) {
-    tableColumns.push({
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="text"
-            icon={<Edit size={16} />}
-            onClick={() => onEdit?.(record[rowKey])}
-          />
-          <Button
-            type="text"
-            danger
-            icon={<Trash2 size={16} />}
-            onClick={() => onDelete?.(record[rowKey])}
-          />
-        </Space>
-      ),
-    });
-  }
   const renderMobileCard = (record) => {
-    const mainColumns = columns.filter((col) => col.key !== "actions");
+    const mainColumns = columns || [];
     const mainColumn = mainColumns[0];
     const otherColumns = mainColumns.slice(1);
 
@@ -49,21 +24,6 @@ const AdminTable = ({
       <Card
         key={record[rowKey]}
         className="mb-4 shadow-sm hover:shadow-md transition-shadow"
-        actions={[
-          <Button
-            type="text"
-            icon={<Edit size={16} />}
-            onClick={() => onEdit?.(record[rowKey])}
-            key="edit"
-          />,
-          <Button
-            type="text"
-            danger
-            icon={<Trash2 size={16} />}
-            onClick={() => onDelete?.(record[rowKey])}
-            key="delete"
-          />,
-        ]}
       >
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -115,10 +75,11 @@ const AdminTable = ({
 
       <div className="hidden lg:block">
         <Table
-          columns={tableColumns}
+          columns={columns}
           dataSource={data}
           rowKey={rowKey}
           pagination={pagination}
+          className="rounded-lg border border-gray-200"
         />
       </div>
     </div>

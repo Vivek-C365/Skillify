@@ -86,8 +86,6 @@ const StudentsTable = () => {
         columns={columns}
         data={users}
         isLoading={loading}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
       />
       {editStudent && (
         <ModalPage

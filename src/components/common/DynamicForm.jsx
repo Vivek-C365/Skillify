@@ -12,6 +12,7 @@ const DynamicForm = ({
   submittingDelete = false,
 }) => {
   const [form, setForm] = useState(initialValues);
+  console.log(form);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
