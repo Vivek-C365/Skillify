@@ -17,11 +17,11 @@ export const FormSelect = ({
   <Form.Item
     label={<Text strong>{label}</Text>}
     name={name}
-    rules={[{ required, message: `Please select ${label.toLowerCase()}` }]}
+    rules={[{ required, message: `Please select ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
   >
     <Select
-      placeholder={placeholder || `Select ${label.toLowerCase()}`}
+      placeholder={placeholder || `Select ${typeof label === 'string' ? label.toLowerCase() : name}`}
       showSearch={showSearch}
       optionFilterProp="children"
       filterOption={(input, option) =>
@@ -53,11 +53,11 @@ export const FormInput = ({
   <Form.Item
     label={<Text strong>{label}</Text>}
     name={name}
-    rules={[{ required, message: `Please enter ${label.toLowerCase()}` }]}
+    rules={[{ required, message: `Please enter ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
   >
     <Input
-      placeholder={placeholder || `Enter ${label.toLowerCase()}`}
+      placeholder={placeholder || `Enter ${typeof label === 'string' ? label.toLowerCase() : name}`}
       type={type}
       {...rest}
     />
@@ -79,7 +79,7 @@ export const FormNumberInput = ({
   <Form.Item
     label={<Text strong>{label}</Text>}
     name={name}
-    rules={[{ required, message: `Please enter ${label.toLowerCase()}` }]}
+    rules={[{ required, message: `Please enter ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
   >
     <InputNumber
@@ -108,7 +108,7 @@ export const FormTextArea = ({
   <Form.Item
     label={<Text strong>{label}</Text>}
     name={name}
-    rules={[{ required, message: `Please enter ${label.toLowerCase()}` }]}
+    rules={[{ required, message: `Please enter ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
   >
     <TextArea

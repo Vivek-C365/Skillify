@@ -1,12 +1,11 @@
 import React from "react";
 import { X, AlignLeft } from "lucide-react";
-import { Badge } from "../../common/Badge";
 import { Button } from "../../common/button";
 import { useSelector } from "react-redux";
 
 const Header = ({ onToggleSidebar, sidebarOpen }) => {
   const reduxUser = useSelector((state) => state.user?.userDetails);
-  const role = reduxUser.role;
+  const role = reduxUser?.role || "user";
 
   const getHeaderTitle = () => {
     switch (role) {
@@ -21,55 +20,26 @@ const Header = ({ onToggleSidebar, sidebarOpen }) => {
     }
   };
 
-  const getRoleBadgeVariant = () => {
-    switch (role) {
-      case "student":
-        return "primary";
-      case "teacher":
-        return "success";
-      case "admin":
-        return "warning";
-      default:
-        return "secondary";
-    }
-  };
-
   return (
-    <header className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden !text-black"
-              onClick={onToggleSidebar}
-              aria-label="Toggle menu"
-            >
-              {sidebarOpen ? <X size={20} /> : <AlignLeft size={20} />}
-            </Button>
-            <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">
-              {getHeaderTitle()}
-            </h1>
-          </div>
+    <header className="h-16 bg-white border-b border-gray-200 shadow-sm px-6 flex items-center justify-between sticky top-0 z-50">
+      <div className="flex items-center space-x-4">
+        <Button
+          variant="outline"
+          size="icon"
+          className="lg:hidden !text-gray-700 rounded-lg hover:bg-gray-100 border-gray-200"
+          onClick={onToggleSidebar}
+          aria-label="Toggle menu"
+        >
+          {sidebarOpen ? <X size={20} /> : <AlignLeft size={20} />}
+        </Button>
 
-          <div className="flex items-center space-x-4">
-            <div className="relative inline-block text-left">
-              <div className="flex items-center">
-                <div className="ml-3  md:block">
-                  <p className="text-sm font-medium text-gray-700">
-                    {" "}
-                    {reduxUser?.username}{" "}
-                  </p>
-                  <div className="flex items-center">
-                    <Badge variant={getRoleBadgeVariant()}>
-                      {role.charAt(0).toUpperCase() + role.slice(1)}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="hidden sm:block">
+          <h1 className="text-xl font-semibold text-gray-900">
+            {getHeaderTitle()}
+          </h1>
+          <p className="text-sm text-gray-500">
+            Welcome back, {reduxUser?.username || "User"}
+          </p>
         </div>
       </div>
     </header>

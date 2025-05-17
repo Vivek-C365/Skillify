@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Calendar, Clock, Tag, Search } from 'lucide-react';
 import Navbar from '../components/navbar';
-import Footer from '../components/common/Footer';
+import Footer from '../components/footer/Footer';
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState('');

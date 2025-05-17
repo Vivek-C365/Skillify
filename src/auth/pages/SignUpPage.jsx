@@ -7,7 +7,7 @@ const SignupPage = () => {
     <SignUp
       title="Create Account"
       subtitle="Welcome, please enter your details."
-      onSuccessPath="/login"
+      onSuccessPath="/"
       type="signup"
       footerText="Already have an account?"
       footerLinkText="Log in"

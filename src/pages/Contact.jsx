@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { handleSuccess, handleError } from '../utils/tostify';
 import Navbar from '../components/navbar';
-import Footer from '../components/common/Footer';
+import Footer from '../components/footer/Footer';
 
 const Contact = () => {
   const [formData, setFormData] = useState({

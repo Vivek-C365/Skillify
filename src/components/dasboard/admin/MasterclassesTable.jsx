@@ -8,33 +8,30 @@ import ModalPage from "../../common/Modal";
 import DynamicForm from "../../common/DynamicForm";
 import EditAction from "../../common/EditAction";
 
-const courseFields = [
-  { name: "description", label: "Title", type: "text", placeholder: "Course title" },
+const masterclassFields = [
+  { name: "masterclassTitle", label: "Title", type: "text", placeholder: "Masterclass title" },
   { name: "name", label: "Instructor", type: "text", placeholder: "Instructor name" },
   { name: "category", label: "Category", type: "text", placeholder: "Category" },
-  { name: "hourly_rate", label: "Price", type: "text", placeholder: "Price" },
+  { name: "price", label: "Price", type: "text", placeholder: "Price" },
+  { name: "duration", label: "Duration", type: "text", placeholder: "Duration (hours)" },
 ];
 
-const CoursesTable = () => {
-  const { courses, loading } = useSelector((state) => state.dashboard);
+const MasterclassesTable = () => {
+  const { masterclasses, loading } = useSelector((state) => state.dashboard);
   const { handleDelete, handleEdit } = useOperations(
-    "courses",
-    "CouseDetails"
+    "masterclasses",
+    "MasterClass"
   );
-  const [editCourse, setEditCourse] = useState(null);
+  const [editMasterclass, setEditMasterclass] = useState(null);
   const [submittingSave, setSubmittingSave] = useState(false);
   const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
       title: "Title",
-      dataIndex: ["data", "description"],
+      dataIndex: ["data", "masterclassTitle"],
       key: "title",
-      render: (text) => (
-        <a className="font-medium">
-          {text.length > 50 ? `${text.slice(0, 35)}...` : text}
-        </a>
-      ),
+      render: (text) => <a className="font-medium">{text}</a>,
     },
     {
       title: "Instructor",
@@ -54,15 +51,21 @@ const CoursesTable = () => {
     },
     {
       title: "Price",
-      dataIndex: ["data", "hourly_rate"],
+      dataIndex: ["data", "price"],
       key: "price",
-      render: (price) => `$${price} hours`,
+      render: (price) => <span>{price ? price : "Free"}</span>,
+    },
+    {
+      title: "Duration",
+      dataIndex: ["data", "duration"],
+      key: "duration",
+      render: (duration) => `${duration} hours`,
     },
     {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <EditAction onClick={() => setEditCourse(record)} />
+        <EditAction onClick={() => setEditMasterclass(record)} />
       ),
     },
   ];
@@ -70,39 +73,39 @@ const CoursesTable = () => {
   return (
     <>
       <AdminTable
-        title="Courses"
-        description="Manage all courses in the platform"
+        title="Masterclasses"
+        description="Manage all masterclasses in the platform"
         columns={columns}
-        data={courses}
+        data={masterclasses}
         isLoading={loading}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-      {editCourse && (
+      {editMasterclass && (
         <ModalPage
-          title="Edit Course"
-          open={!!editCourse}
-          onClose={() => setEditCourse(null)}
-          onCancel={() => setEditCourse(null)}
+          title="Edit Masterclass"
+          open={!!editMasterclass}
+          onClose={() => setEditMasterclass(null)}
+          onCancel={() => setEditMasterclass(null)}
         >
           <DynamicForm
-            fields={courseFields}
-            initialValues={editCourse.data}
+            fields={masterclassFields}
+            initialValues={editMasterclass.data}
             submittingSave={submittingSave}
             submittingDelete={submittingDelete}
             onSave={async (updated) => {
               setSubmittingSave(true);
-              await handleEdit(editCourse.id, { data: updated });
+              await handleEdit(editMasterclass.id, { data: updated });
               setSubmittingSave(false);
-              setEditCourse(null);
+              setEditMasterclass(null);
             }}
             onDelete={async () => {
               setSubmittingDelete(true);
-              await handleDelete(editCourse.id);
+              await handleDelete(editMasterclass.id);
               setSubmittingDelete(false);
-              setEditCourse(null);
+              setEditMasterclass(null);
             }}
-            onCancel={() => setEditCourse(null)}
+            onCancel={() => setEditMasterclass(null)}
           />
         </ModalPage>
       )}
@@ -110,4 +113,4 @@ const CoursesTable = () => {
   );
 };
 
-export default CoursesTable;
+export default MasterclassesTable;

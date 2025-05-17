@@ -1,132 +1,47 @@
-import React, { useEffect, useState } from "react";
-import { Space, Table, Tag, Button, Avatar, Card, Progress } from "antd";
-import { Edit, Trash2, Mail, BookOpen, Calendar } from "lucide-react";
-import { useFirebase } from "../../../hooks/useFirebase";
-import { StatCardSkeleton } from "../../common/Skeleton";
-import { handleSuccess, handleError } from "../../../utils/tostify";
+import React, { useState } from "react";
+import { Tag, Avatar, Button, Tooltip } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import AdminTable from "../../common/AdminTable";
+import { useSelector } from "react-redux";
+import { useOperations } from "../../../hooks/useOperations";
+import ModalPage from "../../common/Modal";
+import DynamicForm from "../../common/DynamicForm";
+import EditAction from "../../common/EditAction";
+
+const studentFields = [
+  {
+    name: "displayName",
+    label: "Name",
+    type: "text",
+    placeholder: "Full name",
+  },
+  { name: "email", label: "Email", type: "email", placeholder: "Email" },
+  { name: "photoURL", label: "Profile Photo", type: "image" },
+];
 
 const StudentsTable = () => {
-  const [students, setStudents] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const firebase = useFirebase();
-
-  console.log(students);
-
-  const fetchStudents = async () => {
-    try {
-      setIsLoading(true);
-      const usersData = await firebase.readData("users");
-
-      setStudents(usersData);
-    } catch (error) {
-      console.error("Failed to fetch students:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchStudents();
-  }, [firebase]);
-
-  const handleEdit = async (record) => {
-    console.log("Edit student:", record);
-  };
-
-  const handleDelete = async (record) => {
-    try {
-      await firebase.deleteData("users", record.id);
-      handleSuccess("Student deleted successfully");
-      fetchStudents();
-    } catch (error) {
-      if (error) {
-        handleError("Failed to delete student");
-      }
-    }
-  };
-
-  const renderMobileCard = (student) => (
-    <Card
-      key={student.id}
-      className="mb-4 shadow-sm hover:shadow-md transition-shadow"
-      actions={[
-        <Button
-          type="text"
-          icon={<Edit size={16} />}
-          onClick={() => handleEdit(student)}
-          key="edit"
-        />,
-        <Button
-          type="text"
-          danger
-          icon={<Trash2 size={16} />}
-          onClick={() => handleDelete(student)}
-          key="delete"
-        />,
-      ]}
-    >
-      <div className="space-y-4">
-        <div className="flex items-center">
-          <Avatar
-            src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-              student.data?.name
-            )}&background=random`}
-            size={64}
-            className="mr-4"
-          />
-          <div className="flex-1">
-            <h3 className="text-lg font-medium">{student.data?.name}</h3>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <Mail size={14} />
-              <span>{student.data?.email}</span>
-            </div>
-          </div>
-          <Tag color={student.data?.status === "active" ? "green" : "red"}>
-            {student.data?.status?.toUpperCase() || "INACTIVE"}
-          </Tag>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <BookOpen size={14} className="text-gray-400" />
-              <span className="text-sm">Enrolled Courses</span>
-            </div>
-            <Tag color="blue">
-              {student.data?.enrolledCourses?.length || 0} Courses
-            </Tag>
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Calendar size={14} className="text-gray-400" />
-              <span className="text-sm">Last Active</span>
-            </div>
-            <div className="text-sm">
-              {student.data?.lastActive
-                ? new Date(student.data.lastActive).toLocaleDateString()
-                : "Never"}
-            </div>
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
+  const { users, loading } = useSelector((state) => state.dashboard);
+  const { handleDelete, handleEdit } = useOperations("users", "users");
+  const [editStudent, setEditStudent] = useState(null);
+  const [submittingSave, setSubmittingSave] = useState(false);
+  const [submittingDelete, setSubmittingDelete] = useState(false);
 
   const columns = [
     {
-      title: "Student",
-      dataIndex: ["data", "name"],
+      title: "Name",
+      dataIndex: ["data", "displayName"],
       key: "name",
       render: (text, record) => (
-        <div className="flex items-center">
-          <div>
-            <div className="font-medium">{text}</div>
-            <div className="text-xs text-gray-500">
-              {record.data?.email || "test"}
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          <Avatar src={record.data?.photoURL} />
+          <span>{text}</span>
         </div>
       ),
+    },
+    {
+      title: "Email",
+      dataIndex: ["data", "email"],
+      key: "email",
     },
     {
       title: "Enrolled Courses",
@@ -138,12 +53,11 @@ const StudentsTable = () => {
         </Tag>
       ),
     },
-    
     {
-      title: "Last Active",
-      dataIndex: ["data", "lastActive"],
-      key: "lastActive",
-      render: (date) => (date ? new Date(date).toLocaleDateString() : "Never"),
+      title: "Progress",
+      dataIndex: ["data", "progress"],
+      key: "progress",
+      render: (progress) => `${progress || 0}%`,
     },
     {
       title: "Status",
@@ -159,57 +73,49 @@ const StudentsTable = () => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="text"
-            icon={<Edit size={16} />}
-            onClick={() => handleEdit(record)}
-          />
-          <Button
-            type="text"
-            danger
-            icon={<Trash2 size={16} />}
-            onClick={() => handleDelete(record)}
-          />
-        </Space>
+        <EditAction onClick={() => setEditStudent(record)} />
       ),
     },
   ];
 
-  if (isLoading) {
-    return (
-      <div className="p-4">
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold">Student Management</h2>
-          <p className="text-gray-500">Manage all students in the platform</p>
-        </div>
-        <StatCardSkeleton />
-      </div>
-    );
-  }
-
   return (
-    <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">Student Management</h2>
-        <p className="text-gray-500">Manage all students in the platform</p>
-      </div>
-      <div className="space-y-4 hidden max-lg:block">
-        <div className="space-y-4">{students?.map(renderMobileCard)}</div>
-      </div>
-      <div className="max-lg:hidden">
-        <Table
-          columns={columns}
-          dataSource={students}
-          rowKey="id"
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showTotal: (total) => `Total ${total} students`,
-          }}
-        />
-      </div>
-    </div>
+    <>
+      <AdminTable
+        title="Students"
+        description="Manage all students in the platform"
+        columns={columns}
+        data={users}
+        isLoading={loading}
+      />
+      {editStudent && (
+        <ModalPage
+          title="Edit Student"
+          open={!!editStudent}
+          onClose={() => setEditStudent(null)}
+          onCancel={() => setEditStudent(null)}
+        >
+          <DynamicForm
+            fields={studentFields}
+            initialValues={editStudent.data}
+            submittingSave={submittingSave}
+            submittingDelete={submittingDelete}
+            onSave={async (updated) => {
+              setSubmittingSave(true);
+              await handleEdit(editStudent.id, { data: updated });
+              setSubmittingSave(false);
+              setEditStudent(null);
+            }}
+            onDelete={async () => {
+              setSubmittingDelete(true);
+              await handleDelete(editStudent.id);
+              setSubmittingDelete(false);
+              setEditStudent(null);
+            }}
+            onCancel={() => setEditStudent(null)}
+          />
+        </ModalPage>
+      )}
+    </>
   );
 };
 

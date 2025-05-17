@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useFirebase } from "../../hooks/useFirebase";
 import Dropdown from "../common/DropDown";
 import Eduaide_cube from "../../assets/images/eduaide_cube.png";
 import { AvatarWithText } from "../common/AvatarGroup";
 import ActiveLink from "../common/ActiveLink";
-import { useNavigate } from "react-router-dom";
+
+import { useLogout } from "../../auth/pages/Logout";
 
 const NAV_ITEMS = [
   { text: "Home", link: "/" },
-  { text: "Quick Quiz", link: "/QuickQuiz" },
   { text: "Blog", link: "/blog" },
   { text: "Contact", link: "/contact" },
   { text: "About", link: "/about" },
@@ -18,10 +18,13 @@ const NAV_ITEMS = [
 
 const Navbar = () => {
   const navigate = useNavigate();
+
   const boxRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const Firebase = useFirebase();
   const user = Firebase.userLoggedIn;
+  const handleLogout = useLogout();
+
   useEffect(() => {
     if (boxRef.current) {
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -40,10 +43,24 @@ const Navbar = () => {
       );
     }
   }, [boxRef]);
+
   const LoginsignupButton = () => {
     return user ? (
       <Dropdown
         items={[
+          {
+            key: "Dashboard",
+            label: "Dashboard",
+            onClick: () => {
+              if (user.role === "teacher") {
+                navigate("/teacher-dashboard");
+              } else if (user.role === "admin") {
+                navigate("/admin-dashboard");
+              } else {
+                navigate("/student-dashboard");
+              }
+            },
+          },
           {
             key: "profile",
             label: "Profile",
@@ -55,11 +72,11 @@ const Navbar = () => {
             key: "logout",
             label: "logout",
             danger: true,
-            onClick: () => Firebase.handleLogout(),
+            onClick: handleLogout,
           },
         ]}
         triggerContent={<AvatarWithText useremail={user?.email || "Guest"} />}
-        className={`cursor-pointer invert-0 brightness-20   text-sm font-semibold text-white border border-white  rounded-full px-2 py-1  hover:text-gray-900 transition-colors duration-300`}
+        className={`cursor-pointer invert-0 brightness-20 text-sm font-semibold text-white border border-white rounded-full px-2 py-1 hover:text-gray-900 transition-colors duration-300`}
       />
     ) : (
       <DesktopLogin />
@@ -176,7 +193,7 @@ const DesktopLogin = () => (
 
 const MobileDrawer = ({ isOpen, closeMenu, show }) => (
   <div
-    className={`fixed inset-y-0 right-0 z-10 w-full max-w-sm bg-black shadow-xl transition-transform duration-300 ease-in-out transform ${
+    className={`fixed z-50 inset-y-0 right-0  w-full max-w-sm bg-black shadow-xl transition-transform duration-300 ease-in-out transform ${
       isOpen ? "translate-x-0" : "translate-x-full"
     }`}
   >

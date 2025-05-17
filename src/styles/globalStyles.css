@@ -160,3 +160,14 @@
   opacity: 0; /* optional fallback */
   animation: fadeSlideIn 0.4s ease forwards;
 }
+
+
+body, .hide-scrollbar, .lavender-background {
+  scrollbar-width: none; 
+  -ms-overflow-style: none; /* IE and Edge */
+  overflow-y: auto;
+}
+body::-webkit-scrollbar, .hide-scrollbar::-webkit-scrollbar, .lavender-background::-webkit-scrollbar {
+  display: none; 
+  overflow-y: auto;
+}

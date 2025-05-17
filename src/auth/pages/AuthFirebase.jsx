@@ -1,20 +1,36 @@
 import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import { handleSuccess, handleError } from "../../utils/tostify";
 import { useFirebase } from "../../hooks/useFirebase";
 import { emailValidate } from "../../utils/regexValidation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../features/user/pages/userProfileSlice";
-
 import Analytics from "../../assets/images/svg/13246824_5191077.svg";
-import { useDispatch } from "react-redux";
-import { setUserData } from "../../features/user/pages/userProfileSlice";
+
+const adminCredentials = {
+  email: "admin@admin.com",
+  password: "admin",
+  username: "Stebin Ben",
+};
+
+const formatUserData = (userData, fallbackEmail = "") => ({
+  email: userData.email,
+  isAdmin: userData.role === "admin",
+  role: userData.role,
+  username: userData.displayName || fallbackEmail.split("@")[0],
+  photoURL: userData.photoURL,
+  about: userData.about || "",
+  skills: userData.skills || [],
+  certificates: userData.certificates || [],
+  github: userData.github || "",
+  medium: userData.medium || "",
+  twitter: userData.twitter || "",
+});
 
 const SignUp = ({
   title,
   subtitle,
-  onSuccessPath,
+  // onSuccessPath,
   type,
   footerText,
   footerLinkPath,
@@ -26,91 +42,148 @@ const SignUp = ({
   const navigate = useNavigate();
   const [user, setUser] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState("user");
 
-  const adminEmail = "admin@admin.com";
-  const adminPassword = "admin";
+  const userDetails = useSelector((state) => state.user.userDetails);
 
   useEffect(() => {
-    if (firebase.userLoggedIn) {
-      navigate(onSuccessPath);
-      handleSuccess("User successfully logged in");
+    if (userDetails) {
+      if (userDetails.role === "admin") navigate("/admin-dashboard");
+      else if (userDetails.role === "teacher") navigate("/teacher-dashboard");
+      else navigate("/");
     }
-  }, [firebase.userLoggedIn, navigate, onSuccessPath]);
+  }, [userDetails, navigate]);
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-
-    const { email, password } = user;
-
-    if (!email || !password) {
-      handleError("Please fill in all fields.");
-      return;
-    }
-
-
-    if (email === adminEmail && password === adminPassword) {
+  const handleAdminLogin = () => {
+    if (
+      user.email === adminCredentials.email &&
+      user.password === adminCredentials.password
+    ) {
       dispatch(
-        setUserData({
-          email,
-          isAdmin: true,
-          role: "admin",
-          username: "Stebin Ben",
-        })
-      ); // store that this is admin
-      handleSuccess("Admin login successful");
-      navigate("/admin-dashboard");
-      return;
+        setUserData({ ...adminCredentials, isAdmin: true, role: "admin" })
+      );
+      return true;
     }
-
-    try {
-      await handleEmailLoginOrSignup(email, password);
-    } catch (error) {
-      handleError(error.message);
-    }
+    return false;
   };
 
-  const handleEmailLoginOrSignup = async (email, password) => {
-    if (!emailValidate.test(email)) {
-      handleError("Invalid Email");
-      return;
+  const handleSignup = async (email, password) => {
+    const authUser = await firebase.signupWithEmailAndPassword(email, password);
+    if (!authUser) {
+      throw new Error("Failed to create user account");
     }
 
-    setIsSubmitting(true);
+    const userData = await firebase.addUserToFirestore({
+      email,
+      role: "student",
+      displayName: email.split("@")[0],
+      createdAt: new Date().toISOString(),
+      uid: authUser.uid,
+    });
+
+    handleSuccess("User successfully created");
+    return userData;
+  };
+
+  const handleUserLogin = async (email, password) => {
+    const userData = await firebase.UserSignInwithEmailAndPassword(
+      email,
+      password
+    );
+
+    if (!userData || !userData.role) {
+      throw new Error("Invalid user data");
+    }
+
+    // Only allow student role to login through user tab
+    if (userData.role !== "student") {
+      throw new Error("Not Authorized");
+    }
+
+    return userData;
+  };
+
+  const handleTeacherLogin = async (email, password) => {
+    const userData = await firebase.UserSignInwithEmailAndPassword(
+      email,
+      password
+    );
+
+    // Validate user role and permissions
+    if (!userData || !userData.role) {
+      throw new Error("Invalid user data");
+    }
+
+    // Only allow teacher role to login through teacher tab
+    if (userData.role !== "teacher") {
+      throw new Error("Please use the appropriate login tab for your role");
+    }
+
+    return userData;
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    const { email, password } = user;
+
+    // Input validation
+    if (!email || !password) {
+      return handleError("Please fill in all fields.");
+    }
+    if (!emailValidate.test(email)) {
+      return handleError("Invalid Email");
+    }
 
     try {
-      if (type === "signup") {
-        await firebase.signupWithEmailAndPassword(email, password);
-        handleSuccess("User successfully created");
-      } else {
-        const userlogged = await firebase.UserSignInwithEmailAndPassword(
-          email,
-          password
-        );
-        await firebase.addUserToFirestore({ email });
-        if (userlogged) {
-          dispatch(
-            setUserData({
-              email,
-              isAdmin: false,
-              role: "user",
-              username: userlogged.displayName || email.split("@")[0],
-            })
-          );
-          handleSuccess("Login successful");
-          navigate("/");
-        }
+      setIsSubmitting(true);
+
+      // Handle admin login
+      if (handleAdminLogin()) {
+        return;
       }
-      setUser({ email: "", password: "" });
+
+      let userData;
+
+      if (type === "signup") {
+        userData = await handleSignup(email, password);
+      } else {
+        // Handle regular login based on role
+        if (activeTab === "user") {
+          userData = await handleUserLogin(email, password);
+        } else {
+          userData = await handleTeacherLogin(email, password);
+        }
+        handleSuccess("Login successful");
+      }
+
+      // Update Redux store and reset form
+      if (userData) {
+        dispatch(setUserData(formatUserData(userData, email)));
+        setUser({ email: "", password: "" });
+      }
     } catch (error) {
+      console.error(`${type === "signup" ? "Signup" : "Login"} error:`, error);
       handleError(error.message);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const userData = await firebase.signupWithGoogle();
+      if (userData) {
+        dispatch(setUserData(formatUserData(userData)));
+        handleSuccess("Login successful");
+        navigate("/");
+      }
+    } catch (error) {
+      handleError(error.message);
     }
   };
 
@@ -130,10 +203,36 @@ const SignUp = ({
           <p className="text-center text-3xl font-bold">{title}</p>
           <p className="mt-2 text-center text-gray-500">{subtitle}</p>
 
+          {/*  if Types is sign up then don't show the user and teacher tab  else show  */}
+          {type !== "signup" && (
+            <div className="mt-6 flex justify-center space-x-4">
+              <button
+                onClick={() => setActiveTab("user")}
+                className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                  activeTab === "user"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Student
+              </button>
+              <button
+                onClick={() => setActiveTab("teacher")}
+                className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                  activeTab === "teacher"
+                    ? "bg-gray-900 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Teacher
+              </button>
+            </div>
+          )}
+
           {showSocialLogin && (
             <>
               <button
-                onClick={() => firebase.signupWithGoogle()}
+                onClick={handleGoogleSignIn}
                 className="mt-8 flex items-center justify-center rounded-md border px-4 py-1 transition hover:bg-black hover:text-white"
               >
                 <img
@@ -143,7 +242,6 @@ const SignUp = ({
                 />
                 Continue with Google
               </button>
-
               <div className="relative mt-8 flex h-px bg-gray-200">
                 <div className="absolute left-1/2 h-6 w-14 -translate-x-1/2 bg-white text-center text-sm text-gray-500">
                   or
@@ -153,39 +251,24 @@ const SignUp = ({
           )}
 
           <form onSubmit={handleFormSubmit} className="flex flex-col pt-3">
-            <div className="flex flex-col pt-4">
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <div className="relative flex overflow-hidden border-b-2 focus-within:border-b-gray-500 transition">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={user.email}
-                  onChange={handleInputChange}
-                  placeholder="Email"
-                  className="w-full flex-1 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
-                />
+            {["email", "password"].map((field) => (
+              <div key={field} className="flex flex-col pt-4">
+                <label htmlFor={field} className="sr-only">
+                  {field}
+                </label>
+                <div className="relative flex overflow-hidden border-b-2 focus-within:border-b-gray-500 transition">
+                  <input
+                    id={field}
+                    name={field}
+                    type={field}
+                    value={user[field]}
+                    onChange={handleInputChange}
+                    placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                    className="w-full flex-1 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className="flex flex-col pt-4">
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <div className="relative flex overflow-hidden border-b-2 focus-within:border-b-gray-500 transition">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={user.password}
-                  onChange={handleInputChange}
-                  placeholder="Password"
-                  className="w-full flex-1 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
-                />
-              </div>
-            </div>
+            ))}
 
             <button
               type="submit"
@@ -220,12 +303,10 @@ const SignUp = ({
             loading="lazy"
             src={Analytics}
             alt="Analytics"
-            className="absolute top-0 h-full  object-cover opacity-90"
+            className="absolute top-0 h-full object-cover opacity-90"
           />
         </div>
       )}
-
-      <ToastContainer />
     </div>
   );
 };
