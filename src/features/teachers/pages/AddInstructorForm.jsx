@@ -16,7 +16,8 @@ export const AddInstructorForm = ({ onSuccess, onClose }) => {
     phone: "",
     password: "",
     expertise: "",
-    role: "teacher"
+    role: "teacher",
+    photoURL: "",
   };
 
   const validationSchema = Yup.object({
@@ -25,23 +26,20 @@ export const AddInstructorForm = ({ onSuccess, onClose }) => {
     phone: Yup.string()
       .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
       .required("Phone number is required"),
-    password: Yup.string()
-      .required("Password is required"),
+    password: Yup.string().required("Password is required"),
     expertise: Yup.string().required("Expertise is required"),
+    photoURL: Yup.string().url("Must be a valid URL").nullable(),
   });
 
   const handleSubmit = async (values, { resetForm, setSubmitting }) => {
     try {
       setIsChecking(true);
-      
-      // Create authentication account for the instructor
       const userCredential = await firebase.signupWithEmailAndPassword(values.email, values.password);
-      
-      // Add instructor data to Firestore
       await firebase.addInstructor({
         ...values,
         uid: userCredential.uid,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        // photoURL: values.photoURL, // You can handle upload and store URL here
       });
       resetForm();
       setSubmitting(false);
@@ -157,6 +155,24 @@ export const AddInstructorForm = ({ onSuccess, onClose }) => {
               </Field>
               <ErrorMessage
                 name="expertise"
+                component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+
+            {/* Profile Picture URL Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Profile Picture URL
+              </label>
+              <Field
+                name="photoURL"
+                type="url"
+                placeholder="https://example.com/profile.jpg"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              />
+              <ErrorMessage
+                name="photoURL"
                 component="div"
                 className="text-red-500 text-sm mt-1"
               />

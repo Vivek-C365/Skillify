@@ -64,6 +64,16 @@ const InstructorsTable = () => {
       render: (rating) => rating || "N/A",
     },
     {
+      title: "Status",
+      dataIndex: ["data", "status"],
+      key: "status",
+      render: (status) => (
+        <Tag color={status === "active" ? "green" : "red"} key={status}>
+          {status?.toUpperCase() || "INACTIVE"}
+        </Tag>
+      ),
+    },
+    {
       title: "Actions",
       key: "actions",
       render: (_, record) => (

@@ -33,8 +33,32 @@ import { handleError, handleSuccess } from "../../utils/tostify";
 const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
-
 const db = getFirestore(firebaseApp);
+
+// Function helpers
+const getUserByEmail = async (collectionName, email) => {
+  const colRef = collection(db, collectionName);
+  const q = query(colRef, where("data.email", "==", email));
+  const querySnapshot = await getDocs(q);
+  console.log(querySnapshot);
+  return querySnapshot.empty ? null : querySnapshot.docs[0];
+};
+
+const updateUserStatus = async (collectionName, docId, status) => {
+  const statusData = {
+    "data.status": status,
+    [`data.last${status === "active" ? "Login" : "Logout"}`]:
+      new Date().toISOString(),
+  };
+  await updateDocument(db, collectionName, docId, statusData);
+};
+
+const formatUserData = (user, additionalData = {}) => ({
+  ...user,
+  ...additionalData,
+  role: additionalData.role || "student",
+  status: "active",
+});
 
 export const FirebaseProvider = ({ children }) => {
   const [loggedIn, setLoggedInUser] = useState(null);
@@ -44,12 +68,7 @@ export const FirebaseProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setLoggedInUser(user || null);
       setLoading(false);
-
-      // if (user) {
-      //   dispatch(setUserData(user.providerData[0]));
-      // }
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -77,49 +96,25 @@ export const FirebaseProvider = ({ children }) => {
         password
       );
       const user = userCredential.user;
-      console.log(user);
 
-      // First check if user is an instructor
-      const instructorRef = collection(db, "Instructor");
-      const instructorQuery = query(
-        instructorRef,
-        where("data.email", "==", email)
-      );
-      const instructorSnapshot = await getDocs(instructorQuery);
-
-      if (!instructorSnapshot.empty) {
-        // If user is an instructor, return instructor data
-        const instructorData = instructorSnapshot.docs[0].data();
-        // Update instructor status to active
-        await updateDocument(db, "Instructor", instructorSnapshot.docs[0].id, {
-          "data.status": "active",
-          "data.lastLogin": new Date().toISOString(),
-        });
-        return {
-          ...user,
-          ...instructorData,
+      // Check instructor first
+      const instructorDoc = await getUserByEmail("Instructor", email);
+      if (instructorDoc) {
+        await updateUserStatus("Instructor", instructorDoc.id, "active");
+        return formatUserData(user, {
+          ...instructorDoc.data(),
           role: "teacher",
-          status: "active",
-        };
+        });
       }
 
-      // If not an instructor, check  in users collection
-      const userRef = collection(db, "users");
-      const userQuery = query(userRef, where("data.email", "==", email));
-      const userSnapshot = await getDocs(userQuery);
-
-      if (!userSnapshot.empty) {
-        const userData = userSnapshot.docs[0].data();
-        await updateDocument(db, "users", userSnapshot.docs[0].id, {
-          "data.status": "active",
-          "data.lastLogin": new Date().toISOString(),
+      // Check regular user
+      const userDoc = await getUserByEmail("users", email);
+      if (userDoc) {
+        await updateUserStatus("users", userDoc.id, "active");
+        return formatUserData(user, {
+          ...userDoc.data(),
+          role: userDoc.data().role || "student",
         });
-        return {
-          ...user,
-          ...userData,
-          role: userData.role || "student",
-          status: "active",
-        };
       }
 
       throw new Error("No account found with this email");
@@ -135,22 +130,11 @@ export const FirebaseProvider = ({ children }) => {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
-      // Check if user already exists in Firestore
-      const colRef = collection(db, "users");
-      const q = query(colRef, where("data.email", "==", user.email));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        // User exists, return existing data
-        const existingUser = querySnapshot.docs[0];
-        const existingData = existingUser.data().data;
-        return {
-          ...user,
-          ...existingData,
-        };
+      const existingUser = await getUserByEmail("users", user.email);
+      if (existingUser) {
+        return formatUserData(user, existingUser.data());
       }
 
-      // User doesn't exist, create new user data
       const userData = await addUserToFirestore({
         email: user.email,
         role: "student",
@@ -159,10 +143,7 @@ export const FirebaseProvider = ({ children }) => {
         createdAt: new Date().toISOString(),
       });
 
-      return {
-        ...user,
-        ...userData,
-      };
+      return formatUserData(user, userData);
     } catch (error) {
       handleError(error.message);
       throw error;
@@ -181,37 +162,17 @@ export const FirebaseProvider = ({ children }) => {
     try {
       const currentUser = auth.currentUser;
       if (currentUser) {
-        const userRef = collection(db, "users");
-        const userQuery = query(
-          userRef,
-          where("data.email", "==", currentUser.email)
-        );
-        const userSnapshot = await getDocs(userQuery);
-
-        if (!userSnapshot.empty) {
-          await updateDocument(db, "users", userSnapshot.docs[0].id, {
-            "data.status": "inactive",
-            "data.lastLogout": new Date().toISOString(),
-          });
+        const userDoc = await getUserByEmail("users", currentUser.email);
+        if (userDoc) {
+          await updateUserStatus("users", userDoc.id, "inactive");
         }
 
-        const instructorRef = collection(db, "Instructor");
-        const instructorQuery = query(
-          instructorRef,
-          where("data.email", "==", currentUser.email)
+        const instructorDoc = await getUserByEmail(
+          "Instructor",
+          currentUser.email
         );
-        const instructorSnapshot = await getDocs(instructorQuery);
-
-        if (!instructorSnapshot.empty) {
-          await updateDocument(
-            db,
-            "Instructor",
-            instructorSnapshot.docs[0].id,
-            {
-              "data.status": "inactive",
-              "data.lastLogout": new Date().toISOString(),
-            }
-          );
+        if (instructorDoc) {
+          await updateUserStatus("Instructor", instructorDoc.id, "inactive");
         }
       }
 
@@ -238,27 +199,20 @@ export const FirebaseProvider = ({ children }) => {
         github: userData.github || "",
         medium: userData.medium || "",
         twitter: userData.twitter || "",
-        status: "inactive", // Add initial status
+        status: "inactive",
         lastLogin: null,
         lastLogout: null,
         createdAt: userData.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
 
-      const colRef = collection(db, "users");
-      const q = query(colRef, where("data.email", "==", userData.email));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        const existingUser = querySnapshot.docs[0];
-        const existingData = existingUser.data().data;
-
+      const existingUser = await getUserByEmail("users", userData.email);
+      if (existingUser) {
         const updatedData = {
-          ...existingData,
+          ...existingUser.data(),
           ...userDoc,
           updatedAt: new Date().toISOString(),
         };
-
         await updateDocument(db, "users", existingUser.id, {
           data: updatedData,
         });
@@ -279,13 +233,12 @@ export const FirebaseProvider = ({ children }) => {
     fieldvalue
   ) => {
     try {
-      const data = await readOrCreateDocument(
+      return await readOrCreateDocument(
         db,
         collectionname,
         fieldname,
         fieldvalue
       );
-      return data;
     } catch (error) {
       console.log(error.message);
     }
@@ -293,8 +246,7 @@ export const FirebaseProvider = ({ children }) => {
 
   const UpdateUser = async (collectionName, docid, updatedData) => {
     try {
-      const data = await updateDocument(db, collectionName, docid, updatedData);
-      console.log("updated Data", data);
+      await updateDocument(db, collectionName, docid, updatedData);
     } catch (error) {
       console.log(error.message);
     }
@@ -302,8 +254,7 @@ export const FirebaseProvider = ({ children }) => {
 
   const readData = async (collectionname) => {
     try {
-      const dataRead = await readDocuments(db, collectionname);
-      return dataRead;
+      return await readDocuments(db, collectionname);
     } catch (error) {
       console.log(error.message);
     }
@@ -311,10 +262,8 @@ export const FirebaseProvider = ({ children }) => {
 
   const checkInstructorExists = async (email) => {
     try {
-      const colRef = collection(db, "Instructor");
-      const q = query(colRef, where("data.email", "==", email));
-      const querySnapshot = await getDocs(q);
-      return !querySnapshot.empty;
+      const instructorDoc = await getUserByEmail("Instructor", email);
+      return !!instructorDoc;
     } catch (error) {
       console.error("Error checking instructor:", error);
       throw error;
@@ -344,8 +293,6 @@ export const FirebaseProvider = ({ children }) => {
 
   const addMasterClass = async (data) => {
     try {
-      console.log(data);
-
       await addDocument(db, "MasterClass", data);
       handleSuccess("MasterClass Added");
     } catch (error) {
@@ -363,18 +310,20 @@ export const FirebaseProvider = ({ children }) => {
   };
 
   const addCategory = async (data) => {
-    const colRef = collection(db, "Categories");
-    const q = query(colRef, where("data.slug", "==", data.slug));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      throw new Error("Category already exists");
+    try {
+      const existingCategory = await getUserByEmail("Categories", data.slug);
+      if (existingCategory) {
+        throw new Error("Category already exists");
+      }
+      await addDocument(db, "Categories", {
+        ...data,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      handleError(error.message);
+      throw error;
     }
-    await addDocument(db, "Categories", {
-      ...data,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
   };
 
   const deleteData = async (collectionName, docId) => {
@@ -393,8 +342,6 @@ export const FirebaseProvider = ({ children }) => {
       handleError(error.message);
     }
   };
-
-
 
   return (
     <firebaseContext.Provider
@@ -416,6 +363,9 @@ export const FirebaseProvider = ({ children }) => {
         deleteData,
         updateData,
         addCourse,
+        getUserByEmail,
+        updateUserStatus,
+        formatUserData,
       }}
     >
       {children}

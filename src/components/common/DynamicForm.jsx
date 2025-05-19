@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Input, Button } from "antd";
+import { Button, Upload, message, Form } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { FormInput, FormSelect, FormNumberInput, FormTextArea } from './FormInputs'; // Adjust the path as necessary
 
 const DynamicForm = ({
   fields,
@@ -11,65 +13,107 @@ const DynamicForm = ({
   submittingSave = false,
   submittingDelete = false,
 }) => {
-  const [form, setForm] = useState(initialValues);
-  console.log(form);
+  const [form] = Form.useForm();
+  const [formData, setFormData] = useState(initialValues);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleValuesChange = (changedValues, allValues) => {
+    setFormData(allValues);
+  };
+
+  const handleImageUpload = ({ file }) => {
+    if (file.status === "done") {
+      message.success(`${file.name} uploaded successfully`);
+      setFormData({ ...formData, image: file.response.url });
+    } else if (file.status === "error") {
+      message.error(`${file.name} upload failed.`);
+    }
   };
 
   return (
-    <div className="p-4">
-      {title && <h2 className="text-xl font-bold mb-4">{title}</h2>}
-      <form
-        className="space-y-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSave(form);
-        }}
+    <div className="p-6">
+      {title && <h2 className="text-2xl font-bold mb-6 text-gray-800">{title}</h2>}
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={initialValues}
+        onFinish={onSave}
+        onValuesChange={handleValuesChange}
+        className="space-y-6"
       >
         {fields.map((field) => (
-          <div key={field.name}>
-            <label className="block mb-1">{field.label}</label>
+          <div key={field.name} className="mb-4">
             {field.type === "image" ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 <img
-                  src={form[field.name]}
+                  src={formData[field.name]}
                   alt="Preview"
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="w-16 h-16 rounded-full object-cover border border-gray-200"
                 />
-                <Button>Click to replace</Button>
+                <Upload
+                  onChange={handleImageUpload}
+                  showUploadList={false}
+                >
+                  <Button icon={<UploadOutlined />}>Replace Image</Button>
+                </Upload>
               </div>
-            ) : (
-              <Input
+            ) : field.type === "text" ? (
+              <FormInput
+                label={field.label}
                 name={field.name}
-                value={form[field.name] || ""}
-                onChange={handleChange}
-                type={field.type}
+                required={field.required}
                 placeholder={field.placeholder}
-                prefix={field.prefix}
-                suffix={field.suffix}
+                type="text"
               />
-            )}
+            ) : field.type === "select" ? (
+              <FormSelect
+                label={field.label}
+                name={field.name}
+                required={field.required}
+                options={field.options}
+                placeholder={field.placeholder}
+                style={field.style}
+              />
+            ) : field.type === "number" ? (
+              <FormNumberInput
+                label={field.label}
+                name={field.name}
+                required={field.required}
+                placeholder={field.placeholder}
+                min={field.min}
+                step={field.step}
+                style={field.style}
+              />
+            ) : field.type === "textarea" ? (
+              <FormTextArea
+                label={field.label}
+                name={field.name}
+                required={field.required}
+                placeholder={field.placeholder}
+                rows={field.rows}
+                maxLength={field.maxLength}
+                style={field.style}
+              />
+            ) : null}
           </div>
         ))}
 
-        <div className="flex justify-between pt-2">
+        <div className="flex justify-between pt-4">
           {onDelete && (
             <Button
               danger
               onClick={onDelete}
               loading={submittingDelete}
               disabled={submittingSave || submittingDelete}
+              className="px-4 py-2"
             >
               Delete
             </Button>
           )}
-          <div>
+          <div className="space-x-2">
             <Button
               onClick={onCancel}
-              style={{ marginRight: 8 }}
               disabled={submittingSave || submittingDelete}
+              className="px-4 py-2"
             >
               Cancel
             </Button>
@@ -78,12 +122,13 @@ const DynamicForm = ({
               htmlType="submit"
               loading={submittingSave}
               disabled={submittingSave || submittingDelete}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700"
             >
               Save changes
             </Button>
           </div>
         </div>
-      </form>
+      </Form>
     </div>
   );
 };

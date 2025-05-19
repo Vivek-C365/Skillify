@@ -14,6 +14,7 @@ const adminCredentials = {
 };
 
 const formatUserData = (userData, fallbackEmail = "") => ({
+  uid: userData.uid,
   email: userData.email,
   isAdmin: userData.role === "admin",
   role: userData.role,
@@ -42,7 +43,6 @@ const SignUp = ({
   const navigate = useNavigate();
   const [user, setUser] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState("user");
 
   const userDetails = useSelector((state) => state.user.userDetails);
 
@@ -90,25 +90,7 @@ const SignUp = ({
     return userData;
   };
 
-  const handleUserLogin = async (email, password) => {
-    const userData = await firebase.UserSignInwithEmailAndPassword(
-      email,
-      password
-    );
-
-    if (!userData || !userData.role) {
-      throw new Error("Invalid user data");
-    }
-
-    // Only allow student role to login through user tab
-    if (userData.role !== "student") {
-      throw new Error("Not Authorized");
-    }
-
-    return userData;
-  };
-
-  const handleTeacherLogin = async (email, password) => {
+  const handleLogin = async (email, password) => {
     const userData = await firebase.UserSignInwithEmailAndPassword(
       email,
       password
@@ -118,12 +100,7 @@ const SignUp = ({
     if (!userData || !userData.role) {
       throw new Error("Invalid user data");
     }
-
-    // Only allow teacher role to login through teacher tab
-    if (userData.role !== "teacher") {
-      throw new Error("Please use the appropriate login tab for your role");
-    }
-
+    // console.log(userData);
     return userData;
   };
 
@@ -152,18 +129,15 @@ const SignUp = ({
       if (type === "signup") {
         userData = await handleSignup(email, password);
       } else {
-        // Handle regular login based on role
-        if (activeTab === "user") {
-          userData = await handleUserLogin(email, password);
-        } else {
-          userData = await handleTeacherLogin(email, password);
-        }
+        userData = await handleLogin(email, password);
+
         handleSuccess("Login successful");
       }
-
+      // console.log(userData);
       // Update Redux store and reset form
       if (userData) {
-        dispatch(setUserData(formatUserData(userData, email)));
+        // dispatch(setUserData(formatUserData(userData, email)));
+        dispatch(setUserData(userData.data));
         setUser({ email: "", password: "" });
       }
     } catch (error) {
@@ -202,32 +176,6 @@ const SignUp = ({
         <div className="mx-auto my-auto flex flex-col justify-center pt-8 md:px-6 lg:w-[28rem]">
           <p className="text-center text-3xl font-bold">{title}</p>
           <p className="mt-2 text-center text-gray-500">{subtitle}</p>
-
-          {/*  if Types is sign up then don't show the user and teacher tab  else show  */}
-          {type !== "signup" && (
-            <div className="mt-6 flex justify-center space-x-4">
-              <button
-                onClick={() => setActiveTab("user")}
-                className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                  activeTab === "user"
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Student
-              </button>
-              <button
-                onClick={() => setActiveTab("teacher")}
-                className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
-                  activeTab === "teacher"
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Teacher
-              </button>
-            </div>
-          )}
 
           {showSocialLogin && (
             <>

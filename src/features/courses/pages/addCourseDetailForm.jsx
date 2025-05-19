@@ -1,203 +1,234 @@
-import React, { useState } from "react";
-import { Form } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Row, Col, message } from "antd";
+import { Button } from "../../../components/common/button";
+import { useFirebase } from "../../../hooks/useFirebase";
+import { useDispatch, useSelector } from "react-redux";
+import { addCourse, setLoading, setError } from "../courseSlice";
 import {
-  FormSelect,
   FormInput,
+  FormSelect,
   FormNumberInput,
   FormTextArea,
 } from "../../../components/common/FormInputs";
-import { FormSectionDivider } from "../../../components/common/FormSections";
-import { Button } from "../../../components/common/button";
-import { useFirebase } from "../../../hooks/useFirebase";
 
-const categories = [
-  "Programming basics",
-  "Web design & UX/UI",
-  "Graphic design",
-  "Cybersecurity & data protection",
-  "Data analysis & business",
-  "Artificial intelligence & robotics",
-  "Systems administration",
-  "Digital marketing",
-];
-
-const proficiencyLevels = ["Beginner", "Intermediate", "Fluent", "Native"];
+const PROFICIENCY_LEVELS = ["Beginner", "Intermediate", "Fluent", "Native"];
 
 const AddCourseDetailForm = () => {
   const [form] = Form.useForm();
   const firebase = useFirebase();
+  const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
-  const [courseData, setCourseData] = useState({
-    imageUrl: "",
-    category: "",
-    name: "",
-    lessons: 1,
-    language: "",
-    proficiency: "",
-    additional_languages: 0,
-    description: "",
-    hourly_rate: 0,
-  });
+  const [categories, setCategories] = useState([]);
+  const [imageUrl, setImageUrl] = useState("");
+  const currentUser = useSelector((state) => state.user?.userDetails);
 
-  const handleChange = (changedValues, allValues) => {
-    setCourseData(allValues);
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await firebase.readData("Categories");
+        if (categoriesData) {
+          setCategories(
+            categoriesData.map((category) => ({
+              value: category.data.name,
+              label: category.data.name,
+              id: category.id,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        message.error("Failed to load categories");
+      }
+    };
+    fetchCategories();
+  }, [firebase]);
 
-  const handleSubmit = async (values) => {
+  const onFinish = async (values) => {
     try {
       setSubmitting(true);
-      await firebase.addCourse("CouseDetails", {
-        ...values,
+      dispatch(setLoading(true));
+      const courseId = `course_${Date.now()}`;
+
+      const courseData = {
+        id: courseId,
+        instructorId: currentUser.uid,
+        instructorData: {
+          name: currentUser.username || "",
+          email: currentUser.email || "",
+          photoURL: currentUser.photoURL || "",
+          expertise: "",
+        },
+        name: values.name || "",
+        category: values.category || "",
+        imageUrl: values.imageUrl || "",
+        language: values.language || "",
+        proficiency: values.proficiency || "",
+        description: values.description || "",
+        hourly_rate: values.hourly_rate || 0,
+        lessons: values.lessons || 0,
+        additional_languages: values.additional_languages || 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      });
+        enrolledStudents: [],
+        rating: 0,
+        reviews: [],
+        status: "draft",
+      };
+
+      // Add course to courses collection
+      await firebase.addCourse("CouseDetails", courseData);
+
+      // // Update instructor's document with the new course ID
+      // const courses = currentUser.data.courses || [];
+      // await firebase.updateData("Instructor", currentUser.id, {
+      //   "data.courses": [...courses, courseId],
+      // });
+
+      dispatch(addCourse(courseData));
+      message.success("Course added successfully!");
       form.resetFields();
-      setCourseData({
-        imageUrl: "",
-        category: "",
-        name: "",
-        lessons: 1,
-        language: "",
-        proficiency: "",
-        additional_languages: 0,
-        description: "",
-        hourly_rate: 0,
-      });
+      setImageUrl("");
     } catch (error) {
       console.error("Error adding course:", error);
+      dispatch(setError(error.message));
+      message.error(error.message || "Failed to add course");
     } finally {
       setSubmitting(false);
+      dispatch(setLoading(false));
     }
   };
 
   return (
-    <div className="w-full mx-auto p-4 sm:p-6 lg:p-8">
-      <div className="bg-white rounded-xl shadow-lg p-6 md:p-10 border border-gray-100">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">New Course</h2>
-          <p className="text-gray-600">Complete all fields to list a new course</p>
-        </div>
-
-        <Form
-          form={form}
-          layout="vertical"
-          autoComplete="off"
-          initialValues={courseData}
-          onValuesChange={handleChange}
-          onFinish={handleSubmit}
-        >
-          {/* Image URL and Preview */}
-          <div className="mb-8">
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={onFinish}
+      className="space-y-6 max-w-4xl mx-auto py-8"
+      onValuesChange={(_, allValues) => setImageUrl(allValues.imageUrl || "")}
+    >
+      {/* Course Details Card */}
+      <div className="w-full p-6 bg-white rounded-[16px] shadow border border-gray-200">
+        <p className="font-[Poppins] font-bold text-[#18181B] text-[18px] md:text-[22px] leading-[100%] mb-4">
+          Course Details
+        </p>
+        <div className="border-b border-solid border-gray-200 mb-6"></div>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={12}>
             <FormInput
-              label={<span className="text-gray-700 font-medium">Course Image URL</span>}
-              name="imageUrl"
-              required={true}
-              className="rounded-lg border-gray-300 hover:border-gray-400 focus:border-black focus:ring-2 focus:ring-black"
-              placeholder="https://example.com/image.jpg"
-            />
-            {courseData.imageUrl && (
-              <div className="mt-4 border-2 border-dashed border-gray-100 rounded-xl overflow-hidden">
-                <img
-                  src={courseData.imageUrl}
-                  alt="Course Preview"
-                  className="w-full h-48 object-cover"
-                  onError={e => (e.target.style.display = 'none')}
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <FormSelect
-              label="Category"
-              name="category"
-              required={true}
-              className="rounded-lg [&>div]:border-gray-300 [&>div]:hover:border-gray-400 [&>div]:focus:border-black [&>div]:focus:ring-2 [&>div]:focus:ring-black"
-              options={categories}
-              showSearch={true}
-            />
-
-            <FormInput
-              label="Instructor Name"
               name="name"
-              required={true}
-              className="rounded-lg border-gray-300 hover:border-gray-400 focus:border-black focus:ring-2 focus:ring-black"
-              placeholder="John Doe"
+              label="Course Title"
+              required
+              placeholder="Enter course title"
             />
-
+          </Col>
+          <Col xs={24} md={12}>
+            <FormSelect
+              name="category"
+              label="Category"
+              required
+              options={categories}
+              placeholder="Select category"
+            />
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={8}>
             <FormNumberInput
-              label="Number of Lessons"
               name="lessons"
-              required={true}
-              min={1}
-              className="[&>div]:rounded-lg [&>div]:border-gray-300 [&>div:hover]:border-gray-400 [&>div:focus-within]:border-black [&>div:focus-within]:ring-2 [&>div:focus-within]:ring-black"
+              label="Number of Lessons"
+              required
               placeholder="10"
+              min={1}
             />
-
+          </Col>
+          <Col xs={24} md={8}>
             <FormInput
-              label="Primary Language"
               name="language"
-              required={true}
-              className="rounded-lg border-gray-300 hover:border-gray-400 focus:border-black focus:ring-2 focus:ring-black"
+              label="Primary Language"
+              required
               placeholder="English"
             />
-
+          </Col>
+          <Col xs={24} md={8}>
             <FormSelect
-              label="Proficiency Level"
               name="proficiency"
-              required={true}
-              className="rounded-lg [&>div]:border-gray-300 [&>div]:hover:border-gray-400 [&>div]:focus:border-black [&>div]:focus:ring-2 [&>div]:focus:ring-black"
-              options={proficiencyLevels}
+              label="Proficiency Level"
+              required
+              options={PROFICIENCY_LEVELS.map((level) => ({
+                value: level,
+                label: level,
+              }))}
+              placeholder="Select level"
             />
-
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={12}>
             <FormNumberInput
-              label="Additional Languages"
               name="additional_languages"
-              required={false}
+              label="Additional Languages"
+              placeholder="0"
               min={0}
-              className="[&>div]:rounded-lg [&>div]:border-gray-300 [&>div:hover]:border-gray-400 [&>div:focus-within]:border-black [&>div:focus-within]:ring-2 [&>div:focus-within]:ring-black"
             />
+          </Col>
+          <Col xs={24} md={12}>
+            <FormInput
+              name="imageUrl"
+              label="Course Image URL"
+              required
+              placeholder="https://example.com/image.jpg"
+            />
+          </Col>
+        </Row>
+        {imageUrl && (
+          <div className="border-2 border-dashed border-gray-300 rounded-[8px] p-4 flex flex-col items-center justify-center bg-gray-50 mb-4">
+            <img
+              src={imageUrl}
+              alt="Course Preview"
+              className="w-full max-w-xs h-40 object-cover rounded-md mb-2"
+              onError={(e) => (e.target.style.display = "none")}
+            />
+            <span className="text-xs text-gray-500">Preview</span>
           </div>
-
-          <FormSectionDivider title="Course Description" className="text-xl font-semibold text-gray-900 mb-6 border-b border-gray-200 pb-2" />
-          
-          <FormTextArea
-            label="Description"
-            name="description"
-            required={true}
-            rows={4}
-            className="rounded-lg border-gray-300 hover:border-gray-400 focus:border-black focus:ring-2 focus:ring-black"
-            showCount={true}
-            maxLength={500}
-            placeholder="Detailed course description..."
-          />
-
-          <FormSectionDivider title="Pricing Details" className="text-xl font-semibold text-gray-900 my-6 border-b border-gray-200 pb-2" />
-          
-          <FormNumberInput
-            label="Hourly Rate"
-            name="hourly_rate"
-            required={true}
-            min={0}
-            step={5}
-            className="[&>div]:rounded-lg [&>div]:border-gray-300 [&>div:hover]:border-gray-400 [&>div:focus-within]:border-black [&>div:focus-within]:ring-2 [&>div:focus-within]:ring-black"
-            formatter={(value) => `$ ${value}`}
-            parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-            placeholder="0.00"
-          />
-
-          <div className="flex justify-end mt-10">
-            <Button
-              htmlType="submit"
-              className="w-full md:w-auto bg-black text-white rounded-lg px-8 py-3 font-medium hover:bg-gray-800 transition-colors duration-200 transform hover:scale-105"
-              disabled={submitting}
-            >
-              {submitting ? "Saving..." : "Publish Course"}
-            </Button>
-          </div>
-        </Form>
+        )}
+        <FormTextArea
+          name="description"
+          label="Course Description"
+          required
+          rows={5}
+          maxLength={500}
+          placeholder="Write here"
+        />
       </div>
-    </div>
+      {/* Pricing Card */}
+      <div className="w-full p-6 bg-white rounded-[16px] shadow border border-gray-200">
+        <p className="font-[Poppins] font-bold text-[#18181B] text-[18px] md:text-[22px] leading-[100%] mb-4">
+          Pricing
+        </p>
+        <div className="border-b border-solid border-gray-200 mb-6"></div>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} md={12}>
+            <FormNumberInput
+              name="hourly_rate"
+              label="Hourly Rate"
+              required
+              placeholder="0.00"
+              min={0}
+            />
+          </Col>
+        </Row>
+      </div>
+      {/* Save Button */}
+      <div className="flex justify-end py-6">
+        <Button
+          htmlType="submit"
+          className="h-[48px] w-full md:w-[166px] bg-blue-600 border border-blue-600 rounded-full text-white text-[16px] font-semibold cursor-pointer hover:opacity-90 active:opacity-80 shadow-md"
+          disabled={submitting}
+        >
+          {submitting ? "Saving..." : "Save"}
+        </Button>
+      </div>
+    </Form>
   );
 };
 

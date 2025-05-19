@@ -9,10 +9,11 @@ import DynamicForm from "../../common/DynamicForm";
 import EditAction from "../../common/EditAction";
 
 const courseFields = [
-  { name: "description", label: "Title", type: "text", placeholder: "Course title" },
-  { name: "name", label: "Instructor", type: "text", placeholder: "Instructor name" },
+  { name: "name", label: "Title", type: "text", placeholder: "Course title" },
   { name: "category", label: "Category", type: "text", placeholder: "Category" },
   { name: "hourly_rate", label: "Price", type: "text", placeholder: "Price" },
+  // { name: "status", label: "Status", type: "select", placeholder: "Status" },
+  { name: "description", label: "Description", type: "text", placeholder: "Description" },
 ];
 
 const CoursesTable = () => {
@@ -28,7 +29,7 @@ const CoursesTable = () => {
   const columns = [
     {
       title: "Title",
-      dataIndex: ["data", "description"],
+      dataIndex: ["data", "name"],
       key: "title",
       render: (text) => (
         <a className="font-medium">
@@ -38,9 +39,9 @@ const CoursesTable = () => {
     },
     {
       title: "Instructor",
-      dataIndex: ["data", "name"],
+      dataIndex: ["data", "instructorData"],
       key: "instructor",
-      render: (text) => <span>{text}</span>,
+      render: (instructor) => <span>{instructor.name}</span>,
     },
     {
       title: "Category",
@@ -51,6 +52,18 @@ const CoursesTable = () => {
           {category}
         </Tag>
       ),
+    },
+    {
+      title: "Description",
+      dataIndex: ["data", "description"],
+      key: "description",
+      render: (description) => <span>{description}</span>,
+    },
+    {
+      title: "Status",
+      dataIndex: ["data", "status"],
+      key: "status",
+      render: (status) => <Tag color={status === "active" ? "green" : "red"}>{status}</Tag>,
     },
     {
       title: "Price",
