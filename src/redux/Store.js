@@ -5,8 +5,8 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userReducer from "../features/user/pages/userProfileSlice";
-import adminDashboard from "../features/admin/admindashboadSlice"
-
+import adminDashboard from "../features/admin/admindashboadSlice";
+import courseReducer from "../features/courses/courseSlice";
 
 const persistConfig = {
   key: "user",
@@ -18,8 +18,8 @@ const persistedUserReducer = persistReducer(persistConfig, userReducer);
 export const store = configureStore({
   reducer: {
     user: persistedUserReducer,
-    dashboard : adminDashboard
-
+    dashboard: adminDashboard,
+    courses: courseReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

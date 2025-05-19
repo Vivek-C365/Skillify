@@ -1,14 +1,15 @@
 import React from "react";
 
-import { Card } from "antd";
-const Cards = ({ title, children, className }) => (
-  <Card
-    title={title}
-    variant="borderless"
-    style={{ width: 300 }}
-    className={className}
-  >
-    <div>{children}</div>
-  </Card>
+const Card = ({ title, children, className = "" }) => (
+  <div className={`bg-white rounded-[16px] shadow border border-gray-200 p-6 font-poppins ${className}`}>
+    {title && (
+      <div className="mb-4">
+        <h2 className="text-heading text-xl font-bold">{title}</h2>
+        <div className="border-b border-solid border-border my-4"></div>
+      </div>
+    )}
+    {children}
+  </div>
 );
-export default Cards;
+
+export default Card;

@@ -169,7 +169,7 @@ export const AdminDashboard = () => {
         </div>
         <img
           src={
-            course?.data?.image ||
+            course?.data?.imageUrl ||
             "https://www.anglofone.co.in/static/media/foundation%20course.7e6169c6cb93cdb42fb4.png"
           }
           alt="Course"
@@ -177,7 +177,7 @@ export const AdminDashboard = () => {
         />
         <div className="flex-1">
           <p className="font-medium text-gray-900 group-hover:text-[#4F46E5] transition-colors">
-            {course?.data?.courseTitle || "N/A"}
+            {course?.data?.name || "N/A"}
           </p>
           <p className="text-sm text-gray-600">
             {course?.data?.category  || "Unnamed Course"}

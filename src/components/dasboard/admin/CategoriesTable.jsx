@@ -19,7 +19,7 @@ const CategoriesTable = () => {
   const [editCategory, setEditCategory] = useState(null);
   const [submittingSave, setSubmittingSave] = useState(false);
   const [submittingDelete, setSubmittingDelete] = useState(false);
-  // console.log(editCategory);
+  console.log(editCategory);
 
   const handleSuccess = () => {
     setShowAddModal(false);

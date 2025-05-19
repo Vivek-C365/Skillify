@@ -15,7 +15,9 @@ export const FormSelect = ({
   ...rest
 }) => (
   <Form.Item
-    label={<Text strong>{label}</Text>}
+    label={label && (
+      <span className="font-poppins font-medium text-heading text-[15px] mb-1 block">{label}</span>
+    )}
     name={name}
     rules={[{ required, message: `Please select ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
@@ -27,6 +29,7 @@ export const FormSelect = ({
       filterOption={(input, option) =>
         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
+      className="bg-gray-50 border border-gray-300 rounded-[8px] h-12 text-black font-poppins placeholder:text-gray-400 focus:border-blue-400"
       {...rest}
     >
       {options.map((option) => (
@@ -51,7 +54,9 @@ export const FormInput = ({
   ...rest
 }) => (
   <Form.Item
-    label={<Text strong>{label}</Text>}
+    label={label && (
+      <span className="font-poppins font-medium text-heading text-[15px] mb-1 block">{label}</span>
+    )}
     name={name}
     rules={[{ required, message: `Please enter ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
@@ -59,6 +64,8 @@ export const FormInput = ({
     <Input
       placeholder={placeholder || `Enter ${typeof label === 'string' ? label.toLowerCase() : name}`}
       type={type}
+      size="large"
+      className="bg-gray-50 border border-gray-300 rounded-[8px] h-12 text-black font-poppins placeholder:text-gray-400 hover:border-gray-400 focus:border-blue-400"
       {...rest}
     />
   </Form.Item>
@@ -77,7 +84,9 @@ export const FormNumberInput = ({
   ...rest
 }) => (
   <Form.Item
-    label={<Text strong>{label}</Text>}
+    label={label && (
+      <span className="font-poppins font-medium text-heading text-[15px] mb-1 block">{label}</span>
+    )}
     name={name}
     rules={[{ required, message: `Please enter ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
@@ -85,10 +94,12 @@ export const FormNumberInput = ({
     <InputNumber
       min={min}
       step={step}
+      size="large"
       style={{ width: "100%" }}
       placeholder={placeholder}
       formatter={formatter}
       parser={parser}
+      className="bg-gray-50 border border-gray-300 rounded-[8px] h-12 text-black font-poppins placeholder:text-gray-400 hover:border-gray-400 focus:border-blue-400"
       {...rest}
     />
   </Form.Item>
@@ -106,7 +117,9 @@ export const FormTextArea = ({
   ...rest
 }) => (
   <Form.Item
-    label={<Text strong>{label}</Text>}
+    label={label && (
+      <span className="font-poppins font-medium text-heading text-[15px] mb-1 block">{label}</span>
+    )}
     name={name}
     rules={[{ required, message: `Please enter ${typeof label === 'string' ? label.toLowerCase() : name}` }]}
     style={style}
@@ -116,6 +129,7 @@ export const FormTextArea = ({
       placeholder={placeholder}
       showCount={showCount}
       maxLength={maxLength}
+      className="bg-gray-50 border border-gray-300 rounded-[8px] text-black font-poppins placeholder:text-gray-400 hover:border-gray-400 focus:border-blue-400"
       {...rest}
     />
   </Form.Item>

@@ -12,6 +12,7 @@ import {
   Tag,
   ChevronRight,
   Plus,
+  LayoutDashboard,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -64,7 +65,7 @@ const Sidebar = () => {
     {
       title: "My Courses",
       icon: <BookMarked size={20} />,
-      path: "/manage-courses",
+      path: "/my-courses",
       roles: ["teacher"],
     },
     {

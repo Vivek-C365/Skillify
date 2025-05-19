@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import StudentDashboard from "../components/dasboard/student/StudentDashboard";
 import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
 import CategoriesTable from "../components/dasboard/admin/CategoriesTable";
+import TeacherCoursesTable from "../components/dasboard/teacher/TeacherCoursesTable";
 
 function AppRoutes() {
   const user = useSelector((state) => state.user);
@@ -65,6 +66,14 @@ function AppRoutes() {
                 element={
                   <DashboardLayout>
                     <TeacherDashboard />
+                  </DashboardLayout>
+                }
+              />
+              <Route
+                path="/my-courses"
+                element={
+                  <DashboardLayout>
+                    <TeacherCoursesTable />
                   </DashboardLayout>
                 }
               />
@@ -165,7 +174,7 @@ function AppRoutes() {
           </>
         )}
 
-        <Route path="*" element={<Page404 />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <ToastContainer
         position="bottom-center"
