@@ -25,6 +25,7 @@ import StudentDashboard from "../components/dasboard/student/StudentDashboard";
 import TeacherDashboard from "../components/dasboard/teacher/TeacherDashboard";
 import CategoriesTable from "../components/dasboard/admin/CategoriesTable";
 import TeacherCoursesTable from "../components/dasboard/teacher/TeacherCoursesTable";
+import TeacherList from "../components/dasboard/teacher/TeacherList";
 
 function AppRoutes() {
   const user = useSelector((state) => state.user);
@@ -45,6 +46,7 @@ function AppRoutes() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/masterclasses" element={<Masterclasses />} />
+            <Route path="/teacherCard" element={<TeacherList/>}/>
           </>
         )}
 

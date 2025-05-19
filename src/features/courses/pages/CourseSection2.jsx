@@ -104,7 +104,7 @@ export default function CourseSection2() {
               <LaptopOutlined />
             </span>
             <div>
-              <h1>By {masterclass[0]?.data?.name} </h1>
+              <h1>By {name} </h1>
               <p>{`${personExperience} Years`} | IIIT Bangalore</p>
             </div>
           </div>
